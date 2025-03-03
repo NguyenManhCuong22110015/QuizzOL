@@ -1,0 +1,19 @@
+<table>
+     <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+      
+    </tr>
+  </thead>
+  <tbody>
+    {{#if list}}
+    {{#each list}}
+    <tr>
+      <th scope="row">{{this.id}}</th>
+      <td>{{this.content}}</td>
+      <td>{{this.createAt}}</td>
+      {{/each}}
+    {{/if}}
+  </tbody>
+</table>
