@@ -5,7 +5,8 @@ import { engine } from 'express-handlebars';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import quizRoute from './routes/quizRoute.js';
-
+import authLoginRoute from './routes/authLoginRoute.js';
+import './authentication/passport-setup.js';
 
 import moment from 'moment-timezone';
 
@@ -97,16 +98,17 @@ const app = express()
       resave: false,
       saveUninitialized: true,
       cookie: { 
-        secure: false, // true in production
+        secure: false,
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
       
     }
 }));
+app.use(passport.initialize());
+  app.use(passport.session());
 
 
-
-  app.use(async function (req, res, next) {
+app.use(async function (req, res, next) {
     if(req.session.auth === null || req.session.auth === undefined){
       req.session.auth = false;
     }
@@ -115,13 +117,13 @@ const app = express()
     res.locals.authUser = req.session.authUser || null;
     
     next();
-  });
+});
 
 
 
   
-  app.use(express.urlencoded({ extended: true }));
-  app.use(express.json()); 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); 
 //   app.use(facebookPassport.initialize());
 //   app.use(facebookPassport.session());
 //   app.use(googlePassport.initialize());
@@ -131,8 +133,10 @@ const app = express()
 //   app.use(githubPassport.initialize());
  // app.use(githubPassport.session());
   
-  app.use('/quiz', quizRoute);
- 
+app.use('/quiz', quizRoute);
+app.use('/auth', authLoginRoute);
+
+
 app.get("/", (req, res) => {
     res.send("Hello word")
 })
