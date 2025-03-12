@@ -6,7 +6,7 @@ dotenv.config();
 const FACEBOOK_APP_ID = process.env.FACEBOOK_APP_ID
 const FACEBOOK_APP_SECRET = process.env.FACEBOOK_APP_SECRET
 const CALLBACK_URL = process.env.NODE_ENV === 'production' 
-      ? 'https://hostwebproject.onrender.com/auth/facebook/callback'
+      ? process.env.FACEBOOK_CALLBACK_URL
     : 'http://localhost:3000/auth/facebook/callback';
 passport.use(
   new FacebookStrategy(

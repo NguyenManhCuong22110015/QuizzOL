@@ -4,7 +4,7 @@ import { Strategy as GitHubStrategy } from 'passport-github2';
 const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID;
 const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 const CALLBACK_URL = process.env.NODE_ENV === 'production' 
-    ? 'https://hostwebproject.onrender.com/auth/github/callback'
+    ? process.env.GITHUB_CALLBACK_URL
     : 'http://localhost:3000/auth/github/callback';
 if (!GITHUB_CLIENT_ID || !GITHUB_CLIENT_SECRET) {
   throw new Error('Missing GitHub Client ID or Secret in environment variables');
