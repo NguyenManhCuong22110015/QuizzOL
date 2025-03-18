@@ -1,15 +1,33 @@
-import knexObj from "knex"
 
-const db = knexObj({
-    client: 'mysql2',
-    connection:{
-        host: 'r-ex6.h.filess.io',
-        port: '3307',
-        user: 'Quizz_distantmet',
-        password: '9857d5b30e8e3a18d29b7fdd962fe7a41d14e51c',
-        database: 'Quizz_distantmet'
-    },
-    pool : {min: 0, max: 7}
-})
+import knex from 'knex';
+import dotenv from 'dotenv';
+dotenv.config();
+const db = knex({
+  client: 'mysql2',
+  connection: {
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    port: process.env.DB_PORT,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
+  },
+  pool: {
+    min: 0,           
+    max: 4,          
+    idleTimeoutMillis: 30000, 
+    acquireTimeoutMillis: 30000 
+  },
+});
+
+
+export const options = {
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  port: process.env.DB_PORT,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  connectionLimit: 3
+}
+
 
 export default db;

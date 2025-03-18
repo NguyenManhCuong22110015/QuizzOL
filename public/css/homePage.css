@@ -1,0 +1,201 @@
+body {
+    font-family: 'Nunito', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffe4e1; /* Light Pink Background */
+    color: #343a40;
+    line-height: 1.7;
+}
+
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 20px;
+}
+
+.category {
+    margin-bottom: 50px;
+}
+
+.category-title {
+    font-size: 28px;
+    color: #fff; /* White text for contrast */
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    padding-bottom: 12px;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+.category-title i {
+    margin-right: 15px;
+    font-size: 1.2em;
+}
+
+/* Category Specific Colors */
+.category:nth-of-type(1) .category-title {
+    background-color: #ff7f50; /* Coral */
+}
+
+.category:nth-of-type(2) .category-title {
+    background-color: #87cefa; /* Light Sky Blue */
+}
+
+.category:nth-of-type(3) .category-title {
+    background-color: #98fb98; /* Pale Green */
+}
+
+.category:nth-of-type(4) .category-title {
+    background-color: #dda0dd; /* Plum */
+}
+
+.category-carousel {
+    width: 100%;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    transition: transform 0.35s ease-in-out, box-shadow 0.35s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    margin: 0 10px; /* Add some spacing between cards */
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+.card img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+}
+
+.card-content {
+    padding: 25px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-title {
+    font-size: 20px;
+    color: #2c3e50;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.card-details {
+    font-size: 15px;
+    color: #777;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.view-more {
+    text-align: right;
+    margin-top: 25px;
+}
+
+.view-more a {
+    color: #3498db;
+    text-decoration: none;
+    font-size: 17px;
+    transition: color 0.3s ease;
+    font-weight: 600;
+}
+
+.view-more a:hover {
+    color: #207bb5;
+}
+
+/* Slick Carousel Styles */
+.slick-slide {
+    margin: 0 10px;
+    height: 50%;
+}
+
+.slick-prev,
+.slick-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+    border: none;
+    font-size: 24px;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 50%; /* Make it round */
+    width: 40px; /* Fixed width */
+    height: 40px; /* Fixed height */
+    text-align: center; /* Center the icon */
+    line-height: 30px; /* Vertically center the icon */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+.slick-prev:before,
+.slick-next:before {
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    color: #343a40; /* Dark color for the icon */
+}
+
+.slick-prev:before {
+    content: '\f104'; /* Font Awesome left arrow */
+}
+
+.slick-next:before {
+    content: '\f105'; /* Font Awesome right arrow */
+}
+
+.slick-prev {
+    left: -20px; /* Adjust position */
+}
+
+.slick-next {
+    right: -20px; /* Adjust position */
+}
+
+.slick-prev:hover,
+.slick-next:hover {
+    background: rgba(255, 255, 255, 1); /* Solid white on hover */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .category-title {
+        font-size: 26px;
+    }
+
+    .card-title {
+        font-size: 18px;
+    }
+
+    .card-details {
+        font-size: 14px;
+    }
+
+    .slick-prev {
+        left: -10px;
+    }
+
+    .slick-next {
+        right: -10px;
+    }
+}

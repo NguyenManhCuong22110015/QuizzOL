@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcard App | Study Smarter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/flashcard.css">
+</head>
+<body>
+    <div class="gradient-overlay"></div>
+    <div class="grid-background"></div>
+
+    <!-- Top Bar -->
+    <nav class="navbar top-bar py-3">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="#">
+                <i class="fas fa-brain logo-icon me-2 fs-4"></i>
+                <h5 class="app-logo mb-0">Quiz Online</h5>
+            </a>
+            <div class="d-flex gap-4">
+                <i class="fas fa-cog nav-icon fs-5"></i>
+                <i class="fas fa-expand nav-icon fs-5"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container flex-grow-1 d-flex py-4">
+        <div class="row w-100 justify-content-center">
+            <!-- Left Panel -->
+            <div class="col-lg-8 d-flex flex-column align-items-center">
+                <!-- Info Bar -->
+                <div class="info-bar py-3 px-4 d-flex justify-content-between align-items-center mb-4 w-100">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge rounded-circle d-flex align-items-center justify-content-center badge-learning" style="width: 26px; height: 26px;">0</span>
+                        <span>Đang học</span>
+                    </div>
+                    <div class="d-flex flex-column align-items-center">
+                        <span class="text-white-50 small">1 / 4 Cards</span>
+                        <div class="custom-progress rounded-pill w-100" style="width: 100px;">
+                            <div class="progress-bar" role="progressbar" style="width: 25%"></div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span>Đã thuộc</span>
+                        <span class="badge rounded-circle d-flex align-items-center justify-content-center badge-mastered" style="width: 26px; height: 26px;">0</span>
+                    </div>
+                </div>
+                
+                <!-- Flashcard -->
+                <div id="flashcard" class="flashcard w-100">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front d-flex flex-column justify-content-center align-items-center">
+                            <div class="card-emoji mb-4">🎂</div>
+                            <div class="flashcard-text text-center mb-4">
+                                Ngày sinh bác Hồ
+                            </div>
+                            <div class="flashcard-actions text-center">
+                                Nhấp chuột <i class="fas fa-hand-pointer"></i> hoặc nhấn <span class="key-hint">Space</span> để lật thẻ
+                            </div>
+                        </div>
+                        <div class="flashcard-back d-flex flex-column justify-content-center align-items-center">
+                            <div class="card-emoji mb-4">📅</div>
+                            <div class="flashcard-text text-center">
+                                19 tháng 5 năm 1890
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Navigation -->
+                <div class="d-flex justify-content-between mt-4" style="width: 80%;">
+                    <button class="nav-btn d-flex align-items-center justify-content-center">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="nav-btn d-flex align-items-center justify-content-center">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Right Panel -->
+            <div class="col-lg-4 d-flex flex-column gap-3 mt-4 mt-lg-0">
+                <button class="btn action-btn btn-create text-white py-3 d-flex align-items-center gap-2">
+                    <i class="fas fa-plus"></i> Tạo mới
+                </button>
+                <button class="btn action-btn btn-flip text-white py-3 d-flex align-items-center gap-2" id="flip-btn">
+                    <i class="fas fa-sync-alt"></i> Lật thẻ
+                </button>
+                <button class="btn action-btn btn-save text-white py-3 d-flex align-items-center gap-2">
+                    <i class="fas fa-save"></i> Lưu
+                </button>
+                <button class="btn action-btn btn-delete text-white py-3 d-flex align-items-center gap-2">
+                    <i class="fas fa-trash"></i> Xóa
+                </button>
+                <button class="btn action-btn btn-share text-white py-3 d-flex align-items-center gap-2">
+                    <i class="fas fa-share-alt"></i> Chia sẻ
+                </button>
+
+                <div class="d-flex flex-column gap-2 mt-3">
+                    <button class="btn difficulty-btn btn-hard rounded-3 py-2">Khó</button>
+                    <button class="btn difficulty-btn btn-medium rounded-3 py-2">Vừa</button>
+                    <button class="btn difficulty-btn btn-easy rounded-3 py-2">Dễ</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Bar -->
+    <footer class="bottom-bar py-3 px-4">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="https://placehold.co/40x40/8A2BE2/ffffff?text=NC" alt="User Avatar" class="rounded-circle user-avatar">
+                        <div class="d-flex flex-column">
+                            <span class="fw-semibold">Nguyen Cuong</span>
+                            <span class="small text-white-50">
+                                <i class="fas fa-fire streak-icon"></i> 3 ngày liên tiếp
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 text-md-end mt-3 mt-md-0">
+                    <div class="d-flex align-items-center gap-2 justify-content-md-end">
+                        <i class="fas fa-clock session-icon"></i>
+                        <span id="session-time" class="text-white-50 small">00:05:32</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script>
+        document.getElementById('flashcard').addEventListener('click', function() {
+            this.classList.toggle('flipped');
+        });
+        
+        document.getElementById('flip-btn').addEventListener('click', function() {
+            document.getElementById('flashcard').classList.toggle('flipped');
+        });
+        
+        document.addEventListener('keydown', function(event) {
+            if (event.code === 'Space') {
+                event.preventDefault();
+                document.getElementById('flashcard').classList.toggle('flipped');
+            }
+        });
+    </script>
+</body>
+</html>

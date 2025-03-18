@@ -1,0 +1,231 @@
+:root {
+    --primary-color: #ff6b6b; /* Coral */
+    --secondary-color: #4ecdc4; /* Teal */
+    --success-color: #81b29a; /* Sage Green */
+    --warning-color: #f9d423; /* Sunny Yellow */
+    --danger-color: #e07a5f; /* Dusty Rose */
+    --info-color: #3d405b; /* Deep Indigo */
+    --light-color: #f4f1de; /* Cream */
+    --dark-color: #1b262c; /* Charcoal */
+    --gradient: linear-gradient(to right, #ff9a8b, #ff6b6b); /* Coral Gradient */
+    --shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    --border-radius: 15px;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: var(--gradient);
+    color: var(--dark-color);
+    line-height: 1.7;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    height: 100vh; /* Ensure the body takes up the full viewport height */
+    display: flex;
+    flex-direction: column; /* Stack the content vertically */
+}
+
+.container {
+    display: flex;
+    max-width: 1200px;
+    margin: 20px auto; /* Reduced top/bottom margin */
+    box-shadow: var(--shadow);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    background-color: var(--light-color);
+    flex: 1; /* Allow the container to grow and take up available space */
+}
+
+.left-panel {
+    width: 70%;
+    padding: 30px; /* Reduced padding */
+    background-color: #fff;
+    border-right: 5px solid var(--secondary-color);
+    overflow-y: auto; /* Enable vertical scrolling */
+    height: auto; /* Remove fixed height */
+}
+
+.right-panel {
+    width: 30%;
+    background-color: #f8f9fa;
+    padding: 30px; /* Reduced padding */
+    position: sticky; /* Make it stick */
+    top: 20px; /* Stick below the top margin of the container */
+    height: auto; /* Remove fixed height */
+    overflow-y: auto; /* Enable scrolling if content overflows */
+}
+
+/* Section Header */
+.section-header {
+    background-color: var(--secondary-color);
+    color: var(--light-color);
+    padding: 20px; /* Reduced padding */
+    border-radius: var(--border-radius);
+    margin-bottom: 20px; /* Reduced margin */
+    display: flex;
+    align-items: center;
+    box-shadow: var(--shadow);
+}
+
+.section-header i {
+    margin-right: 20px; /* Reduced margin */
+    font-size: 1.5em; /* Reduced font size */
+    color: var(--warning-color);
+}
+
+.section-header h2 {
+    margin: 0;
+    font-size: 1.8em; /* Reduced font size */
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Question Styles */
+.question {
+    margin-bottom: 20px; /* Reduced margin */
+    padding: 20px; /* Reduced padding */
+    background-color: #fff;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    border: 3px solid transparent;
+    transition: border-color 0.3s ease, transform 0.2s ease;
+}
+
+.question:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-3px);
+}
+
+.question-number {
+    color: var(--primary-color);
+    margin-right: 15px; /* Reduced margin */
+    font-weight: 800;
+    font-size: 1.2em; /* Reduced font size */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Make the question text more prominent */
+.question > span:nth-of-type(2) {
+    font-size: 1.1em; /* Reduced font size */
+    font-weight: 700;
+    color: var(--info-color);
+    display: block;
+    margin-bottom: 15px; /* Reduced margin */
+}
+
+.options {
+    margin-top: 15px; /* Reduced margin */
+}
+
+.options div {
+    margin-bottom: 15px; /* Reduced margin */
+}
+
+.options input[type="radio"] {
+    margin-right: 15px; /* Reduced margin */
+    transform: scale(1.2);
+}
+
+.options label {
+    font-size: 1em; /* Reduced font size */
+    color: var(--dark-color);
+    transition: color 0.3s ease;
+}
+
+.options label:hover {
+    color: var(--primary-color);
+}
+
+/* Right Panel */
+.right-panel {
+    width: 30%;
+    background-color: var(--light-color);
+    padding: 30px; /* Reduced padding */
+    position: sticky;
+    top: 20px; /* Reduced top */
+    height: auto;
+    overflow-y: auto;
+}
+
+.timer {
+    background-color: var(--warning-color);
+    color: var(--dark-color);
+    padding: 20px; /* Reduced padding */
+    border-radius: var(--border-radius);
+    margin-bottom: 20px; /* Reduced margin */
+    box-shadow: var(--shadow);
+}
+
+.timer p {
+    margin: 0;
+    font-size: 1rem; /* Reduced font size */
+    font-weight: 600;
+}
+
+.timer .time {
+    font-size: 1.8em; /* Reduced font size */
+    font-weight: 800;
+    color: var(--info-color);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.submit-button {
+    background: var(--success-color);
+    color: white;
+    padding: 15px 25px; /* Reduced padding */
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 20px; /* Reduced margin */
+    font-size: 1.2rem; /* Reduced font size */
+    font-weight: 700;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: var(--shadow);
+}
+
+.submit-button:hover {
+    background-color: #6a994e;
+    transform: translateY(-3px);
+}
+
+.review-note {
+    font-size: 0.9rem; /* Reduced font size */
+    color: var(--danger-color);
+    margin-bottom: 20px; /* Reduced margin */
+    font-style: italic;
+}
+
+/* Question Grid */
+.question-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px; /* Reduced gap */
+}
+
+.question-grid button {
+    background-color: #fff;
+    border: 3px solid var(--secondary-color);
+    padding: 10px 15px; /* Reduced padding */
+    border-radius: 8px; /* Reduced border radius */
+    cursor: pointer;
+    font-size: 0.9rem; /* Reduced font size */
+    font-weight: 600;
+    color: var(--dark-color);
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.question-grid button:hover {
+    background-color: var(--light-color);
+    color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.question-grid button.completed {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+    color: white;
+}

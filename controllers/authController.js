@@ -105,7 +105,7 @@ export const loginToGoogle = async (req, res) => {
       const currentDate = new Date();
         const expiryDate = new Date(user.subscription_expiry);
         req.session.is_premium = expiryDate > currentDate;
-        console.log('user', user);
+       
       const retUrl = req.session.retUrl || '/';
       delete req.session.retUrl;
        return res.redirect(retUrl);

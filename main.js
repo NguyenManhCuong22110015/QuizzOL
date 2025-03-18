@@ -1,18 +1,24 @@
 import express from 'express';
 import passport from 'passport';
 import session from 'express-session'
+import mysqlSession from 'express-mysql-session';
+
 import { engine } from 'express-handlebars'; 
 import path from 'path';
 import { fileURLToPath } from 'url';
 import quizRoute from './routes/quizRoute.js';
 import authLoginRoute from './routes/authLoginRoute.js';
+import flashCardRoute from './routes/flashCardRoute.js';
+import rankingRoute from './routes/rankingRoute.js';
+import homeRoute from './routes/homeRoute.js';
+
 import './authentication/passport-setup.js';
-
+import  {options} from './utils/db.js'
 import moment from 'moment-timezone';
-
-
+import dotenv from 'dotenv'; 
+dotenv.config();
 const app = express()
-
+app.set('trust proxy', 1);
 
    app.engine('hbs', engine({
     extname : 'hbs',
@@ -92,16 +98,25 @@ const app = express()
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
   app.use(express.static(path.join(__dirname, 'public')));
-  
+  const MySQLStore = mysqlSession(session);
+  const sessionStore = new MySQLStore({
+    ...options,
+    clearExpired: true,               
+    checkExpirationInterval: 900000,  
+    expiration: 86400000              
+  });
   app.use(session({
-      secret: 'Q2VNTVN3QklsQXZTRmFhRHV6ZEtKcHhDdFNldG4xTHdGSzRCWkunSmJ5UT8',
+      secret: process.env.SESSION_SECRET,
       resave: false,
+      store:sessionStore,
       saveUninitialized: true,
       cookie: { 
-        secure: false,
+        secure: process.env.NODE_ENV === 'production', // Automatically true in production
         httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000,
-      
+       maxAge: 24 * 60 * 60 * 1000,
+       domain: process.env.NODE_ENV === 'production' ? process.env.DOMAIN_URL : undefined,
+       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+        
     }
 }));
 app.use(passport.initialize());
@@ -135,8 +150,9 @@ app.use(express.json());
   
 app.use('/quiz', quizRoute);
 app.use('/auth', authLoginRoute);
-
-
+app.use("/flashCard", flashCardRoute);
+app.use("/ranking", rankingRoute);
+app.use("/", homeRoute);
 app.get("/", (req, res) => {
     res.send("Hello word")
 })
