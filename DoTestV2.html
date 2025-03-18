@@ -1,0 +1,444 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TOEIC Test</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff6b6b; /* Coral */
+            --secondary-color: #4ecdc4; /* Teal */
+            --success-color: #81b29a; /* Sage Green */
+            --warning-color: #f9d423; /* Sunny Yellow */
+            --danger-color: #e07a5f; /* Dusty Rose */
+            --info-color: #3d405b; /* Deep Indigo */
+            --light-color: #f4f1de; /* Cream */
+            --dark-color: #1b262c; /* Charcoal */
+            --gradient: linear-gradient(to right, #ff9a8b, #ff6b6b); /* Coral Gradient */
+            --shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            --border-radius: 15px;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--gradient);
+            color: var(--dark-color);
+            line-height: 1.7;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            height: 100vh; /* Ensure the body takes up the full viewport height */
+            display: flex;
+            flex-direction: column; /* Stack the content vertically */
+        }
+
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 20px auto; /* Reduced top/bottom margin */
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            background-color: var(--light-color);
+            flex: 1; /* Allow the container to grow and take up available space */
+        }
+
+        .left-panel {
+            width: 70%;
+            padding: 30px; /* Reduced padding */
+            background-color: #fff;
+            border-right: 5px solid var(--secondary-color);
+            overflow-y: auto; /* Enable vertical scrolling */
+            height: auto; /* Remove fixed height */
+        }
+
+        .right-panel {
+            width: 30%;
+            background-color: #f8f9fa;
+            padding: 30px; /* Reduced padding */
+            position: sticky; /* Make it stick */
+            top: 20px; /* Stick below the top margin of the container */
+            height: auto; /* Remove fixed height */
+            overflow-y: auto; /* Enable scrolling if content overflows */
+        }
+
+        /* Section Header */
+        .section-header {
+            background-color: var(--secondary-color);
+            color: var(--light-color);
+            padding: 20px; /* Reduced padding */
+            border-radius: var(--border-radius);
+            margin-bottom: 20px; /* Reduced margin */
+            display: flex;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+
+        .section-header i {
+            margin-right: 20px; /* Reduced margin */
+            font-size: 1.5em; /* Reduced font size */
+            color: var(--warning-color);
+        }
+
+        .section-header h2 {
+            margin: 0;
+            font-size: 1.8em; /* Reduced font size */
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Question Styles */
+        .question {
+            margin-bottom: 20px; /* Reduced margin */
+            padding: 20px; /* Reduced padding */
+            background-color: #fff;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border: 3px solid transparent;
+            transition: border-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .question:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        .question-number {
+            color: var(--primary-color);
+            margin-right: 15px; /* Reduced margin */
+            font-weight: 800;
+            font-size: 1.2em; /* Reduced font size */
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Make the question text more prominent */
+        .question > span:nth-of-type(2) {
+            font-size: 1.1em; /* Reduced font size */
+            font-weight: 700;
+            color: var(--info-color);
+            display: block;
+            margin-bottom: 15px; /* Reduced margin */
+        }
+
+        .options {
+            margin-top: 15px; /* Reduced margin */
+        }
+
+        .options div {
+            margin-bottom: 15px; /* Reduced margin */
+        }
+
+        .options input[type="radio"] {
+            margin-right: 15px; /* Reduced margin */
+            transform: scale(1.2);
+        }
+
+        .options label {
+            font-size: 1em; /* Reduced font size */
+            color: var(--dark-color);
+            transition: color 0.3s ease;
+        }
+
+        .options label:hover {
+            color: var(--primary-color);
+        }
+
+        /* Right Panel */
+        .right-panel {
+            width: 30%;
+            background-color: var(--light-color);
+            padding: 30px; /* Reduced padding */
+            position: sticky;
+            top: 20px; /* Reduced top */
+            height: auto;
+            overflow-y: auto;
+        }
+
+        .timer {
+            background-color: var(--warning-color);
+            color: var(--dark-color);
+            padding: 20px; /* Reduced padding */
+            border-radius: var(--border-radius);
+            margin-bottom: 20px; /* Reduced margin */
+            box-shadow: var(--shadow);
+        }
+
+        .timer p {
+            margin: 0;
+            font-size: 1rem; /* Reduced font size */
+            font-weight: 600;
+        }
+
+        .timer .time {
+            font-size: 1.8em; /* Reduced font size */
+            font-weight: 800;
+            color: var(--info-color);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .submit-button {
+            background: var(--success-color);
+            color: white;
+            padding: 15px 25px; /* Reduced padding */
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 20px; /* Reduced margin */
+            font-size: 1.2rem; /* Reduced font size */
+            font-weight: 700;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .submit-button:hover {
+            background-color: #6a994e;
+            transform: translateY(-3px);
+        }
+
+        .review-note {
+            font-size: 0.9rem; /* Reduced font size */
+            color: var(--danger-color);
+            margin-bottom: 20px; /* Reduced margin */
+            font-style: italic;
+        }
+
+        /* Question Grid */
+        .question-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px; /* Reduced gap */
+        }
+
+        .question-grid button {
+            background-color: #fff;
+            border: 3px solid var(--secondary-color);
+            padding: 10px 15px; /* Reduced padding */
+            border-radius: 8px; /* Reduced border radius */
+            cursor: pointer;
+            font-size: 0.9rem; /* Reduced font size */
+            font-weight: 600;
+            color: var(--dark-color);
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+        }
+
+        .question-grid button:hover {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .question-grid button.completed {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+            color: white;
+        }
+
+        /* Ensure the footer stays at the bottom */
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <div class="section-header">
+                <i class="fas fa-headphones"></i>
+                <h2>Part 3: Listening</h2>
+            </div>
+
+            <div class="question" id="question-32">
+                <span class="question-number">32</span>
+                <span>What is the woman's problem?</span>
+                <div class="options">
+                    <div><input type="radio" id="q32a" name="q32" value="a" onclick="markCompleted(32)"><label for="q32a">A. A meeting room is occupied.</label></div>
+                    <div><input type="radio" id="q32b" name="q32" value="b" onclick="markCompleted(32)"><label for="q32b">B. Equipment is out of stock.</label></div>
+                    <div><input type="radio" id="q32c" name="q32" value="c" onclick="markCompleted(32)"><label for="q32c">C. Appointment canceled.</label></div>
+                    <div><input type="radio" id="q32d" name="q32" value="d" onclick="markCompleted(32)"><label for="q32d">D. Software not installed.</label></div>
+                </div>
+            </div>
+
+            <div class="question" id="question-33">
+                <span class="question-number">33</span>
+                <span>Why mention system malfunction?</span>
+                <div class="options">
+                    <div><input type="radio" id="q33a" name="q33" value="a" onclick="markCompleted(33)"><label for="q33a">A. Apologize for charge.</label></div>
+                    <div><input type="radio" id="q33b" name="q33" value="b" onclick="markCompleted(33)"><label for="q33b">B. Explain scheduling error.</label></div>
+                    <div><input type="radio" id="q33c" name="q33" value="c" onclick="markCompleted(33)"><label for="q33c">C. Warn of threats.</label></div>
+                    <div><input type="radio" id="q33d" name="q33" value="d" onclick="markCompleted(33)"><label for="q33d">D. Change policy.</label></div>
+                </div>
+            </div>
+
+            <div class="question" id="question-34">
+                <span class="question-number">34</span>
+                <span>What does the man say he will do?</span>
+                <div class="options">
+                    <div><input type="radio" id="q34a" name="q34" value="a" onclick="markCompleted(34)"><label for="q34a">A. Fix computer.</label></div>
+                    <div><input type="radio" id="q34b" name="q34" value="b" onclick="markCompleted(34)"><label for="q34b">B. Provide alternative.</label></div>
+                    <div><input type="radio" id="q34c" name="q34" value="c" onclick="markCompleted(34)"><label for="q34c">C. Attend meeting.</label></div>
+                    <div><input type="radio" id="q34d" name="q34" value="d" onclick="markCompleted(34)"><label for="q34d">D. Check manual.</label></div>
+                </div>
+            </div>
+
+            <div class="question" id="question-35">
+                <span class="question-number">35</span>
+                <span>What does the woman ask about?</span>
+                <div class="options">
+                    <div><input type="radio" id="q35a" name="q35" value="a" onclick="markCompleted(35)"><label for="q35a">A. How to write report.</label></div>
+                    <div><input type="radio" id="q35b" name="q35" value="b" onclick="markCompleted(35)"><label for="q35b">B. Document finished?</label></div>
+                    <div><input type="radio" id="q35c" name="q35" value="c" onclick="markCompleted(35)"><label for="q35c">C. Reserve meeting room?</label></div>
+                    <div><input type="radio" id="q35d" name="q35" value="d" onclick="markCompleted(35)"><label for="q35d">D. Client contacted?</label></div>
+                </div>
+            </div>
+
+            <div class="question" id="question-36">
+                <span class="question-number">36</span>
+                <span>What will the man do?</span>
+                <div class="options">
+                    <div><input type="radio" id="q36a" name="q36" value="a" onclick="markCompleted(36)"><label for="q36a">A. Prioritize request.</label></div>
+                    <div><input type="radio" id="q36b" name="q36" value="b" onclick="markCompleted(36)"><label for="q36b">B. Extend deadline.</label></div>
+                    <div><input type="radio" id="q36c" name="q36" value="c" onclick="markCompleted(36)"><label for="q36c">C. Draft budget.</label></div>
+                    <div><input type="radio" id="q36d" name="q36" value="d" onclick="markCompleted(36)"><label for="q36d">D. Visit office.</label></div>
+                </div>
+            </div>
+
+            <div class="question" id="question-37">
+                <span class="question-number">37</span>
+                <span>What does the woman need?</span>
+                <div class="options">
+                    <div><input type="radio" id="q37a" name="q37" value="a" onclick="markCompleted(37)"><label for="q37a">A. List of clients.</label></div>
+                    <div><input type="radio" id="q37b" name="q37" value="b" onclick="markCompleted(37)"><label for="q37b">B. Sample product.</label></div>
+                    <div><input type="radio" id="q37c" name="q37" value="c" onclick="markCompleted(37)"><label for="q37c">C. Meeting materials.</label></div>
+                    <div><input type="radio" id="q37d" name="q37" value="d" onclick="markCompleted(37)"><label for="q37d">D. Revised itinerary.</label></div>
+                </div>
+            </div>
+
+            <div class="question" id="question-38">
+                <span class="question-number">38</span>
+                <span>What career is she interested in?</span>
+                <div class="options">
+                    <div><input type="radio" id="q38a" name="q38" value="a" onclick="markCompleted(38)"><label for="q38a">A. College professor.</label></div>
+                    <div><input type="radio" id="q38b" name="q38" value="b" onclick="markCompleted(38)"><label for="q38b">B. Web programmer.</label></div>
+                    <div><input type="radio" id="q38c" name="q38" value="c" onclick="markCompleted(38)"><label for="q38c">C. Dental assistant</label></div>
+                </div>
+            </div>
+
+            <!-- Example of a new question card with image -->
+            <div class="question-card" id="question-39">
+                <span class="question-number">39</span>
+                <div class="question-text">What is shown in the picture?</div>
+                <div class="image-placeholder">
+                    <img src="https://placehold.co/600x400?text=Office+Meeting&font=Roboto" alt="A group of people in a modern office setting, gathered around a conference table for a meeting. Some are looking at laptops, while others are engaged in discussion." style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div class="options">
+                    <div><input type="radio" id="q39a" name="q39" value="a" onclick="markCompleted(39)"><label for="q39a">A. People working in office.</label></div>
+                    <div><input type="radio" id="q39b" name="q39" value="b" onclick="markCompleted(39)"><label for="q39b">B. Construction site.</label></div>
+                    <div><input type="radio" id="q39c" name="q39" value="c" onclick="markCompleted(39)"><label for="q39c">C. Landscape with lake.</label></div>
+                    <div><input type="radio" id="q39d" name="q39" value="d" onclick="markCompleted(39)"><label for="q39d">D. Flower in bloom.</label></div>
+                </div>
+            </div>
+
+            <!-- Example of a fill-in-the-blanks question card -->
+            <div class="question-card" id="question-40">
+                <span class="question-number">40</span>
+                <div class="question-text">Fill in the blank: The meeting will be held _____ 9 AM and 11 AM.</div>
+                <div class="options">
+                    <div><label for="q40a">Answer:</label> <input type="text" id="q40a" name="q40" onblur="markCompleted(40)"></div>
+                </div>
+            </div>
+
+            <button class="submit-button">Submit Answers</button>
+        </div>
+
+        <div class="right-panel">
+            <div class="timer">
+                <p>Time Elapsed:</p>
+                <p class="time" id="timer">00:00</p>
+            </div>
+            <button class="submit-button">Submit Answers</button>
+            <p class="review-note">Review before submitting.</p>
+            <p class="review-note">Click number to jump.</p>
+            <div class="section-header">
+                <i class="fas fa-list-ol"></i>
+                <h2>Question Navigation</h2>
+            </div>
+            <div class="question-grid">
+                <button onclick="scrollToQuestion(32)" id="question-button-32">32</button>
+                <button onclick="scrollToQuestion(33)" id="question-button-33">33</button>
+                <button onclick="scrollToQuestion(34)" id="question-button-34">34</button>
+                <button onclick="scrollToQuestion(35)" id="question-button-35">35</button>
+                <button onclick="scrollToQuestion(36)" id="question-button-36">36</button>
+                <button onclick="scrollToQuestion(37)" id="question-button-37">37</button>
+                <button onclick="scrollToQuestion(38)" id="question-button-38">38</button>
+                <button onclick="scrollToQuestion(39)" id="question-button-39">39</button>
+                <button onclick="scrollToQuestion(40)" id="question-button-40">40</button>
+                <button onclick="scrollToQuestion(41)" id="question-button-41">41</button>
+                <button onclick="scrollToQuestion(42)" id="question-button-42">42</button>
+                <button onclick="scrollToQuestion(43)" id="question-button-43">43</button>
+                <button onclick="scrollToQuestion(44)" id="question-button-44">44</button>
+                <button onclick="scrollToQuestion(45)" id="question-button-45">45</button>
+                <button onclick="scrollToQuestion(46)" id="question-button-46">46</button>
+                <button onclick="scrollToQuestion(47)" id="question-button-47">47</button>
+                <button onclick="scrollToQuestion(48)" id="question-button-48">48</button>
+                <button onclick="scrollToQuestion(49)" id="question-button-49">49</button>
+                <button onclick="scrollToQuestion(50)" id="question-button-50">50</button>
+                <button onclick="scrollToQuestion(51)" id="question-button-51">51</button>
+                <button onclick="scrollToQuestion(52)" id="question-button-52">52</button>
+                <button onclick="scrollToQuestion(53)" id="question-button-53">53</button>
+                <button onclick="scrollToQuestion(54)" id="question-button-54">54</button>
+                <button onclick="scrollToQuestion(55)" id="question-button-55">55</button>
+                <button onclick="scrollToQuestion(56)" id="question-button-56">56</button>
+                <button onclick="scrollToQuestion(57)" id="question-button-57">57</button>
+                <button onclick="scrollToQuestion(58)" id="question-button-58">58</button>
+                <button onclick="scrollToQuestion(59)" id="question-button-59">59</button>
+                <button onclick="scrollToQuestion(60)" id="question-button-60">60</button>
+                <button onclick="scrollToQuestion(61)" id="question-button-61">61</button>
+                <button onclick="scrollToQuestion(62)" id="question-button-62">62</button>
+                <button onclick="scrollToQuestion(63)" id="question-button-63">63</button>
+                <button onclick="scrollToQuestion(64)" id="question-button-64">64</button>
+                <button onclick="scrollToQuestion(65)" id="question-button-65">65</button>
+                <button onclick="scrollToQuestion(66)" id="question-button-66">66</button>
+                <button onclick="scrollToQuestion(67)" id="question-button-67">67</button>
+                <button onclick="scrollToQuestion(68)" id="question-button-68">68</button>
+                <button onclick="scrollToQuestion(69)" id="question-button-69">69</button>
+                <button onclick="scrollToQuestion(70)" id="question-button-70">70</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        let seconds = 0;
+        let minutes = 0;
+
+        function updateTimer() {
+            seconds++;
+            if (seconds === 60) {
+                seconds = 0;
+                minutes++;
+            }
+
+            const formattedSeconds = String(seconds).padStart(2, '0');
+            const formattedMinutes = String(minutes).padStart(2, '0');
+
+            document.getElementById('timer').innerText = `${formattedMinutes}:${formattedSeconds}`;
+        }
+
+        setInterval(updateTimer, 1000);
+
+        function scrollToQuestion(questionNumber) {
+            const questionElement = document.getElementById(`question-${questionNumber}`);
+            if (questionElement) {
+                questionElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function markCompleted(questionNumber) {
+            const button = document.getElementById(`question-button-${questionNumber}`);
+            if (button) {
+                button.classList.add('completed');
+            }
+        }
+    </script>
+</body>
+</html>
