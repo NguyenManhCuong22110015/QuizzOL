@@ -1,0 +1,1764 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Slide</title>
+    <style>
+      :root {
+        --primary-color: #264653;
+        --hover-color: #2a9d8f;
+        --text-color: #ffffff;
+        --card-bg: rgba(255, 255, 255, 0.1);
+        --border-color: #e0e0e0;
+        --input-bg: #f8f9fa;
+      }
+
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: var(--primary-color);
+        margin: 0;
+        padding: 20px;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      h1 {
+        color: var(--text-color);
+        text-align: center;
+        margin-bottom: 40px;
+        font-size: 2.5em;
+      }
+
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        padding: 20px;
+      }
+
+      .card {
+        background: var(--card-bg);
+        border-radius: 15px;
+        padding: 20px;
+        cursor: pointer;
+        transition: transform 0.3s ease, background-color 0.3s ease;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        background-color: var(--hover-color);
+      }
+
+      .card-content {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .icon {
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.3s ease;
+      }
+
+      .card:hover .icon {
+        transform: scale(1.1);
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .icon img {
+        width: 24px;
+        height: 24px;
+      }
+
+      .text-content h3 {
+        color: var(--text-color);
+        margin: 0;
+        font-size: 1.2em;
+      }
+
+      .text-content p {
+        color: rgba(255, 255, 255, 0.7);
+        margin: 5px 0 0;
+        font-size: 0.9em;
+      }
+
+      .new-badge {
+        background: #ff4757;
+        color: white;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 0.7em;
+        margin-left: 10px;
+      }
+
+      /* Updated Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        justify-content: center;
+        align-items: center;
+        z-index: 1001;
+      }
+
+      .modal-content {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 1200px;
+        display: flex;
+        gap: 30px;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      .media-section {
+        background-color: #4a4a5e;
+        border-radius: 8px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 400px;
+        width: 100%;
+        max-width: 600px;
+        margin-bottom: 20px;
+      }
+
+      .media-preview {
+        width: 100%;
+        height: 300px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .media-preview img,
+      .media-preview video {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+
+      .media-preview audio {
+        width: 100%;
+      }
+
+      .media-upload-btn {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 6px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 10px 0;
+        width: 100%;
+        justify-content: center;
+      }
+
+      .media-upload-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      #media-upload-input {
+        display: none;
+      }
+
+      .form-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .input-group label {
+        font-weight: bold;
+        color: #333;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .generate-btn {
+        background: none;
+        border: none;
+        color: var(--hover-color);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.9em;
+      }
+
+      .input-field {
+        padding: 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 1em;
+        background: var(--input-bg);
+      }
+
+      .input-field::placeholder {
+        color: #999;
+      }
+
+      .dropdown-select {
+        padding: 12px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background: var(--input-bg);
+        cursor: pointer;
+      }
+
+      .action-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .action-btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .duplicate-btn {
+        background: var(--input-bg);
+        color: #333;
+      }
+
+      .delete-btn {
+        background: #ffebee;
+        color: #f44336;
+      }
+
+      .ai-complete-btn {
+        width: 100%;
+        background: #ffd700;
+        color: #333;
+        padding: 15px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 20px;
+      }
+
+      .close-btn {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        background: none;
+        border: none;
+        font-size: 1.5em;
+        cursor: pointer;
+        color: #666;
+      }
+
+      /* Add button styles */
+      .add-button {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        width: 60px;
+        height: 60px;
+        background-color: var(--hover-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease, background-color 0.3s ease;
+        z-index: 1000;
+      }
+
+      .add-button:hover {
+        transform: scale(1.1);
+        background-color: #38b2a0;
+      }
+
+      .add-button span {
+        color: white;
+        font-size: 2.5em;
+        font-weight: 300;
+        line-height: 1;
+      }
+
+      /* Tooltip for add button */
+      .add-button::before {
+        content: "Add Slide";
+        position: absolute;
+        top: -40px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+      }
+
+      .add-button:hover::before {
+        opacity: 1;
+      }
+
+      /* Checkbox specific styles */
+      .question-header {
+        background-color: #00bcd4;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 8px 8px 0 0;
+        font-weight: 500;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .question-container {
+        background-color: #fff;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .question-content {
+        padding: 15px;
+      }
+
+      .question-content .answer-input {
+        width: 100%;
+        min-width: 500px;
+        resize: vertical;
+      }
+
+      .answer-list {
+        background-color: #f5f5f5;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 15px 0;
+      }
+
+      .answer-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .answer-icon {
+        width: 24px;
+        height: 24px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        flex-shrink: 0;
+      }
+
+      .correct-icon {
+        background-color: #4caf50;
+      }
+
+      .incorrect-icon {
+        background-color: #f44336;
+      }
+
+      .answer-input {
+        flex-grow: 1;
+        padding: 10px;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      .fun-fact-section {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 20px;
+      }
+
+      .generate-ai-btn {
+        color: #00bcd4;
+        background: none;
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      .settings-dropdown {
+        background-color: #2d3436;
+        color: white;
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      .autocomplete-btn {
+        background-color: #ffd700;
+        color: #333;
+        border: none;
+        padding: 12px;
+        border-radius: 6px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        margin: 20px 0;
+      }
+
+      .action-btn {
+        width: 100%;
+        padding: 12px;
+        border-radius: 6px;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        cursor: pointer;
+        margin-bottom: 10px;
+      }
+
+      .duplicate-btn {
+        background-color: #2d3436;
+        color: white;
+      }
+
+      .delete-btn {
+        background-color: rgba(244, 67, 54, 0.1);
+        color: #f44336;
+      }
+
+      /* Modal content for checkboxes */
+      .modal-content[data-type="checkboxes"] {
+        background-color: #1e272e;
+        color: white;
+      }
+
+      .modal-content[data-type="checkboxes"] .form-section {
+        background-color: transparent;
+      }
+
+      /* Reorder specific styles */
+      .order-number {
+        width: 24px;
+        height: 24px;
+        background-color: #00bcd4;
+        color: white;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      .move-btn {
+        background: none;
+        border: none;
+        color: #666;
+        cursor: move;
+        padding: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .move-btn:hover {
+        color: #333;
+      }
+
+      #reorder-template .answer-item {
+        background: white;
+        padding: 10px;
+        border-radius: 4px;
+        border: 1px solid #e0e0e0;
+        margin-bottom: 8px;
+        cursor: move;
+      }
+
+      #reorder-template .answer-item:hover {
+        background: #f8f9fa;
+      }
+
+      #reorder-template .answer-input {
+        border: none;
+        background: none;
+        flex: 1;
+      }
+
+      #reorder-template .answer-input:focus {
+        outline: none;
+      }
+
+      /* Range specific styles */
+      .range-input-group {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .unit-btn {
+        background: #00bcd4;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+      }
+
+      .range-section {
+        background: #f5f5f5;
+        border-radius: 8px;
+        padding: 20px;
+      }
+
+      .range-header {
+        margin-bottom: 15px;
+      }
+
+      .range-header h4 {
+        margin: 0;
+        color: #333;
+        font-size: 16px;
+      }
+
+      .range-inputs {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 20px;
+      }
+
+      .range-input-container {
+        flex: 1;
+      }
+
+      .range-input-container label {
+        display: block;
+        margin-bottom: 5px;
+        color: #666;
+        font-size: 14px;
+      }
+
+      .range-number-input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      .range-slider-container {
+        padding: 10px 0;
+      }
+
+      .range-slider {
+        width: 100%;
+        height: 4px;
+        background: #ddd;
+        outline: none;
+        -webkit-appearance: none;
+      }
+
+      .range-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        background: #00bcd4;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+
+      .range-slider::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        background: #00bcd4;
+        border-radius: 50%;
+        cursor: pointer;
+        border: none;
+      }
+
+      .range-checkbox {
+        margin-top: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .range-checkbox label {
+        color: #666;
+        font-size: 14px;
+      }
+
+      #range-template .answer-list {
+        background: white;
+      }
+
+      /* Pinpoint specific styles */
+      .pinpoint-media-container {
+        position: relative;
+        width: 100%;
+        height: 400px;
+        background: #2d3436;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 20px;
+      }
+
+      .pinpoint-placeholder {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      .pinpoint-placeholder i {
+        font-size: 48px;
+        margin-bottom: 10px;
+      }
+
+      .pinpoint-placeholder p {
+        margin: 0;
+        font-size: 16px;
+      }
+
+      .pinpoint-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        cursor: crosshair;
+      }
+
+      .pinpoint-marker {
+        position: absolute;
+        transform: translate(-50%, -100%);
+        color: #00bcd4;
+        font-size: 30px;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+      }
+
+      .pinpoint-buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+      }
+
+      .pinpoint-instructions {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 15px;
+        background: rgba(0, 188, 212, 0.1);
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+
+      .pinpoint-instructions i {
+        color: #00bcd4;
+        font-size: 20px;
+        margin-top: 2px;
+      }
+
+      .pinpoint-instructions p {
+        margin: 0;
+        color: #333;
+        font-size: 14px;
+        line-height: 1.4;
+      }
+
+      .pinpoint-settings {
+        background: #f5f5f5;
+        border-radius: 8px;
+        padding: 20px;
+      }
+
+      .setting-group {
+        margin-bottom: 15px;
+      }
+
+      .setting-group:last-child {
+        margin-bottom: 0;
+      }
+
+      .setting-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 500;
+        font-size: 14px;
+      }
+
+      .color-options {
+        display: flex;
+        gap: 10px;
+      }
+
+      .color-btn {
+        width: 30px;
+        height: 30px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+
+      .color-btn.active {
+        transform: scale(1.1);
+        box-shadow: 0 0 0 2px white, 0 0 0 4px currentColor;
+      }
+
+      .size-slider-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .size-slider {
+        flex: 1;
+        height: 4px;
+        background: #ddd;
+        outline: none;
+        -webkit-appearance: none;
+      }
+
+      .size-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 16px;
+        height: 16px;
+        background: #00bcd4;
+        border-radius: 50%;
+        cursor: pointer;
+      }
+
+      .size-value {
+        min-width: 50px;
+        color: #666;
+        font-size: 14px;
+      }
+
+      .accuracy-select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background: white;
+        font-size: 14px;
+      }
+
+      /* Type answer specific styles */
+      .type-answer-settings {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+      }
+
+      .alternative-answers {
+        margin-bottom: 10px;
+      }
+
+      .alternative-answers .answer-item {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+
+      .remove-answer {
+        background: none;
+        border: none;
+        color: #f44336;
+        cursor: pointer;
+        padding: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+      }
+
+      .add-answer-btn {
+        background: none;
+        border: 1px dashed #00bcd4;
+        color: #00bcd4;
+        padding: 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 14px;
+        margin-top: 10px;
+      }
+
+      .add-answer-btn:hover {
+        background: rgba(0, 188, 212, 0.1);
+      }
+
+      .validation-options,
+      .hint-settings {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .validation-option,
+      .hint-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .validation-option label,
+      .hint-option label {
+        font-size: 14px;
+        color: #666;
+        margin: 0;
+      }
+
+      .hint-option {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .hint-input {
+        width: 60px;
+        padding: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      #type-answer-template .setting-group {
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #eee;
+      }
+
+      #type-answer-template .setting-group:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+      }
+
+      #type-answer-template .setting-group > label {
+        color: #333;
+        font-weight: 500;
+        margin-bottom: 10px;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Add Slide</h1>
+      <div class="grid-container">
+        <!-- True/False Card -->
+        <div class="card" onclick="openModal('true-false')">
+          <div class="card-content">
+            <div class="icon">
+              <i
+                class="fas fa-check-circle"
+                style="color: #4caf50; font-size: 24px"
+              ></i>
+            </div>
+            <div class="text-content">
+              <h3>True/False</h3>
+              <p>Câu hỏi đúng/sai</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Single Choice Card -->
+        <div class="card" onclick="openModal('single-choice')">
+          <div class="card-content">
+            <div class="icon">
+              <i
+                class="fas fa-dot-circle"
+                style="color: #2196f3; font-size: 24px"
+              ></i>
+            </div>
+            <div class="text-content">
+              <h3>Single Choice</h3>
+              <p>Chọn 1 đáp án đúng nhất</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Multiple Choice Card -->
+        <div class="card" onclick="openModal('multiple-choice')">
+          <div class="card-content">
+            <div class="icon">
+              <i
+                class="fas fa-check-square"
+                style="color: #ff9800; font-size: 24px"
+              ></i>
+            </div>
+            <div class="text-content">
+              <h3>Multiple Choice</h3>
+              <p>Chọn nhiều đáp án đúng</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fill in the blank Card -->
+        <div class="card" onclick="openModal('fill-blank')">
+          <div class="card-content">
+            <div class="icon">
+              <i
+                class="fas fa-pencil-alt"
+                style="color: #9c27b0; font-size: 24px"
+              ></i>
+            </div>
+            <div class="text-content">
+              <h3>Fill in the blank</h3>
+              <p>Điền từ vào chỗ trống</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add Button -->
+    <div class="add-button" onclick="handleAddSlide()">
+      <span>+</span>
+    </div>
+
+    <!-- Modal Templates -->
+    <div id="modal" class="modal">
+      <!-- True/False Template -->
+      <div id="true-false-template" class="modal-content">
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+
+        <div class="media-section">
+          <div class="media-preview" id="media-preview-true-false">
+            <i
+              class="fas fa-cloud-upload-alt"
+              style="font-size: 48px; color: rgba(255, 255, 255, 0.5)"
+            ></i>
+          </div>
+          <input
+            type="file"
+            id="media-upload-input-true-false"
+            accept="image/*,video/*,audio/*"
+          />
+          <button
+            class="media-upload-btn"
+            onclick="document.getElementById('media-upload-input-true-false').click()"
+          >
+            <i class="fas fa-plus"></i>
+            Add media
+          </button>
+          <button class="media-upload-btn">
+            <i class="fas fa-robot"></i>
+            Generate with AI
+          </button>
+        </div>
+
+        <div class="form-section">
+          <div class="question-container">
+            <div class="question-header">
+              Question
+              <button class="generate-ai-btn">
+                <i class="fas fa-robot"></i>
+                Generate with AI
+              </button>
+            </div>
+            <div class="question-content">
+              <textarea
+                class="answer-input"
+                placeholder="Enter your True/False question here..."
+                rows="3"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="answer-list">
+            <div class="question-header" style="margin: -15px -15px 15px -15px">
+              Select the correct answer
+            </div>
+
+            <div class="answer-item">
+              <input
+                type="radio"
+                name="true-false"
+                value="true"
+                id="true-option"
+              />
+              <label for="true-option">True</label>
+            </div>
+
+            <div class="answer-item">
+              <input
+                type="radio"
+                name="true-false"
+                value="false"
+                id="false-option"
+              />
+              <label for="false-option">False</label>
+            </div>
+          </div>
+
+          <div class="fun-fact-section">
+            <div class="question-header" style="margin: -15px -15px 15px -15px">
+              Fun fact
+              <button class="generate-ai-btn">
+                <i class="fas fa-robot"></i>
+                Generate with AI
+              </button>
+            </div>
+            <textarea
+              class="answer-input"
+              placeholder="Optional"
+              rows="4"
+            ></textarea>
+          </div>
+
+          <select class="settings-dropdown">
+            <option>Question voice: English (Charles)</option>
+          </select>
+
+          <select class="settings-dropdown">
+            <option>Time: Normal time (15s)</option>
+          </select>
+
+          <button class="action-btn duplicate-btn">
+            <i class="fas fa-copy"></i>
+            Duplicate slide
+          </button>
+
+          <button class="action-btn delete-btn">
+            <i class="fas fa-trash"></i>
+            Delete slide
+          </button>
+        </div>
+      </div>
+
+      <!-- Single Choice Template -->
+      <div id="single-choice-template" class="modal-content">
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+
+        <div class="media-section">
+          <div class="media-preview" id="media-preview-single-choice">
+            <i
+              class="fas fa-cloud-upload-alt"
+              style="font-size: 48px; color: rgba(255, 255, 255, 0.5)"
+            ></i>
+          </div>
+          <input
+            type="file"
+            id="media-upload-input-single-choice"
+            accept="image/*,video/*,audio/*"
+          />
+          <button
+            class="media-upload-btn"
+            onclick="document.getElementById('media-upload-input-single-choice').click()"
+          >
+            <i class="fas fa-plus"></i>
+            Add media
+          </button>
+          <button class="media-upload-btn">
+            <i class="fas fa-robot"></i>
+            Generate with AI
+          </button>
+        </div>
+
+        <div class="form-section">
+          <div class="question-container">
+            <div class="question-header">
+              Question
+              <button class="generate-ai-btn">
+                <i class="fas fa-robot"></i>
+                Generate with AI
+              </button>
+            </div>
+            <div class="question-content">
+              <textarea
+                class="answer-input"
+                placeholder="Enter your question here..."
+                rows="3"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="answer-list">
+            <div class="question-header" style="margin: -15px -15px 15px -15px">
+              Add answers (select one correct answer)
+              <button class="generate-ai-btn">
+                <i class="fas fa-robot"></i>
+                Generate with AI
+              </button>
+            </div>
+
+            <div class="answer-item">
+              <input type="radio" name="single-choice" checked />
+              <input
+                type="text"
+                class="answer-input"
+                placeholder="Correct answer"
+              />
+            </div>
+
+            <div class="answer-item">
+              <input type="radio" name="single-choice" />
+              <input
+                type="text"
+                class="answer-input"
+                placeholder="Wrong answer"
+              />
+            </div>
+
+            <div class="answer-item">
+              <input type="radio" name="single-choice" />
+              <input
+                type="text"
+                class="answer-input"
+                placeholder="Wrong answer"
+              />
+            </div>
+
+            <div class="answer-item">
+              <input type="radio" name="single-choice" />
+              <input
+                type="text"
+                class="answer-input"
+                placeholder="Wrong answer"
+              />
+            </div>
+          </div>
+
+          <div class="fun-fact-section">
+            <div class="question-header" style="margin: -15px -15px 15px -15px">
+              Fun fact
+              <button class="generate-ai-btn">
+                <i class="fas fa-robot"></i>
+                Generate with AI
+              </button>
+            </div>
+            <textarea
+              class="answer-input"
+              placeholder="Optional"
+              rows="4"
+            ></textarea>
+          </div>
+
+          <select class="settings-dropdown">
+            <option>Question voice: English (Charles)</option>
+          </select>
+
+          <select class="settings-dropdown">
+            <option>Time: Normal time (20s)</option>
+          </select>
+
+          <button class="action-btn duplicate-btn">
+            <i class="fas fa-copy"></i>
+            Duplicate slide
+          </button>
+
+          <button class="action-btn delete-btn">
+            <i class="fas fa-trash"></i>
+            Delete slide
+          </button>
+        </div>
+      </div>
+
+      <!-- Multiple Choice Template -->
+      <div id="multiple-choice-template" class="modal-content">
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+
+        <div class="media-section">
+          <div class="media-preview" id="media-preview-multiple-choice">
+            <i
+              class="fas fa-cloud-upload-alt"
+              style="font-size: 48px; color: rgba(255, 255, 255, 0.5)"
+            ></i>
+          </div>
+          <input
+            type="file"
+            id="media-upload-input-multiple-choice"
+            accept="image/*,video/*,audio/*"
+          />
+          <button
+            class="media-upload-btn"
+            onclick="document.getElementById('media-upload-input-multiple-choice').click()"
+          >
+            <i class="fas fa-plus"></i>
+            Add media
+          </button>
+          <button class="media-upload-btn">
+            <i class="fas fa-robot"></i>
+            Generate with AI
+          </button>
+        </div>
+
+        <div class="form-section">
+          <div class="question-container">
+            <div class="question-header">
+              Question
+              <button class="generate-ai-btn">
+                <i class="fas fa-robot"></i>
+                Generate with AI
+              </button>
+            </div>
+            <div class="question-content">
+              <textarea
+                class="answer-input"
+                placeholder="Enter your question here..."
+                rows="3"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="answer-list">
+            <div class="question-header" style="margin: -15px -15px 15px -15px">
+              Add answers (select all correct answers)
+              <button class="generate-ai-btn">
+                <i class="fas fa-robot"></i>
+                Generate with AI
+              </button>
+            </div>
+
+            <div class="answer-item">
+              <div class="answer-icon correct-icon">
+                <i class="fas fa-check"></i>
+              </div>
+              <input
+                type="text"
+                class="answer-input"
+                placeholder="Correct answer"
+              />
+            </div>
+
+            <div class="answer-item">
+              <div class="answer-icon incorrect-icon">
+                <i class="fas fa-times"></i>
+              </div>
+              <input
+                type="text"
+                class="answer-input"
+                placeholder="Wrong answer"
+              />
+            </div>
+
+            <div class="answer-item">
+              <div class="answer-icon correct-icon">
+                <i class="fas fa-check"></i>
+              </div>
+              <input
+                type="text"
+                class="answer-input"
+                placeholder="Correct answer"
+              />
+            </div>
+
+            <div class="answer-item">
+              <div class="answer-icon incorrect-icon">
+                <i class="fas fa-times"></i>
+              </div>
+              <input
+                type="text"
+                class="answer-input"
+                placeholder="Wrong answer"
+              />
+            </div>
+          </div>
+
+          <div class="fun-fact-section">
+            <div class="question-header" style="margin: -15px -15px 15px -15px">
+              Fun fact
+              <button class="generate-ai-btn">
+                <i class="fas fa-robot"></i>
+                Generate with AI
+              </button>
+            </div>
+            <textarea
+              class="answer-input"
+              placeholder="Optional"
+              rows="4"
+            ></textarea>
+          </div>
+
+          <select class="settings-dropdown">
+            <option>Question voice: English (Charles)</option>
+          </select>
+
+          <select class="settings-dropdown">
+            <option>Time: Normal time (25s)</option>
+          </select>
+
+          <button class="action-btn duplicate-btn">
+            <i class="fas fa-copy"></i>
+            Duplicate slide
+          </button>
+
+          <button class="action-btn delete-btn">
+            <i class="fas fa-trash"></i>
+            Delete slide
+          </button>
+        </div>
+      </div>
+
+      <!-- Fill in the blank Template -->
+      <div id="fill-blank-template" class="modal-content">
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+
+        <div class="media-section">
+          <div class="media-preview" id="media-preview-fill-blank">
+            <i
+              class="fas fa-cloud-upload-alt"
+              style="font-size: 48px; color: rgba(255, 255, 255, 0.5)"
+            ></i>
+          </div>
+          <input
+            type="file"
+            id="media-upload-input-fill-blank"
+            accept="image/*,video/*,audio/*"
+          />
+          <button
+            class="media-upload-btn"
+            onclick="document.getElementById('media-upload-input-fill-blank').click()"
+          >
+            <i class="fas fa-plus"></i>
+            Add media
+          </button>
+          <button class="media-upload-btn">
+            <i class="fas fa-robot"></i>
+            Generate with AI
+          </button>
+        </div>
+
+        <div class="form-section">
+          <div class="question-container">
+            <div class="question-header">
+              Question
+              <button class="generate-ai-btn">
+                <i class="fas fa-robot"></i>
+                Generate with AI
+              </button>
+            </div>
+            <div class="question-content">
+              <textarea
+                class="answer-input"
+                placeholder="Enter your question with ___ for blanks..."
+                rows="3"
+              ></textarea>
+              <p class="hint-text">
+                Use ___ (three underscores) to mark where the blank should
+                appear
+              </p>
+            </div>
+          </div>
+
+          <div class="answer-list">
+            <div class="question-header" style="margin: -15px -15px 15px -15px">
+              Correct answer(s)
+              <button class="generate-ai-btn">
+                <i class="fas fa-robot"></i>
+                Generate with AI
+              </button>
+            </div>
+
+            <div class="type-answer-settings">
+              <div class="setting-group">
+                <label>Main answer:</label>
+                <input
+                  type="text"
+                  class="answer-input"
+                  placeholder="Enter the correct word/phrase"
+                />
+              </div>
+
+              <div class="setting-group">
+                <label>Alternative answers:</label>
+                <div class="alternative-answers">
+                  <div class="answer-item">
+                    <input
+                      type="text"
+                      class="answer-input"
+                      placeholder="Alternative correct answer"
+                    />
+                    <button class="remove-answer">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </div>
+                </div>
+                <button class="add-answer-btn">
+                  <i class="fas fa-plus"></i>
+                  Add another accepted answer
+                </button>
+              </div>
+
+              <div class="setting-group">
+                <label>Answer validation:</label>
+                <div class="validation-options">
+                  <div class="validation-option">
+                    <input type="checkbox" id="case-sensitive" />
+                    <label for="case-sensitive">Case sensitive</label>
+                  </div>
+                  <div class="validation-option">
+                    <input type="checkbox" id="ignore-punctuation" checked />
+                    <label for="ignore-punctuation">Ignore punctuation</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fun-fact-section">
+            <div class="question-header" style="margin: -15px -15px 15px -15px">
+              Fun fact
+              <button class="generate-ai-btn">
+                <i class="fas fa-robot"></i>
+                Generate with AI
+              </button>
+            </div>
+            <textarea
+              class="answer-input"
+              placeholder="Optional"
+              rows="4"
+            ></textarea>
+          </div>
+
+          <select class="settings-dropdown">
+            <option>Question voice: English (Charles)</option>
+          </select>
+
+          <select class="settings-dropdown">
+            <option>Time: Normal time (20s)</option>
+          </select>
+
+          <button class="action-btn duplicate-btn">
+            <i class="fas fa-copy"></i>
+            Duplicate slide
+          </button>
+
+          <button class="action-btn delete-btn">
+            <i class="fas fa-trash"></i>
+            Delete slide
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function openModal(type) {
+        const modal = document.getElementById("modal");
+        // Ẩn tất cả templates
+        document.querySelectorAll(".modal-content").forEach((content) => {
+          content.style.display = "none";
+        });
+
+        // Hiển thị template tương ứng
+        const template = document.getElementById(`${type}-template`);
+        if (template) {
+          template.style.display = "flex";
+          modal.style.display = "flex";
+
+          // Reset media preview khi mở modal mới
+          const mediaPreview = template.querySelector(".media-preview");
+          if (mediaPreview) {
+            mediaPreview.innerHTML =
+              '<i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: rgba(255,255,255,0.5);"></i>';
+          }
+
+          // Khởi tạo chức năng upload media
+          initializeMediaUpload();
+
+          if (type === "reorder") {
+            initializeDragAndDrop();
+          } else if (type === "range") {
+            initializeRangeSlider();
+          } else if (type === "pinpoint") {
+            initializePinpoint();
+          } else if (type === "type-answer") {
+            initializeTypeAnswer();
+          }
+        }
+      }
+
+      function closeModal() {
+        const modal = document.getElementById("modal");
+        modal.style.display = "none";
+      }
+
+      window.onclick = function (event) {
+        const modal = document.getElementById("modal");
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+
+      function handleAddSlide() {
+        console.log("Adding new slide...");
+      }
+
+      // Thêm chức năng kéo thả để sắp xếp
+      function initializeDragAndDrop() {
+        const answerList = document.querySelector(
+          "#reorder-template .answer-list"
+        );
+        const items = answerList.querySelectorAll(".answer-item");
+
+        items.forEach((item) => {
+          item.draggable = true;
+
+          item.addEventListener("dragstart", () => {
+            item.classList.add("dragging");
+          });
+
+          item.addEventListener("dragend", () => {
+            item.classList.remove("dragging");
+            updateOrderNumbers();
+          });
+        });
+
+        answerList.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          const draggingItem = answerList.querySelector(".dragging");
+          const siblings = [
+            ...answerList.querySelectorAll(".answer-item:not(.dragging)"),
+          ];
+
+          const nextSibling = siblings.find((sibling) => {
+            const box = sibling.getBoundingClientRect();
+            const offset = e.clientY - box.top - box.height / 2;
+            return offset < 0;
+          });
+
+          answerList.insertBefore(draggingItem, nextSibling);
+        });
+      }
+
+      function updateOrderNumbers() {
+        const items = document.querySelectorAll(
+          "#reorder-template .answer-item"
+        );
+        items.forEach((item, index) => {
+          const orderNumber = item.querySelector(".order-number");
+          orderNumber.textContent = `${index + 1}.`;
+        });
+      }
+
+      // Thêm chức năng cho range slider
+      function initializeRangeSlider() {
+        const slider = document.querySelector("#range-template .range-slider");
+        const minInput = document.querySelector(
+          '#range-template .range-number-input[value="0"]'
+        );
+        const maxInput = document.querySelector(
+          '#range-template .range-number-input[value="50"]'
+        );
+
+        // Cập nhật slider khi thay đổi giá trị min/max
+        minInput.addEventListener("change", () => {
+          slider.min = minInput.value;
+          slider.value = Math.max(slider.value, minInput.value);
+        });
+
+        maxInput.addEventListener("change", () => {
+          slider.max = maxInput.value;
+          slider.value = Math.min(slider.value, maxInput.value);
+        });
+
+        // Cập nhật visual của slider
+        slider.addEventListener("input", () => {
+          const value =
+            ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
+          slider.style.background = `linear-gradient(to right, #00BCD4 0%, #00BCD4 ${value}%, #ddd ${value}%, #ddd 100%)`;
+        });
+      }
+
+      // Thêm chức năng cho pinpoint
+      function initializePinpoint() {
+        const container = document.querySelector(".pinpoint-media-container");
+        const overlay = document.querySelector(".pinpoint-overlay");
+        const marker = document.querySelector(".pinpoint-marker");
+        const sizeSlider = document.querySelector(".size-slider");
+        const sizeValue = document.querySelector(".size-value");
+        const colorButtons = document.querySelectorAll(".color-btn");
+
+        // Xử lý click để đặt marker
+        overlay.addEventListener("click", (e) => {
+          const rect = container.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+
+          marker.style.left = x + "px";
+          marker.style.top = y + "px";
+          overlay.style.display = "block";
+        });
+
+        // Xử lý thay đổi kích thước marker
+        sizeSlider.addEventListener("input", () => {
+          marker.style.fontSize = sizeSlider.value + "px";
+          sizeValue.textContent = sizeSlider.value + "px";
+        });
+
+        // Xử lý thay đổi màu marker
+        colorButtons.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            colorButtons.forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+            marker.style.color = btn.style.backgroundColor;
+          });
+        });
+      }
+
+      // Thêm chức năng cho type answer
+      function initializeTypeAnswer() {
+        const addAnswerBtn = document.querySelector(".add-answer-btn");
+        const alternativeAnswers = document.querySelector(
+          ".alternative-answers"
+        );
+
+        // Xử lý thêm câu trả lời thay thế
+        addAnswerBtn.addEventListener("click", () => {
+          const newAnswer = document.createElement("div");
+          newAnswer.className = "answer-item";
+          newAnswer.innerHTML = `
+                    <input type="text" class="answer-input" placeholder="Optional">
+                    <button class="remove-answer">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+          alternativeAnswers.appendChild(newAnswer);
+
+          // Thêm sự kiện xóa cho nút mới
+          const removeBtn = newAnswer.querySelector(".remove-answer");
+          removeBtn.addEventListener("click", () => {
+            newAnswer.remove();
+          });
+        });
+
+        // Xử lý xóa câu trả lời thay thế
+        document.querySelectorAll(".remove-answer").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            btn.closest(".answer-item").remove();
+          });
+        });
+
+        // Xử lý thay đổi điểm sau gợi ý
+        const hintInput = document.querySelector(".hint-input");
+        hintInput.addEventListener("input", () => {
+          if (hintInput.value < 0) hintInput.value = 0;
+          if (hintInput.value > 100) hintInput.value = 100;
+        });
+      }
+
+      // Thêm chức năng upload media
+      function initializeMediaUpload() {
+        const templates = [
+          "true-false",
+          "single-choice",
+          "multiple-choice",
+          "fill-blank",
+        ];
+
+        templates.forEach((template) => {
+          const mediaInput = document.getElementById(
+            `media-upload-input-${template}`
+          );
+          const mediaPreview = document.getElementById(
+            `media-preview-${template}`
+          );
+
+          if (mediaInput && mediaPreview) {
+            mediaInput.addEventListener("change", function (e) {
+              const file = e.target.files[0];
+              if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                  mediaPreview.innerHTML = "";
+                  if (file.type.startsWith("image/")) {
+                    const img = document.createElement("img");
+                    img.src = e.target.result;
+                    mediaPreview.appendChild(img);
+                  } else if (file.type.startsWith("video/")) {
+                    const video = document.createElement("video");
+                    video.src = e.target.result;
+                    video.controls = true;
+                    mediaPreview.appendChild(video);
+                  } else if (file.type.startsWith("audio/")) {
+                    const audio = document.createElement("audio");
+                    audio.src = e.target.result;
+                    audio.controls = true;
+                    mediaPreview.appendChild(audio);
+                  }
+                };
+                reader.readAsDataURL(file);
+              }
+            });
+          }
+        });
+      }
+    </script>
+
+    <!-- Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+  </body>
+</html>
