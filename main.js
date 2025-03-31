@@ -11,9 +11,9 @@ import authLoginRoute from './routes/authLoginRoute.js';
 import flashCardRoute from './routes/flashCardRoute.js';
 import rankingRoute from './routes/rankingRoute.js';
 import homeRoute from './routes/homeRoute.js';
-
+import userRoute from './routes/userRoute.js'
 import './authentication/passport-setup.js';
-import  {options} from './utils/db.js'
+import  {options} from './configs/db.js';
 import moment from 'moment-timezone';
 import dotenv from 'dotenv'; 
 dotenv.config();
@@ -153,6 +153,10 @@ app.use('/auth', authLoginRoute);
 app.use("/flashCard", flashCardRoute);
 app.use("/ranking", rankingRoute);
 app.use("/", homeRoute);
+app.use("/user", userRoute);
+
+
+
 app.get("/", (req, res) => {
     res.send("Hello word")
 })
