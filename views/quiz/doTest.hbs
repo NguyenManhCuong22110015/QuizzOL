@@ -12,108 +12,56 @@
         <div class="left-panel">
             <div class="section-header">
                 <i class="fas fa-headphones"></i>
-                <h2>Part 3: Listening</h2>
+                <h2>{{this.quiz.title}}</h2>
             </div>
 
-            <div class="question" id="question-32">
-                <span class="question-number">32</span>
-                <span>What is the woman's problem?</span>
-                <div class="options">
-                    <div><input type="radio" id="q32a" name="q32" value="a" onclick="markCompleted(32)"><label for="q32a">A. A meeting room is occupied.</label></div>
-                    <div><input type="radio" id="q32b" name="q32" value="b" onclick="markCompleted(32)"><label for="q32b">B. Equipment is out of stock.</label></div>
-                    <div><input type="radio" id="q32c" name="q32" value="c" onclick="markCompleted(32)"><label for="q32c">C. Appointment canceled.</label></div>
-                    <div><input type="radio" id="q32d" name="q32" value="d" onclick="markCompleted(32)"><label for="q32d">D. Software not installed.</label></div>
+            {{#each this.quiz.questions}}
+                {{#if (eq type "SINGLE_ANSWER")}}
+                 <div class="question-card" id="question-{{question_number}}">
+                    <span class="question-number">{{question_number}}</span>
+                    <div class="question-text">{{content}}</div>
+                   {{#if imageUrl}}
+                    <div class="image-placeholder">
+                        <img src="{{imageUrl}}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                   {{/if}}
+                    <div class="options">
+                       {{#each options}}
+                        <div>
+                            <input type="radio" id="{{id}}"  onclick="markCompleted({{id}})"><label>{{content}}</label>
+                        </div>
+                       {{/each}}
+                    </div>
                 </div>
-            </div>
+                {{else if (eq type "FILL_IN_THE_BLANK")}}
+                <div class="question-card" id="question-40">
+                        <span class="question-number">40</span>
+                        <div class="question-text">Fill in the blank: The meeting will be held _____ 9 AM and 11 AM.</div>
+                        <div class="options">
+                            <div><label for="q40a">Answer:</label> <input type="text" id="q40a" name="q40" onblur="markCompleted(40)"></div>
+                        </div>
+                </div>
+                {{else if (eq type "TRUE_FALSE")}}
+                <div class="question-card" id="question-{{question_number}}">
+                    <span class="question-number">{{question_number}}</span>
+                    <div class="question-text">What is shown in the picture?</div>
+                    <div class="image-placeholder">
+                        <img src="https://placehold.co/600x400?text=Office+Meeting&font=Roboto" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                   </div>
+                    <div class="options">
+                       {{#each options}}
+                        <div>
+                            <input type="radio" id="{{id}}"  onclick="markCompleted({{id}})"><label>{{content}}</label>
+                        </div>
+                       {{/each}}
+                    </div>
+                 </div>
+                {{/if}}
+            {{/each}}
 
-            <div class="question" id="question-33">
-                <span class="question-number">33</span>
-                <span>Why mention system malfunction?</span>
-                <div class="options">
-                    <div><input type="radio" id="q33a" name="q33" value="a" onclick="markCompleted(33)"><label for="q33a">A. Apologize for charge.</label></div>
-                    <div><input type="radio" id="q33b" name="q33" value="b" onclick="markCompleted(33)"><label for="q33b">B. Explain scheduling error.</label></div>
-                    <div><input type="radio" id="q33c" name="q33" value="c" onclick="markCompleted(33)"><label for="q33c">C. Warn of threats.</label></div>
-                    <div><input type="radio" id="q33d" name="q33" value="d" onclick="markCompleted(33)"><label for="q33d">D. Change policy.</label></div>
-                </div>
-            </div>
+           
 
-            <div class="question" id="question-34">
-                <span class="question-number">34</span>
-                <span>What does the man say he will do?</span>
-                <div class="options">
-                    <div><input type="radio" id="q34a" name="q34" value="a" onclick="markCompleted(34)"><label for="q34a">A. Fix computer.</label></div>
-                    <div><input type="radio" id="q34b" name="q34" value="b" onclick="markCompleted(34)"><label for="q34b">B. Provide alternative.</label></div>
-                    <div><input type="radio" id="q34c" name="q34" value="c" onclick="markCompleted(34)"><label for="q34c">C. Attend meeting.</label></div>
-                    <div><input type="radio" id="q34d" name="q34" value="d" onclick="markCompleted(34)"><label for="q34d">D. Check manual.</label></div>
-                </div>
-            </div>
-
-            <div class="question" id="question-35">
-                <span class="question-number">35</span>
-                <span>What does the woman ask about?</span>
-                <div class="options">
-                    <div><input type="radio" id="q35a" name="q35" value="a" onclick="markCompleted(35)"><label for="q35a">A. How to write report.</label></div>
-                    <div><input type="radio" id="q35b" name="q35" value="b" onclick="markCompleted(35)"><label for="q35b">B. Document finished?</label></div>
-                    <div><input type="radio" id="q35c" name="q35" value="c" onclick="markCompleted(35)"><label for="q35c">C. Reserve meeting room?</label></div>
-                    <div><input type="radio" id="q35d" name="q35" value="d" onclick="markCompleted(35)"><label for="q35d">D. Client contacted?</label></div>
-                </div>
-            </div>
-
-            <div class="question" id="question-36">
-                <span class="question-number">36</span>
-                <span>What will the man do?</span>
-                <div class="options">
-                    <div><input type="radio" id="q36a" name="q36" value="a" onclick="markCompleted(36)"><label for="q36a">A. Prioritize request.</label></div>
-                    <div><input type="radio" id="q36b" name="q36" value="b" onclick="markCompleted(36)"><label for="q36b">B. Extend deadline.</label></div>
-                    <div><input type="radio" id="q36c" name="q36" value="c" onclick="markCompleted(36)"><label for="q36c">C. Draft budget.</label></div>
-                    <div><input type="radio" id="q36d" name="q36" value="d" onclick="markCompleted(36)"><label for="q36d">D. Visit office.</label></div>
-                </div>
-            </div>
-
-            <div class="question" id="question-37">
-                <span class="question-number">37</span>
-                <span>What does the woman need?</span>
-                <div class="options">
-                    <div><input type="radio" id="q37a" name="q37" value="a" onclick="markCompleted(37)"><label for="q37a">A. List of clients.</label></div>
-                    <div><input type="radio" id="q37b" name="q37" value="b" onclick="markCompleted(37)"><label for="q37b">B. Sample product.</label></div>
-                    <div><input type="radio" id="q37c" name="q37" value="c" onclick="markCompleted(37)"><label for="q37c">C. Meeting materials.</label></div>
-                    <div><input type="radio" id="q37d" name="q37" value="d" onclick="markCompleted(37)"><label for="q37d">D. Revised itinerary.</label></div>
-                </div>
-            </div>
-
-            <div class="question" id="question-38">
-                <span class="question-number">38</span>
-                <span>What career is she interested in?</span>
-                <div class="options">
-                    <div><input type="radio" id="q38a" name="q38" value="a" onclick="markCompleted(38)"><label for="q38a">A. College professor.</label></div>
-                    <div><input type="radio" id="q38b" name="q38" value="b" onclick="markCompleted(38)"><label for="q38b">B. Web programmer.</label></div>
-                    <div><input type="radio" id="q38c" name="q38" value="c" onclick="markCompleted(38)"><label for="q38c">C. Dental assistant</label></div>
-                </div>
-            </div>
-
-            <!-- Example of a new question card with image -->
-            <div class="question-card" id="question-39">
-                <span class="question-number">39</span>
-                <div class="question-text">What is shown in the picture?</div>
-                <div class="image-placeholder">
-                    <img src="https://placehold.co/600x400?text=Office+Meeting&font=Roboto" alt="A group of people in a modern office setting, gathered around a conference table for a meeting. Some are looking at laptops, while others are engaged in discussion." style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div class="options">
-                    <div><input type="radio" id="q39a" name="q39" value="a" onclick="markCompleted(39)"><label for="q39a">A. People working in office.</label></div>
-                    <div><input type="radio" id="q39b" name="q39" value="b" onclick="markCompleted(39)"><label for="q39b">B. Construction site.</label></div>
-                    <div><input type="radio" id="q39c" name="q39" value="c" onclick="markCompleted(39)"><label for="q39c">C. Landscape with lake.</label></div>
-                    <div><input type="radio" id="q39d" name="q39" value="d" onclick="markCompleted(39)"><label for="q39d">D. Flower in bloom.</label></div>
-                </div>
-            </div>
-
-            <!-- Example of a fill-in-the-blanks question card -->
-            <div class="question-card" id="question-40">
-                <span class="question-number">40</span>
-                <div class="question-text">Fill in the blank: The meeting will be held _____ 9 AM and 11 AM.</div>
-                <div class="options">
-                    <div><label for="q40a">Answer:</label> <input type="text" id="q40a" name="q40" onblur="markCompleted(40)"></div>
-                </div>
-            </div>
+           
 
             <button class="submit-button">Submit Answers</button>
         </div>
@@ -131,45 +79,9 @@
                 <h2>Question Navigation</h2>
             </div>
             <div class="question-grid">
-                <button onclick="scrollToQuestion(32)" id="question-button-32">32</button>
-                <button onclick="scrollToQuestion(33)" id="question-button-33">33</button>
-                <button onclick="scrollToQuestion(34)" id="question-button-34">34</button>
-                <button onclick="scrollToQuestion(35)" id="question-button-35">35</button>
-                <button onclick="scrollToQuestion(36)" id="question-button-36">36</button>
-                <button onclick="scrollToQuestion(37)" id="question-button-37">37</button>
-                <button onclick="scrollToQuestion(38)" id="question-button-38">38</button>
-                <button onclick="scrollToQuestion(39)" id="question-button-39">39</button>
-                <button onclick="scrollToQuestion(40)" id="question-button-40">40</button>
-                <button onclick="scrollToQuestion(41)" id="question-button-41">41</button>
-                <button onclick="scrollToQuestion(42)" id="question-button-42">42</button>
-                <button onclick="scrollToQuestion(43)" id="question-button-43">43</button>
-                <button onclick="scrollToQuestion(44)" id="question-button-44">44</button>
-                <button onclick="scrollToQuestion(45)" id="question-button-45">45</button>
-                <button onclick="scrollToQuestion(46)" id="question-button-46">46</button>
-                <button onclick="scrollToQuestion(47)" id="question-button-47">47</button>
-                <button onclick="scrollToQuestion(48)" id="question-button-48">48</button>
-                <button onclick="scrollToQuestion(49)" id="question-button-49">49</button>
-                <button onclick="scrollToQuestion(50)" id="question-button-50">50</button>
-                <button onclick="scrollToQuestion(51)" id="question-button-51">51</button>
-                <button onclick="scrollToQuestion(52)" id="question-button-52">52</button>
-                <button onclick="scrollToQuestion(53)" id="question-button-53">53</button>
-                <button onclick="scrollToQuestion(54)" id="question-button-54">54</button>
-                <button onclick="scrollToQuestion(55)" id="question-button-55">55</button>
-                <button onclick="scrollToQuestion(56)" id="question-button-56">56</button>
-                <button onclick="scrollToQuestion(57)" id="question-button-57">57</button>
-                <button onclick="scrollToQuestion(58)" id="question-button-58">58</button>
-                <button onclick="scrollToQuestion(59)" id="question-button-59">59</button>
-                <button onclick="scrollToQuestion(60)" id="question-button-60">60</button>
-                <button onclick="scrollToQuestion(61)" id="question-button-61">61</button>
-                <button onclick="scrollToQuestion(62)" id="question-button-62">62</button>
-                <button onclick="scrollToQuestion(63)" id="question-button-63">63</button>
-                <button onclick="scrollToQuestion(64)" id="question-button-64">64</button>
-                <button onclick="scrollToQuestion(65)" id="question-button-65">65</button>
-                <button onclick="scrollToQuestion(66)" id="question-button-66">66</button>
-                <button onclick="scrollToQuestion(67)" id="question-button-67">67</button>
-                <button onclick="scrollToQuestion(68)" id="question-button-68">68</button>
-                <button onclick="scrollToQuestion(69)" id="question-button-69">69</button>
-                <button onclick="scrollToQuestion(70)" id="question-button-70">70</button>
+                {{#each (range 1 numberOfQuestions)}}
+                    <button onclick="scrollToQuestion({{this}})" id="question-button-{{this}}">{{this}}</button>
+                {{/each}}
             </div>
         </div>
     </div>

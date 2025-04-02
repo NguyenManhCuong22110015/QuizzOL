@@ -1,3 +1,18 @@
+
+:root {
+    --category-color-1: #ff7f50; /* Coral */
+    --category-color-2: #87cefa; /* Light Sky Blue */
+    --category-color-3: #98fb98; /* Pale Green */
+    --category-color-4: #dda0dd; /* Plum */
+    --category-color-5: #ffa07a; /* Light Salmon */
+    --category-color-6: #20b2aa; /* Light Sea Green */
+    --category-color-7: #ffb6c1; /* Light Pink */
+    --category-color-8: #ffd700; /* Gold */
+    --category-color-9: #8a2be2; /* Blue Violet */
+    --category-color-10: #00ced1; /* Dark Turquoise */
+    --category-color-11: #ff6347; /* Tomato */
+    --category-color-12: #7b68ee; /* Medium Slate Blue */
+  }
 body {
     font-family: 'Nunito', sans-serif;
     margin: 0;
@@ -34,22 +49,23 @@ body {
     font-size: 1.2em;
 }
 
-/* Category Specific Colors */
-.category:nth-of-type(1) .category-title {
-    background-color: #ff7f50; /* Coral */
-}
-
-.category:nth-of-type(2) .category-title {
-    background-color: #87cefa; /* Light Sky Blue */
-}
-
-.category:nth-of-type(3) .category-title {
-    background-color: #98fb98; /* Pale Green */
-}
-
-.category:nth-of-type(4) .category-title {
-    background-color: #dda0dd; /* Plum */
-}
+.category .category-title {
+    background-color: var(--category-color-1); /* Default color */
+  }
+  
+  /* Use the modulo operator to cycle through colors for any number of categories */
+  .category:nth-of-type(12n+1) .category-title { background-color: var(--category-color-1); }
+  .category:nth-of-type(12n+2) .category-title { background-color: var(--category-color-2); }
+  .category:nth-of-type(12n+3) .category-title { background-color: var(--category-color-3); }
+  .category:nth-of-type(12n+4) .category-title { background-color: var(--category-color-4); }
+  .category:nth-of-type(12n+5) .category-title { background-color: var(--category-color-5); }
+  .category:nth-of-type(12n+6) .category-title { background-color: var(--category-color-6); }
+  .category:nth-of-type(12n+7) .category-title { background-color: var(--category-color-7); }
+  .category:nth-of-type(12n+8) .category-title { background-color: var(--category-color-8); }
+  .category:nth-of-type(12n+9) .category-title { background-color: var(--category-color-9); }
+  .category:nth-of-type(12n+10) .category-title { background-color: var(--category-color-10); }
+  .category:nth-of-type(12n+11) .category-title { background-color: var(--category-color-11); }
+  .category:nth-of-type(12n+12) .category-title { background-color: var(--category-color-12); }
 
 .category-carousel {
     width: 100%;

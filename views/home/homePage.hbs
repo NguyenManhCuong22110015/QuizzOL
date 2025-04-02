@@ -11,281 +11,30 @@
 </head>
 <body>
     <div class="container">
-        <section class="category">
-            <h2 class="category-title"><i class="fas fa-calculator"></i>Toán học</h2>
-            <div class="category-carousel">
-                <div class="card">
-                    <img src="https://placehold.co/600x400?text=Math+Equation&bg=f0f4f8" alt="Math Equation">
-                    <div class="card-content">
-                        <h3 class="card-title">Hình tam giác</h3>
-                        <div class="card-details">
-                            <span>13 Câu hỏi</span>
-                            <span>49k lượt chơi</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="https://placehold.co/600x400?text=Shapes&bg=f0f4f8" alt="Shapes">
-                    <div class="card-content">
-                        <h3 class="card-title">Thể tích của hình nón và hình cầu</h3>
-                        <div class="card-details">
-                            <span>15 Trang trình bày</span>
-                            <span>669 lượt chơi</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="https://placehold.co/600x400?text=Quiz&bg=f0f4f8" alt="Quiz">
-                    <div class="card-content">
-                        <h3 class="card-title">Kiểm tra đơn vị 1</h3>
-                        <div class="card-details">
-                            <span>15 Câu hỏi</span>
-                            <span>3k lượt chơi</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="https://placehold.co/600x400?text=Geometry&bg=f0f4f8" alt="Geometry">
-                    <div class="card-content">
-                        <h3 class="card-title">TỨ GIÁC- HÌNH THĂNG CÂN</h3>
-                        <div class="card-details">
-                            <span>12 Câu hỏi</span>
-                            <span>27k lượt chơi</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="https://placehold.co/600x400?text=Equivalent&bg=f0f4f8" alt="Equivalent">
-                    <div class="card-content">
-                        <h3 class="card-title">Phân số tương đương</h3>
-                        <div class="card-details">
-                            <span>18 Trang trình bày</span>
-                            <span>1k lượt chơi</span>
-                        </div>
-                    </div>
-                </div>
-                 <div class="card">
-                    <img src="https://placehold.co/600x400?text=Math+Equation&bg=f0f4f8" alt="Math Equation">
-                    <div class="card-content">
-                        <h3 class="card-title">Hình tam giác</h3>
-                        <div class="card-details">
-                            <span>13 Câu hỏi</span>
-                            <span>49k lượt chơi</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="view-more">
-                <a href="#">Xem thêm</a>
-            </div>
-        </section>
 
-        <section class="category">
-            <h2 class="category-title"><i class="fas fa-book-open"></i>Tiếng Anh và Ngữ văn</h2>
-            <div class="category-carousel">
-                <div class="card">
-                    <img src="https://placehold.co/600x400?text=Grammar&bg=f0f4f8" alt="Grammar">
-                    <div class="card-content">
-                        <h3 class="card-title">Trạng từ Điều khoản nhượng bộ</h3>
-                        <div class="card-details">
-                            <span>22 Trang trình bày</span>
-                            <span>3k lượt chơi</span>
-                        </div>
+        {{#each this.quizzesOfCategory}}
+            <section class="category">
+                    <h2 class="category-title"><i class="fas fa-calculator"></i>{{name}}</h2>
+                     <div class="category-carousel">
+                        {{#each quizzes}}
+                                <div class="card">
+                                    <img src={{image}} alt="Math Equation">
+                                    <div class="card-content">
+                                        <h3 class="card-title">{{title}}</h3>
+                                        <div class="card-details">
+                                            <span>{{numberOfQuestions}} Câu hỏi</span>
+                                            <span>49k lượt chơi</span>
+                                        </div>
+                                    </div>
+                                </div>  
+                        {{/each}}
                     </div>
-                </div>
-                <div class="card">
-                    <img src="https://placehold.co/600x400?text=Presentation&bg=f0f4f8" alt="Presentation">
-                    <div class="card-content">
-                        <h3 class="card-title">Trình bày đơn giản</h3>
-                        <div class="card-details">
-                            <span>20 Câu hỏi</span>
-                            <span>38k lượt chơi</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="https://placehold.co/600x400?text=Infinitives&bg=f0f4f8" alt="Infinitives">
-                    <div class="card-content">
-                        <h3 class="card-title">Vô hạn</h3>
-                        <div class="card-details">
-                            <span>20 Câu hỏi</span>
-                            <span>20k lượt chơi</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="https://placehold.co/600x400?text=Listening&bg=f0f4f8" alt="Listening">
-                    <div class="card-content">
-                        <h3 class="card-title">Nghe tiếng Anh</h3>
-                        <div class="card-details">
-                            <span>30 câu hỏi</span>
-                            <span>2k lượt chơi</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="https://placehold.co/600x400?text=Past+Tense&bg=f0f4f8" alt="Past Tense">
-                    <div class="card-content">
-                        <h3 class="card-title">Động từ thì quá khứ thông thường</h3>
-                        <div class="card-details">
-                            <span>11 Trang trình bày</span>
-                            <span>26k lượt chơi</span>
-                        </div>
-                    </div>
-                </div>
-                 <div class="card">
-                    <img src="https://placehold.co/600x400?text=Grammar&bg=f0f4f8" alt="Grammar">
-                    <div class="card-content">
-                        <h3 class="card-title">Trạng từ Điều khoản nhượng bộ</h3>
-                        <div class="card-details">
-                            <span>22 Trang trình bày</span>
-                            <span>3k lượt chơi</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="view-more">
-                <a href="#">Xem thêm</a>
-            </div>
-        </section>
+            </section>
+        {{/each}}
 
-        <section class="category">
-            <h2 class="category-title"><i class="fas fa-globe"></i>Nghiên cứu xã hội</h2>
-            <div class="category-carousel">
-                <div class="card">
-                    <img src="https://placehold.co/600x400?text=History&bg=f0f4f8" alt="History">
-                    <div class="card-content">
-                        <h3 class="card-title">Những điều kỳ diệu trong quá khứ</h3>
-                        <div class="card-details">
-                            <span>23 Câu hỏi</span>
-                            <span>4k lượt chơi</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="https://placehold.co/600x400?text=Great+Wall&bg=f0f4f8" alt="Great Wall">
-                    <div class="card-content">
-                        <h3 class="card-title">Vạn Lý Trường Thành Trung Quốc - Junior 1</h3>
-                        <div class="card-details">
-                            <span>7 Câu hỏi</span>
-                            <span>6k lượt chơi</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="https://placehold.co/600x400?text=Hack&bg=f0f4f8" alt="Hack">
-                    <div class="card-content">
-                        <h3 class="card-title">Hack không</h3>
-                        <div class="card-details">
-                            <span>16 Câu hỏi</span>
-                            <span>33k lượt chơi</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="https://placehold.co/600x400?text=Conference&bg=f0f4f8" alt="Conference">
-                    <div class="card-content">
-                        <h3 class="card-title">Hội nghị quốc tế về dân số</h3>
-                        <div class="card-details">
-                            <span>18 Trang trình bày</span>
-                            <span>549 lượt chơi</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="https://placehold.co/600x400?text=History+Mistakes&bg=f0f4f8" alt="History Mistakes">
-                    <div class="card-content">
-                        <h3 class="card-title">Những sai lầm sử thi của lịch sử</h3>
-                        <div class="card-details">
-                            <span>12 Câu hỏi</span>
-                            <span>1k lượt chơi</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="https://placehold.co/600x400?text=History&bg=f0f4f8" alt="History">
-                    <div class="card-content">
-                        <h3 class="card-title">Những điều kỳ diệu trong quá khứ</h3>
-                        <div class="card-details">
-                            <span>23 Câu hỏi</span>
-                            <span>4k lượt chơi</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="view-more">
-                <a href="#">Xem thêm</a>
-            </div>
-        </section>
 
-        <section class="category">
-            <h2 class="category-title"><i class="fas fa-language"></i>Ngôn ngữ thế giới</h2>
-            <div class="category-carousel">
-                <div class="card">
-                    <img src="https://placehold.co/600x400?text=Chinese&bg=f0f4f8" alt="Chinese">
-                    <div class="card-content">
-                        <h3 class="card-title">(K65) Chữ Hán 35A</h3>
-                        <div class="card-details">
-                            <span>10 Trang trình bày</span>
-                            <span>599 lượt chơi</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="https://placehold.co/600x400?text=MTG-NM6.01&bg=f0f4f8" alt="MTG-NM6.01">
-                    <div class="card-content">
-                        <h3 class="card-title">MTG-NM6.01</h3>
-                        <div class="card-details">
-                            <span>25 Câu hỏi</span>
-                            <span>995 lượt chơi</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="https://placehold.co/600x400?text=Game&bg=f0f4f8" alt="Game">
-                    <div class="card-content">
-                        <h3 class="card-title">TRÒ CHƠI KHỞI ĐỘNG</h3>
-                        <div class="card-details">
-                            <span>5 Câu hỏi</span>
-                            <span>32k lượt chơi</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="https://placehold.co/600x400?text=Direction&bg=f0f4f8" alt="Direction">
-                    <div class="card-content">
-                        <h3 class="card-title">Chỉ đường</h3>
-                        <div class="card-details">
-                            <span>10 Câu hỏi</span>
-                            <span>8k lượt chơi</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="https://placehold.co/600x400?text=Le+Passe+Compose&bg=f0f4f8" alt="Le Passe Compose">
-                    <div class="card-content">
-                        <h3 class="card-title">Thì quá khứ sáng tác với "Có"</h3>
-                        <div class="card-details">
-                            <span>15 Câu hỏi</span>
-                            <span>1k lượt chơi</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="https://placehold.co/600x400?text=Chinese&bg=f0f4f8" alt="Chinese">
-                    <div class="card-content">
-                        <h3 class="card-title">(K65) Chữ Hán 35A</h3>
-                        <div class="card-details">
-                            <span>10 Trang trình bày</span>
-                            <span>599 lượt chơi</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="view-more">
-                <a href="#">Xem thêm</a>
-            </div>
-        </section>
+
+        
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

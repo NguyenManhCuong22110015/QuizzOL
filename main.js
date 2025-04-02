@@ -16,6 +16,9 @@ import './authentication/passport-setup.js';
 import  {options} from './configs/db.js';
 import moment from 'moment-timezone';
 import dotenv from 'dotenv'; 
+import mediaRoute from './routes/mediaRoute.js';
+
+
 dotenv.config();
 const app = express()
 app.set('trust proxy', 1);
@@ -70,6 +73,13 @@ app.set('trust proxy', 1);
       const expiry = new Date(expiryDate);
       
       return expiry > today;
+  },
+  range: function(start, end) {
+    const array = [];
+    for (let i = start; i <= end; i++) {
+      array.push(i);
+    }
+    return array;
   },
   getRemainingDays: function(expiryDate) {
     if (!expiryDate) return 'No subscription';
@@ -154,7 +164,7 @@ app.use("/flashCard", flashCardRoute);
 app.use("/ranking", rankingRoute);
 app.use("/", homeRoute);
 app.use("/user", userRoute);
-
+app.use("/media", mediaRoute);
 
 
 app.get("/", (req, res) => {

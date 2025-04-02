@@ -17,14 +17,21 @@ const storage = new CloudinaryStorage({
   params: async (req, file) => {
     if (file.mimetype.startsWith("audio/")) {
       return {
-        folder: "quizz_app/audio",
+        folder: "Quizz_Online/audio",
         resource_type: "video", 
         format: "mp3"
       };
     }
-     else if (file.mimetype.startsWith("img/")) {
+     else if (file.mimetype.startsWith("video/")) {
       return {
-        folder: "quizz_app/images",
+        folder: "Quizz_Online/videos",
+        allowed_formats: ["jpg", "jpeg", "png", "gif"],
+        transformation: [{ width: 800, height: 600, crop: "limit" }]
+      };
+    }
+    else  {
+      return {
+        folder: "Quizz_Online/images",
         allowed_formats: ["jpg", "jpeg", "png", "gif"],
         transformation: [{ width: 800, height: 600, crop: "limit" }]
       };

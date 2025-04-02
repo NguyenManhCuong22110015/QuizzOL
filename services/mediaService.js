@@ -1,5 +1,5 @@
-import { cloudinary } from '../config/cloudinary.js';
-
+import { cloudinary } from '../configs/cloudinaryConfig.js';
+import db from '../configs/db.js';
 /**
  * Upload image to Cloudinary
  * @param {Object} file - The uploaded file
@@ -54,16 +54,18 @@ export const uploadVideo = async (file) => {
  * @param {String} type - Media type (image, audio, video)
  * @returns {Object} - The uploaded media details
  */
-export const uploadMedia = async (file, type = 'image') => {
+export const uploadMedia = async (file, type) => {
   if (!file) {
     throw new Error('No file uploaded');
   }
   
-  return {
-    url: file.path,
-    publicId: file.public_id || file.filename,
-    type: type
-  };
+  const response = {
+    public_id:file.public_id || file.filename,
+    url:file.path,
+    resource_type: type.toUpperCase()
+  }
+
+  return db("media").insert(response);
 };
 
 /**
