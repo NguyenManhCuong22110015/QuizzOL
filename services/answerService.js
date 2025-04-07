@@ -1,11 +1,11 @@
 import db from '../configs/db.js';
 
 export default {
-    // Get all answers for a question
-    getAnswersByQuestionId(questionId) {
-        return db('question_option').select('*').where('question_id', questionId);
-    },
 
+    getAnswersByQuestionId(questionId) {
+        // Changed from 'question_option' to 'option' to match your schema
+        return db('option').select('*').where('question_id', questionId);
+    },
    
 
     // Delete all answers for a question
