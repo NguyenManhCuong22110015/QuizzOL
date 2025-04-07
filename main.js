@@ -2,6 +2,7 @@ import express from 'express';
 import passport from 'passport';
 import session from 'express-session'
 import mysqlSession from 'express-mysql-session';
+import cloudinary from 'cloudinary';
 
 import { engine } from 'express-handlebars'; 
 import path from 'path';
@@ -12,6 +13,8 @@ import flashCardRoute from './routes/flashCardRoute.js';
 import rankingRoute from './routes/rankingRoute.js';
 import homeRoute from './routes/homeRoute.js';
 import userRoute from './routes/userRoute.js'
+import adminRoute from './routes/adminRoute.js';
+import studentRoute from './routes/studentRoute.js';
 import './authentication/passport-setup.js';
 import  {options} from './configs/db.js';
 import moment from 'moment-timezone';
@@ -165,7 +168,8 @@ app.use("/ranking", rankingRoute);
 app.use("/", homeRoute);
 app.use("/user", userRoute);
 app.use("/media", mediaRoute);
-
+app.use("/admin", adminRoute);
+app.use("/student", studentRoute);
 
 app.get("/", (req, res) => {
     res.send("Hello word")

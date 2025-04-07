@@ -1,0 +1,163 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
+}
+.sidebar {
+    width: 250px;
+    background-color: #fff;
+    height: 100vh;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+.sidebar .nav-link {
+    padding: 10px;
+    color: #495057;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+.sidebar .nav-link i {
+    margin-right: 10px;
+}
+.sidebar .nav-link.active {
+    background-color: #1976d2;
+    color: #fff;
+}
+.sidebar .nav-link:hover {
+    background-color: #e9ecef;
+    color: #495057;
+}
+ .sidebar .nav-link.active:hover {
+    background-color: #1976d2;
+    color: #fff;
+}
+.main-content {
+    flex: 1;
+    padding: 20px;
+}
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+.card-header {
+    background-color: transparent;
+    border-bottom: none;
+    padding: 20px;
+}
+.card-body {
+    padding: 20px;
+}
+.profile-section {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+.profile-section .notification {
+    margin-right: 20px;
+    cursor: pointer;
+}
+.profile-section .profile {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.profile-section .profile img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+}
+.watchlist-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+.watchlist-item .coin-info {
+    display: flex;
+    align-items: center;
+}
+.watchlist-item .coin-info span {
+    margin-left: 10px;
+}
+.watchlist-item .coin-info img {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.watchlist-item .price-info {
+    text-align: right;
+}
+.market-info table {
+    width: 100%;
+}
+.market-info th, .market-info td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #f2f2f2;
+}
+.market-info th {
+    font-weight: 500;
+}
+.latest-news-item {
+    display: flex;
+    margin-bottom: 15px;
+}
+.latest-news-item img {
+    width: 100px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+.logout {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+}
+.logout a {
+    color: #495057;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+.logout i {
+    margin-right: 5px;
+}
+.period-buttons {
+    margin-bottom: 15px;
+}
+.period-buttons button {
+    border: none;
+    background-color: #f2f2f2;
+    color: #495057;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-right: 5px;
+    cursor: pointer;
+}
+.period-buttons button.active {
+    background-color: #1976d2;
+    color: #fff;
+}
+.dropdown {
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    padding: 12px 16px;
+    z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}

@@ -1,0 +1,233 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptowatch Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="sidebar col-auto">
+                <div>
+                    <h4 class="mb-4"><b>C Cryptowatch</b></h4>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">
+                                <i class="fas fa-th-large"></i>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-store"></i>
+                                Marketplace
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-bell"></i>
+                                Notification
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-newspaper"></i>
+                                News
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <i class="fas fa-cog"></i>
+                                Settings
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="logout">
+                    <a href="#">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                </div>
+            </div>
+            <div class="main-content col">
+                <div class="profile-section d-flex justify-content-end mb-4">
+                    <div class="notification me-3">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div class="profile">
+                        <img src="https://placehold.co/30x30" alt="Daramola Olalekan's profile picture">
+                        <span>Daramola Olalekan</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h4>Statistics</h4>
+                            </div>
+                            <div class="card-body">
+                                <h2>$45,090.09</h2>
+                                <div class="period-buttons">
+                                    <button>1H</button>
+                                    <button class="active">24H</button>
+                                    <button>1W</button>
+                                    <button>1M</button>
+                                    <button>3M</button>
+                                    <button>6M</button>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-light dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <img src="https://placehold.co/20x20/FFA500/FFFFFF" alt="Bitcoin logo"> Bitcoin (BTC)
+                                    </button>
+                                    <div class="dropdown-content">
+                                        <a class="dropdown-item" href="#">Ethereum (ETH)</a>
+                                        <a class="dropdown-item" href="#">Litecoin (LTC)</a>
+                                    </div>
+                                </div>
+                                <img src="https://placehold.co/700x300" class="img-fluid" alt="Cryptocurrency chart">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h4>Watchlist</h4>
+                                <div>Today <i class="fas fa-chevron-down"></i></div>
+                            </div>
+                            <div class="card-body">
+                                <div class="watchlist-item">
+                                    <div class="coin-info">
+                                        <img src="https://placehold.co/20x20/FFA500/FFFFFF" alt="Bitcoin logo">
+                                        <span>BTC<br>-1.09%</span>
+                                    </div>
+                                    <div class="price-info">
+                                        $40,090<br>0.07447 BTC
+                                        <img src="https://placehold.co/50x20/orange/white" alt="Price chart">
+                                    </div>
+                                </div>
+                                <div class="watchlist-item">
+                                    <div class="coin-info">
+                                        <img src="https://placehold.co/20x20/007bff/FFFFFF" alt="Ripple logo">
+                                        <span>XRP<br>-1.09%</span>
+                                    </div>
+                                    <div class="price-info">
+                                        $40,090<br>0.07447 XRP
+                                        <img src="https://placehold.co/50x20/green/white" alt="Price chart">
+                                    </div>
+                                </div>
+                                <div class="watchlist-item">
+                                    <div class="coin-info">
+                                        <img src="https://placehold.co/20x20/28a745/FFFFFF" alt="Dogecoin logo">
+                                        <span>DGE<br>-1.09%</span>
+                                    </div>
+                                    <div class="price-info">
+                                        $40,090<br>0.07447 DGE
+                                        <img src="https://placehold.co/50x20/teal/white" alt="Price chart">
+                                    </div>
+                                </div>
+                                <div class="watchlist-item">
+                                    <div class="coin-info">
+                                        <img src="https://placehold.co/20x20/17a2b8/FFFFFF" alt="ICX logo">
+                                        <span>ICX<br>-1.09%</span>
+                                    </div>
+                                    <div class="price-info">
+                                        $40,090<br>0.07447 ICX
+                                        <img src="https://placehold.co/50x20/blue/white" alt="Price chart">
+                                    </div>
+                                </div>
+                                <div class="watchlist-item">
+                                    <div class="coin-info">
+                                        <img src="https://placehold.co/20x20/dc3545/FFFFFF" alt="Binance Coin logo">
+                                        <span>BNC<br>-1.09%</span>
+                                    </div>
+                                    <div class="price-info">
+                                        $40,090<br>0.07447 BNC
+                                        <img src="https://placehold.co/50x20/purple/white" alt="Price chart">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card market-info mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h4>Market Info</h4>
+                                <div>Today <i class="fas fa-chevron-down"></i></div>
+                            </div>
+                            <div class="card-body">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Last Price</th>
+                                            <th>Change(24h)</th>
+                                            <th>Chart</th>
+                                            <th>Market Cap</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><img src="https://placehold.co/20x20/FFA500/FFFFFF" alt="Bitcoin logo"> Bitcoin</td>
+                                            <td>$12,000</td>
+                                            <td>+1.24%</td>
+                                            <td><img src="https://placehold.co/50x20/green/white" alt="Price chart"></td>
+                                            <td>$120,000</td>
+                                        </tr>
+                                        <tr>
+                                            <td><img src="https://placehold.co/20x20/17a2b8/FFFFFF" alt="Icon logo"> Icon</td>
+                                            <td>$12,000</td>
+                                            <td>-0.24%</td>
+                                            <td><img src="https://placehold.co/50x20/red/white" alt="Price chart"></td>
+                                            <td>$120,000</td>
+                                        </tr>
+                                        <tr>
+                                            <td><img src="https://placehold.co/20x20/dc3545/FFFFFF" alt="Bytecoin logo"> Bytecoin</td>
+                                            <td>$12,000</td>
+                                            <td>+1.24%</td>
+                                            <td><img src="https://placehold.co/50x20/green/white" alt="Price chart"></td>
+                                            <td>$120,000</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card latest-news mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h4>Latest news</h4>
+                                <div><a href="#">See more</a></div>
+                            </div>
+                            <div class="card-body">
+                                <div class="latest-news-item">
+                                    <img src="https://placehold.co/100x70/007bff/FFFFFF" alt="Bitcoin related news">
+                                    <div>
+                                        <h6>Crypto Panic Ease</h6>
+                                        <p>Lorem ipsum dolor sit amet, conr adipi. Accumsan, enim quis netus...</p>
+                                    </div>
+                                </div>
+                                <div class="latest-news-item">
+                                    <img src="https://placehold.co/100x70/6c757d/FFFFFF" alt="Ethereum and Bitcoin related news">
+                                    <div>
+                                        <h6>Crypto Panic Ease</h6>
+                                        <p>Lorem ipsum dolor sit amet, conr adipi. Accumsan, enim quis netus...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+</html>

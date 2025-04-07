@@ -1,0 +1,370 @@
+/* General Styles */
+body {
+    background-color: #212121;
+    color: white;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    transition: all 0.3s ease;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    background-color: #212121;
+    width: 110px;
+    height: 100vh;
+    border-right: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.sidebar-top, .sidebar-bottom {
+    width: 100%;
+}
+
+.branding {
+    padding: 10px;
+}
+
+.quizizz-logo {
+    color: #9c27b0;
+    margin-bottom: 0;
+    font-weight: bold;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+.quizizz-logo:hover {
+    color: #ba68c8;
+    text-shadow: 0 0 5px rgba(156, 39, 176, 0.5);
+}
+
+.create-btn {
+    background-color: #9c27b0;
+    color: white;
+    width: 100%;
+    text-align: left;
+    padding: 8px 10px;
+    margin: 5px 0;
+    border: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.create-btn:hover {
+    background-color: #7b1fa2;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu-link {
+    display: block;
+    padding: 10px;
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+.menu-link:hover {
+    background-color: #333;
+    border-left: 3px solid #9c27b0;
+    transform: translateX(3px);
+}
+
+.activity-count {
+    padding: 10px;
+    font-size: 0.8rem;
+}
+
+.counter {
+    font-weight: bold;
+    color: #fdd835;
+}
+
+.upgrade-btn {
+    background-color: #fdd835;
+    color: black;
+    width: 100%;
+    text-align: left;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+    border: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.upgrade-btn:hover {
+    background-color: #fbc02d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Main Content Styles */
+.main-content {
+    transition: all 0.3s ease;
+}
+
+.main-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #333;
+    background-color: #212121;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.left-menu, .right-menu {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.main-nav {
+    display: flex;
+    gap: 15px;
+    margin-left: 20px;
+    flex-wrap: wrap;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    position: relative;
+    padding: 5px 0;
+    transition: all 0.3s ease;
+}
+
+.nav-link:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #9c27b0;
+    transition: width 0.3s;
+}
+
+.nav-link:hover {
+    color: #9c27b0;
+}
+
+.nav-link:hover:after {
+    width: 100%;
+}
+
+.register-btn {
+    background-color: #9c27b0;
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.register-btn:hover {
+    background-color: #7b1fa2;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.content-area {
+    padding: 20px;
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+}
+
+/* Icons */
+.fas {
+    margin-right: 5px;
+}
+
+/* Welcome Card */
+.welcome-card {
+    background: linear-gradient(135deg, #9c27b0 0%, #673ab7 100%);
+    border-radius: 8px;
+    padding: 30px;
+    margin-top: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    transform: translateY(20px);
+    opacity: 0;
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.welcome-card h2 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+.btn-get-started {
+    background-color: #fdd835;
+    color: #212121;
+    border: none;
+    padding: 10px 25px;
+    margin-top: 15px;
+    border-radius: 30px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.btn-get-started:hover {
+    background-color: white;
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Mobile Toggle */
+.mobile-toggle {
+    display: none;
+    padding: 10px 15px;
+    background-color: #212121;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #333;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+#sidebar-toggle {
+    background-color: transparent;
+    color: white;
+    border: none;
+    font-size: 1.2rem;
+}
+
+#sidebar-toggle:hover {
+    color: #9c27b0;
+}
+
+/* Responsive Styles */
+@media (max-width: 991.98px) {
+    .main-nav {
+        gap: 10px;
+    }
+    
+    .nav-link {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .mobile-toggle {
+        display: flex;
+    }
+    
+    .sidebar {
+        position: fixed;
+        left: -110px;
+        box-shadow: 5px 0 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .sidebar.active {
+        left: 0;
+    }
+    
+    .main-content {
+        width: 100%;
+    }
+    
+    .main-header {
+        padding: 10px;
+    }
+    
+    .left-menu {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+    
+    .right-menu {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .main-nav {
+        justify-content: center;
+        gap: 8px;
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    .nav-link {
+        font-size: 0.75rem;
+    }
+    
+    .welcome-card {
+        padding: 20px;
+    }
+    
+    .welcome-card h2 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Expanded sidebar for larger screens */
+@media (min-width: 1200px) {
+    .sidebar {
+        width: 200px;
+    }
+    
+    .menu-text, .btn-text {
+        display: inline;
+    }
+}
+
+/* Optional: Dark mode toggle effect */
+.dark-mode {
+    background-color: #121212;
+}
+
+.dark-mode .sidebar, .dark-mode .main-header {
+    background-color: #121212;
+    border-color: #1f1f1f;
+}
+
+.dark-mode .menu-link:hover {
+    background-color: #1f1f1f;
+}
+
+/* Hover effects for better interactivity */
+.hover-scale {
+    transition: transform 0.3s ease;
+}
+
+.hover-scale:hover {
+    transform: scale(1.05);
+}
