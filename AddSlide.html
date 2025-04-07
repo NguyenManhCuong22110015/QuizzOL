@@ -25,6 +25,10 @@
       .container {
         max-width: 1200px;
         margin: 0 auto;
+        padding: 40px 20px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
       }
 
       h1 {
@@ -32,67 +36,121 @@
         text-align: center;
         margin-bottom: 40px;
         font-size: 2.5em;
+        position: relative;
+        padding-bottom: 15px;
+      }
+
+      h1::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100px;
+        height: 3px;
+        background: var(--hover-color);
+        border-radius: 2px;
       }
 
       .grid-container {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 20px;
-        padding: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 40px;
+        padding: 40px;
+        margin-top: 20px;
+        flex: 1;
+        max-width: 1000px;
+        margin-left: auto;
+        margin-right: auto;
       }
 
       .card {
         background: var(--card-bg);
-        border-radius: 15px;
-        padding: 20px;
+        border-radius: 20px;
+        padding: 30px;
         cursor: pointer;
-        transition: transform 0.3s ease, background-color 0.3s ease;
+        transition: all 0.3s ease;
         backdrop-filter: blur(10px);
         border: 1px solid rgba(255, 255, 255, 0.1);
+        height: 180px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: var(--hover-color);
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+      }
+
+      .card:hover::before {
+        transform: scaleX(1);
       }
 
       .card:hover {
-        transform: translateY(-5px);
-        background-color: var(--hover-color);
+        transform: translateY(-10px);
+        background-color: rgba(42, 157, 143, 0.2);
+        box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2);
       }
 
       .card-content {
         display: flex;
         align-items: center;
-        gap: 15px;
+        gap: 25px;
+        position: relative;
+        z-index: 1;
       }
 
       .icon {
-        width: 40px;
-        height: 40px;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
+        width: 60px;
+        height: 60px;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 16px;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: transform 0.3s ease;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
       }
 
       .card:hover .icon {
-        transform: scale(1.1);
-        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.1) rotate(5deg);
+        background: rgba(255, 255, 255, 0.25);
       }
 
-      .icon img {
-        width: 24px;
-        height: 24px;
+      .icon i {
+        font-size: 28px !important;
+        transition: all 0.3s ease;
+      }
+
+      .card:hover .icon i {
+        transform: scale(1.1);
       }
 
       .text-content h3 {
         color: var(--text-color);
         margin: 0;
-        font-size: 1.2em;
+        font-size: 1.4em;
+        font-weight: 600;
+        letter-spacing: 0.5px;
       }
 
       .text-content p {
-        color: rgba(255, 255, 255, 0.7);
-        margin: 5px 0 0;
-        font-size: 0.9em;
+        color: rgba(255, 255, 255, 0.8);
+        margin: 10px 0 0;
+        font-size: 1em;
+        line-height: 1.5;
       }
 
       .new-badge {
@@ -128,6 +186,7 @@
         gap: 30px;
         max-height: 90vh;
         overflow-y: auto;
+        position: relative;
       }
 
       .media-section {
@@ -138,15 +197,14 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        min-height: 400px;
-        width: 100%;
-        max-width: 600px;
+        width: 35%;
+        min-width: 300px;
         margin-bottom: 20px;
       }
 
       .media-preview {
         width: 100%;
-        height: 300px;
+        height: 200px;
         background: rgba(255, 255, 255, 0.1);
         border-radius: 8px;
         margin-bottom: 20px;
@@ -195,6 +253,7 @@
         display: flex;
         flex-direction: column;
         gap: 20px;
+        width: 65%;
       }
 
       .input-group {
@@ -249,14 +308,25 @@
       }
 
       .action-btn {
-        padding: 10px 20px;
+        padding: 12px 20px;
         border-radius: 8px;
         border: none;
         cursor: pointer;
         font-weight: 500;
         display: flex;
         align-items: center;
+        justify-content: center;
         gap: 8px;
+        width: 100%;
+      }
+
+      .add-slide-btn {
+        background: #4caf50;
+        color: white;
+      }
+
+      .add-slide-btn:hover {
+        background: #43a047;
       }
 
       .duplicate-btn {
@@ -348,118 +418,115 @@
       }
 
       /* Checkbox specific styles */
-      .question-header {
-        background-color: #00bcd4;
-        color: white;
-        padding: 10px 15px;
-        border-radius: 8px 8px 0 0;
-        font-weight: 500;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
       .question-container {
         background-color: #fff;
         border-radius: 8px;
         overflow: hidden;
         margin-bottom: 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .question-header {
+        background-color: #00bcd4;
+        color: white;
+        padding: 15px 20px;
+        font-weight: 500;
+        font-size: 1.1em;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
 
       .question-content {
-        padding: 15px;
+        padding: 20px;
+        background: #fff;
       }
 
-      .question-content .answer-input {
+      .question-input {
         width: 100%;
-        min-width: 500px;
-        resize: vertical;
+        min-height: 80px;
+        padding: 12px 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1em;
+        resize: none;
+        margin-bottom: 10px;
+        background: #fff;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .question-input:focus {
+        outline: none;
+        border-color: #00bcd4;
+        box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.1);
       }
 
       .answer-list {
-        background-color: #f5f5f5;
+        background-color: #f8f9fa;
         border-radius: 8px;
-        padding: 15px;
-        margin: 15px 0;
+        padding: 20px;
+        margin: 20px 0;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
       }
 
       .answer-item {
         display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 10px;
+        align-items: flex-start;
+        gap: 15px;
+        margin-bottom: 15px;
+        padding: 10px;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
       }
 
-      .answer-icon {
-        width: 24px;
-        height: 24px;
-        border-radius: 4px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        flex-shrink: 0;
-      }
-
-      .correct-icon {
-        background-color: #4caf50;
-      }
-
-      .incorrect-icon {
-        background-color: #f44336;
+      .answer-item input[type="radio"],
+      .answer-item input[type="checkbox"] {
+        margin-top: 12px;
       }
 
       .answer-input {
-        flex-grow: 1;
-        padding: 10px;
+        width: 100%;
+        min-height: 36px;
+        padding: 8px 12px;
         border: 1px solid #e0e0e0;
-        border-radius: 4px;
-        font-size: 14px;
+        border-radius: 6px;
+        font-size: 1em;
+        resize: none;
+        overflow: hidden;
+        background: var(--input-bg);
+        transition: all 0.3s ease;
+      }
+
+      .answer-input:focus {
+        outline: none;
+        border-color: #00bcd4;
+        box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.1);
       }
 
       .fun-fact-section {
         background-color: #fff;
         border-radius: 8px;
         padding: 15px;
-        margin-top: 20px;
+        margin-top: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
       }
 
-      .generate-ai-btn {
-        color: #00bcd4;
-        background: none;
-        border: none;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-        cursor: pointer;
-        font-size: 14px;
+      .fun-fact-section textarea {
+        min-height: 60px;
+        font-size: 0.9em;
       }
 
       .settings-dropdown {
-        background-color: #2d3436;
-        color: white;
+        background-color: #f8f9fa;
+        color: #333;
         padding: 12px;
         border-radius: 6px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid #e0e0e0;
         width: 100%;
         margin-bottom: 10px;
-      }
-
-      .autocomplete-btn {
-        background-color: #ffd700;
-        color: #333;
-        border: none;
-        padding: 12px;
-        border-radius: 6px;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        cursor: pointer;
-        font-weight: 500;
-        margin: 20px 0;
+        font-size: 0.9em;
       }
 
       .action-btn {
@@ -472,7 +539,8 @@
         justify-content: center;
         gap: 8px;
         cursor: pointer;
-        margin-bottom: 10px;
+        font-weight: 500;
+        margin-top: 5px;
       }
 
       .duplicate-btn {
@@ -909,6 +977,68 @@
         margin-bottom: 10px;
         display: block;
       }
+
+      /* Remove floating action button styles */
+      .create-slide-btn {
+        display: none;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px 15px;
+        }
+
+        h1 {
+          font-size: 2em;
+          margin-bottom: 30px;
+        }
+
+        .grid-container {
+          gap: 25px;
+          padding: 20px;
+        }
+
+        .card {
+          height: 150px;
+          padding: 20px;
+        }
+
+        .icon {
+          width: 45px;
+          height: 45px;
+        }
+
+        .icon i {
+          font-size: 20px !important;
+        }
+
+        .text-content h3 {
+          font-size: 1.2em;
+        }
+
+        .text-content p {
+          font-size: 0.9em;
+          margin-top: 8px;
+        }
+
+        .modal-content {
+          flex-direction: column;
+          padding: 20px;
+        }
+
+        .media-section {
+          width: 100%;
+          min-width: auto;
+        }
+
+        .form-section {
+          width: 100%;
+        }
+
+        .media-preview {
+          height: 150px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -1018,7 +1148,7 @@
         </div>
 
         <div class="form-section">
-          <div class="question-container">
+          <div class="question-section">
             <div class="question-header">
               Question
               <button class="generate-ai-btn">
@@ -1028,7 +1158,7 @@
             </div>
             <div class="question-content">
               <textarea
-                class="answer-input"
+                class="question-input"
                 placeholder="Enter your True/False question here..."
                 rows="3"
               ></textarea>
@@ -1036,7 +1166,7 @@
           </div>
 
           <div class="answer-list">
-            <div class="question-header" style="margin: -15px -15px 15px -15px">
+            <div class="question-header" style="margin: -20px -20px 15px -20px">
               Select the correct answer
             </div>
 
@@ -1084,15 +1214,24 @@
             <option>Time: Normal time (15s)</option>
           </select>
 
-          <button class="action-btn duplicate-btn">
-            <i class="fas fa-copy"></i>
-            Duplicate slide
-          </button>
+          <div class="action-buttons">
+            <button class="action-btn add-slide-btn" onclick="handleAddSlide()">
+              <i class="fas fa-plus"></i>
+              Add Slide
+            </button>
+          </div>
 
-          <button class="action-btn delete-btn">
-            <i class="fas fa-trash"></i>
-            Delete slide
-          </button>
+          <div class="action-buttons">
+            <button class="action-btn duplicate-btn">
+              <i class="fas fa-copy"></i>
+              Duplicate slide
+            </button>
+
+            <button class="action-btn delete-btn">
+              <i class="fas fa-trash"></i>
+              Delete slide
+            </button>
+          </div>
         </div>
       </div>
 
@@ -1126,7 +1265,7 @@
         </div>
 
         <div class="form-section">
-          <div class="question-container">
+          <div class="question-section">
             <div class="question-header">
               Question
               <button class="generate-ai-btn">
@@ -1136,7 +1275,7 @@
             </div>
             <div class="question-content">
               <textarea
-                class="answer-input"
+                class="question-input"
                 placeholder="Enter your question here..."
                 rows="3"
               ></textarea>
@@ -1144,7 +1283,7 @@
           </div>
 
           <div class="answer-list">
-            <div class="question-header" style="margin: -15px -15px 15px -15px">
+            <div class="question-header" style="margin: -20px -20px 15px -20px">
               Add answers (select one correct answer)
               <button class="generate-ai-btn">
                 <i class="fas fa-robot"></i>
@@ -1154,38 +1293,38 @@
 
             <div class="answer-item">
               <input type="radio" name="single-choice" checked />
-              <input
-                type="text"
+              <textarea
                 class="answer-input"
                 placeholder="Correct answer"
-              />
+                rows="1"
+              ></textarea>
             </div>
 
             <div class="answer-item">
               <input type="radio" name="single-choice" />
-              <input
-                type="text"
+              <textarea
                 class="answer-input"
                 placeholder="Wrong answer"
-              />
+                rows="1"
+              ></textarea>
             </div>
 
             <div class="answer-item">
               <input type="radio" name="single-choice" />
-              <input
-                type="text"
+              <textarea
                 class="answer-input"
                 placeholder="Wrong answer"
-              />
+                rows="1"
+              ></textarea>
             </div>
 
             <div class="answer-item">
               <input type="radio" name="single-choice" />
-              <input
-                type="text"
+              <textarea
                 class="answer-input"
                 placeholder="Wrong answer"
-              />
+                rows="1"
+              ></textarea>
             </div>
           </div>
 
@@ -1212,15 +1351,24 @@
             <option>Time: Normal time (20s)</option>
           </select>
 
-          <button class="action-btn duplicate-btn">
-            <i class="fas fa-copy"></i>
-            Duplicate slide
-          </button>
+          <div class="action-buttons">
+            <button class="action-btn add-slide-btn" onclick="handleAddSlide()">
+              <i class="fas fa-plus"></i>
+              Add Slide
+            </button>
+          </div>
 
-          <button class="action-btn delete-btn">
-            <i class="fas fa-trash"></i>
-            Delete slide
-          </button>
+          <div class="action-buttons">
+            <button class="action-btn duplicate-btn">
+              <i class="fas fa-copy"></i>
+              Duplicate slide
+            </button>
+
+            <button class="action-btn delete-btn">
+              <i class="fas fa-trash"></i>
+              Delete slide
+            </button>
+          </div>
         </div>
       </div>
 
@@ -1254,7 +1402,7 @@
         </div>
 
         <div class="form-section">
-          <div class="question-container">
+          <div class="question-section">
             <div class="question-header">
               Question
               <button class="generate-ai-btn">
@@ -1264,7 +1412,7 @@
             </div>
             <div class="question-content">
               <textarea
-                class="answer-input"
+                class="question-input"
                 placeholder="Enter your question here..."
                 rows="3"
               ></textarea>
@@ -1272,7 +1420,7 @@
           </div>
 
           <div class="answer-list">
-            <div class="question-header" style="margin: -15px -15px 15px -15px">
+            <div class="question-header" style="margin: -20px -20px 15px -20px">
               Add answers (select all correct answers)
               <button class="generate-ai-btn">
                 <i class="fas fa-robot"></i>
@@ -1281,47 +1429,39 @@
             </div>
 
             <div class="answer-item">
-              <div class="answer-icon correct-icon">
-                <i class="fas fa-check"></i>
-              </div>
-              <input
-                type="text"
+              <input type="checkbox" name="multiple-choice" checked />
+              <textarea
                 class="answer-input"
                 placeholder="Correct answer"
-              />
+                rows="1"
+              ></textarea>
             </div>
 
             <div class="answer-item">
-              <div class="answer-icon incorrect-icon">
-                <i class="fas fa-times"></i>
-              </div>
-              <input
-                type="text"
+              <input type="checkbox" name="multiple-choice" />
+              <textarea
                 class="answer-input"
                 placeholder="Wrong answer"
-              />
+                rows="1"
+              ></textarea>
             </div>
 
             <div class="answer-item">
-              <div class="answer-icon correct-icon">
-                <i class="fas fa-check"></i>
-              </div>
-              <input
-                type="text"
-                class="answer-input"
-                placeholder="Correct answer"
-              />
-            </div>
-
-            <div class="answer-item">
-              <div class="answer-icon incorrect-icon">
-                <i class="fas fa-times"></i>
-              </div>
-              <input
-                type="text"
+              <input type="checkbox" name="multiple-choice" />
+              <textarea
                 class="answer-input"
                 placeholder="Wrong answer"
-              />
+                rows="1"
+              ></textarea>
+            </div>
+
+            <div class="answer-item">
+              <input type="checkbox" name="multiple-choice" />
+              <textarea
+                class="answer-input"
+                placeholder="Wrong answer"
+                rows="1"
+              ></textarea>
             </div>
           </div>
 
@@ -1348,15 +1488,24 @@
             <option>Time: Normal time (25s)</option>
           </select>
 
-          <button class="action-btn duplicate-btn">
-            <i class="fas fa-copy"></i>
-            Duplicate slide
-          </button>
+          <div class="action-buttons">
+            <button class="action-btn add-slide-btn" onclick="handleAddSlide()">
+              <i class="fas fa-plus"></i>
+              Add Slide
+            </button>
+          </div>
 
-          <button class="action-btn delete-btn">
-            <i class="fas fa-trash"></i>
-            Delete slide
-          </button>
+          <div class="action-buttons">
+            <button class="action-btn duplicate-btn">
+              <i class="fas fa-copy"></i>
+              Duplicate slide
+            </button>
+
+            <button class="action-btn delete-btn">
+              <i class="fas fa-trash"></i>
+              Delete slide
+            </button>
+          </div>
         </div>
       </div>
 
@@ -1489,15 +1638,24 @@
             <option>Time: Normal time (20s)</option>
           </select>
 
-          <button class="action-btn duplicate-btn">
-            <i class="fas fa-copy"></i>
-            Duplicate slide
-          </button>
+          <div class="action-buttons">
+            <button class="action-btn add-slide-btn" onclick="handleAddSlide()">
+              <i class="fas fa-plus"></i>
+              Add Slide
+            </button>
+          </div>
 
-          <button class="action-btn delete-btn">
-            <i class="fas fa-trash"></i>
-            Delete slide
-          </button>
+          <div class="action-buttons">
+            <button class="action-btn duplicate-btn">
+              <i class="fas fa-copy"></i>
+              Duplicate slide
+            </button>
+
+            <button class="action-btn delete-btn">
+              <i class="fas fa-trash"></i>
+              Delete slide
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -1525,6 +1683,7 @@
 
           // Khởi tạo chức năng upload media
           initializeMediaUpload();
+          initializeAutoResize();
 
           if (type === "reorder") {
             initializeDragAndDrop();
@@ -1551,7 +1710,174 @@
       };
 
       function handleAddSlide() {
-        console.log("Adding new slide...");
+        // Lấy modal đang mở
+        const activeModal = document.querySelector(
+          '.modal-content[style*="display: flex"]'
+        );
+        if (!activeModal) {
+          alert("Please select a slide type first");
+          return;
+        }
+
+        // Lấy loại slide
+        const slideType = activeModal.id.replace("-template", "");
+
+        // Lấy dữ liệu chung
+        const question = activeModal
+          .querySelector(".question-input")
+          .value.trim();
+        const funFact = activeModal
+          .querySelector(".fun-fact-section textarea")
+          .value.trim();
+        const questionVoice = activeModal.querySelector(
+          "select:first-of-type"
+        ).value;
+        const timeLimit = activeModal.querySelector(
+          "select:last-of-type"
+        ).value;
+
+        // Kiểm tra câu hỏi
+        if (!question) {
+          alert("Please enter a question");
+          return;
+        }
+
+        // Lấy media (nếu có)
+        const mediaPreview = activeModal.querySelector(".media-preview");
+        const mediaElement = mediaPreview.querySelector("img, video, audio");
+        const mediaData = mediaElement
+          ? {
+              type: mediaElement.tagName.toLowerCase(),
+              src: mediaElement.src,
+            }
+          : null;
+
+        // Khởi tạo đối tượng slide
+        const slideData = {
+          type: slideType,
+          question: question,
+          funFact: funFact,
+          questionVoice: questionVoice,
+          timeLimit: timeLimit,
+          media: mediaData,
+          answers: [],
+        };
+
+        // Xử lý câu trả lời theo từng loại slide
+        switch (slideType) {
+          case "true-false":
+            const selectedOption = activeModal.querySelector(
+              'input[name="true-false"]:checked'
+            );
+            if (!selectedOption) {
+              alert("Please select True or False");
+              return;
+            }
+            slideData.answers.push({
+              text: selectedOption.value,
+              isCorrect: true,
+            });
+            break;
+
+          case "single-choice":
+            const singleChoiceAnswers =
+              activeModal.querySelectorAll(".answer-item");
+            let hasCorrectAnswer = false;
+            singleChoiceAnswers.forEach((item) => {
+              const input = item.querySelector(".answer-input");
+              const isChecked = item.querySelector(
+                'input[type="radio"]'
+              ).checked;
+              if (input.value.trim()) {
+                slideData.answers.push({
+                  text: input.value.trim(),
+                  isCorrect: isChecked,
+                });
+                if (isChecked) hasCorrectAnswer = true;
+              }
+            });
+            if (slideData.answers.length < 2) {
+              alert("Please add at least 2 answers");
+              return;
+            }
+            if (!hasCorrectAnswer) {
+              alert("Please select a correct answer");
+              return;
+            }
+            break;
+
+          case "multiple-choice":
+            const multipleChoiceAnswers =
+              activeModal.querySelectorAll(".answer-item");
+            let hasCorrectAnswerMultiple = false;
+            multipleChoiceAnswers.forEach((item) => {
+              const input = item.querySelector(".answer-input");
+              const isChecked = item.querySelector(
+                'input[type="checkbox"]'
+              ).checked;
+              if (input.value.trim()) {
+                slideData.answers.push({
+                  text: input.value.trim(),
+                  isCorrect: isChecked,
+                });
+                if (isChecked) hasCorrectAnswerMultiple = true;
+              }
+            });
+            if (slideData.answers.length < 2) {
+              alert("Please add at least 2 answers");
+              return;
+            }
+            if (!hasCorrectAnswerMultiple) {
+              alert("Please select at least one correct answer");
+              return;
+            }
+            break;
+
+          case "fill-blank":
+            const mainAnswer = activeModal
+              .querySelector(".type-answer-settings .answer-input")
+              .value.trim();
+            if (!mainAnswer) {
+              alert("Please enter the main answer");
+              return;
+            }
+            slideData.answers.push({
+              text: mainAnswer,
+              isCorrect: true,
+            });
+
+            // Thêm các câu trả lời thay thế
+            const alternativeAnswers = activeModal.querySelectorAll(
+              ".alternative-answers .answer-input"
+            );
+            alternativeAnswers.forEach((input) => {
+              if (input.value.trim()) {
+                slideData.answers.push({
+                  text: input.value.trim(),
+                  isCorrect: true,
+                });
+              }
+            });
+
+            // Thêm các tùy chọn validation
+            slideData.validation = {
+              caseSensitive:
+                activeModal.querySelector("#case-sensitive").checked,
+              ignorePunctuation: activeModal.querySelector(
+                "#ignore-punctuation"
+              ).checked,
+            };
+            break;
+        }
+
+        // Hiển thị thông báo thành công
+        alert("Slide added successfully!");
+
+        // Đóng modal
+        closeModal();
+
+        // Log dữ liệu slide (có thể thay thế bằng API call để lưu vào database)
+        console.log("Slide Data:", slideData);
       }
 
       // Thêm chức năng kéo thả để sắp xếp
@@ -1690,6 +2016,12 @@
           removeBtn.addEventListener("click", () => {
             newAnswer.remove();
           });
+
+          const newInput = newAnswer.querySelector(".answer-input");
+          autoResizeTextarea(newInput);
+          newInput.addEventListener("input", function () {
+            autoResizeTextarea(this);
+          });
         });
 
         // Xử lý xóa câu trả lời thay thế
@@ -1753,6 +2085,54 @@
           }
         });
       }
+
+      // Cập nhật hàm autoResizeTextarea để xử lý cả input và textarea
+      function autoResizeTextarea(element) {
+        if (
+          element.tagName.toLowerCase() === "textarea" ||
+          element.classList.contains("answer-input")
+        ) {
+          element.style.height = "auto";
+          element.style.height = element.scrollHeight + "px";
+        }
+      }
+
+      // Cập nhật hàm initializeAutoResize để xử lý tất cả các input fields
+      function initializeAutoResize() {
+        // Question inputs
+        const questionInputs = document.querySelectorAll(".question-input");
+        questionInputs.forEach((input) => {
+          autoResizeTextarea(input);
+          input.addEventListener("input", function () {
+            autoResizeTextarea(this);
+          });
+        });
+
+        // Answer inputs
+        const answerInputs = document.querySelectorAll(".answer-input");
+        answerInputs.forEach((input) => {
+          autoResizeTextarea(input);
+          input.addEventListener("input", function () {
+            autoResizeTextarea(this);
+          });
+        });
+
+        // Fun fact inputs
+        const funFactInputs = document.querySelectorAll(
+          ".fun-fact-section textarea"
+        );
+        funFactInputs.forEach((input) => {
+          autoResizeTextarea(input);
+          input.addEventListener("input", function () {
+            autoResizeTextarea(this);
+          });
+        });
+      }
+
+      // Khởi tạo auto-resize khi trang được tải
+      document.addEventListener("DOMContentLoaded", function () {
+        initializeAutoResize();
+      });
     </script>
 
     <!-- Font Awesome for icons -->
