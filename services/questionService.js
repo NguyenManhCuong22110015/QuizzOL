@@ -22,6 +22,29 @@ export default {
                 .select('*')
                 .whereIn('id', questionIds);
                 
+            // Get media URLs for questions that have them
+            const mediaIds = questions
+                .map(q => q.img_url)
+                .filter(Boolean);
+                
+            if (mediaIds.length > 0) {
+                const media = await db('media')
+                    .select('id', 'url')
+                    .whereIn('id', mediaIds);
+                    
+                const mediaMap = media.reduce((acc, m) => {
+                    acc[m.id] = m.url;
+                    return acc;
+                }, {});
+                
+                // Attach media URLs to questions
+                questions.forEach(question => {
+                    if (question.img_url && mediaMap[question.img_url]) {
+                        question.imageUrl = mediaMap[question.img_url];
+                    }
+                });
+            }
+                
             return questions;
         }
         catch(error){

@@ -3,6 +3,7 @@ import quizService from '../services/quizService.js'
 import questionService from '../services/questionService.js'
 import answerService from '../services/answerService.js'
 import categoryService from '../services/categoryService.js'
+import quizController from '../controllers/quizController.js'
 const router = new Router()
 
 router.get('/quizzes', async (req, res) => {
@@ -23,23 +24,29 @@ router.get('/quizzes/:id', async (req, res) => {
 
     try {
         // Fetch the quiz details
-        const quiz = await quizService.getQuizById(quizId) || 0;
+        const quiz = await quizService.getQuizById(quizId);
+        
+        if (!quiz) {
+            return res.status(404).json({ error: 'Quiz not found' });
+        }
+
+        
 
         // Fetch all questions for the quiz
-        const questionList = await questionService.getQuestionsByQuizId(quizId) || 0;
+        const questionList = await questionService.getQuestionsByQuizId(quizId);
 
-        // Fetch answers for each question
-        const questionsWithAnswers = await Promise.all(
+        // Fetch options for each question
+        const questionsWithOptions = await Promise.all(
             questionList.map(async (question) => {
-                const answers = await answerService.getAnswersByQuestionId(question.id);
-                return { ...question, answers };
+                const options = await answerService.getAnswersByQuestionId(question.id);
+                return { ...question, options };
             })
         );
 
         // Combine the data
         const data = {
             quiz: quiz,
-            questions: questionsWithAnswers
+            questions: questionsWithOptions
         };
 
         res.json(data);
@@ -97,11 +104,7 @@ router.get('/do-test/:id', async (req, res) => {
 });
 
 
-router.get('/check-result', async (req, res) => {
-    //  const data = await quizService.getAllQuizs() || 0;
-     
-      res.render('quiz/checkResult')
-})
+router.get('/check-result/:id', quizController.checkResult)
 
 router.get('/all', async (req, res) => {
 

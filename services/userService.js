@@ -326,5 +326,16 @@ export default {
       console.error('Error in getUserStats:', error);
       throw error;
     }
+  },
+  async getUserById(userId) {
+    try {
+      return await db('user')
+        .where({ id: userId })
+        .first();
+    }
+    catch {
+      console.error('Error in getUserById:', error);
+      throw error;
+    }
   }
 };
