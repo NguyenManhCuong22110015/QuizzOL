@@ -378,24 +378,38 @@
             }
         }
     
-        function setupActionButtons() {
-            const editButtons = document.querySelectorAll('.btn-edit');
-            const deleteButtons = document.querySelectorAll('.btn-delete');
-    
-            editButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const id = button.getAttribute('data-id');
-                    openEditQuiz(id);
-                });
+    function setupActionButtons() {
+        const editButtons = document.querySelectorAll('.btn-edit');
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+
+        editButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const row = button.closest('tr');
+                const id = button.dataset.id;
+                const title = row.querySelector('td:nth-child(2)').innerText;
+                const description = row.querySelector('td:nth-child(3)').innerText;
+
+                document.getElementById('editQuizId').value = id;
+                document.getElementById('editQuizTitle').value = title;
+                document.getElementById('editQuizDescription').value = description;
+
+                editQuizModal.classList.add('show');
             });
-    
-            deleteButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const id = button.getAttribute('data-id');
-                    openDeleteQuiz(id);
-                });
+        });
+
+        deleteButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const row = button.closest('tr');
+                const id = button.dataset.id;
+                const title = row.querySelector('td:nth-child(2)').innerText;
+
+                currentQuizIdToDelete = id;
+                deleteQuizTitle.innerText = title;
+                deleteQuizModal.classList.add('show');
             });
-        }
+        });
+    }
+
     
         function setupRowActions(row) {
             const editButton = row.querySelector('.btn-edit');
@@ -411,4 +425,68 @@
                 openDeleteQuiz(id);
             });
         }
-    </script>
+    function addQuizToTable(title, description) {
+        const row = document.createElement('tr');
+        row.id = `quiz-${quizCounter}`;
+        row.innerHTML = `
+            <td>${quizCounter}</td>
+            <td class="quiz-title">${title}</td>
+            <td class="quiz-description">${description}</td>
+            <td>${getCurrentDate()}</td>
+            <td><span class="badge-updated today">Today</span></td>
+            <td class="actions-cell">
+                <button class="btn-edit" data-id="${quizCounter}" data-title="${title}" data-desc="${description}">
+                    <i class="fas fa-edit"></i>Edit
+                </button>
+                <button class="btn-delete" data-id="${quizCounter}" data-title="${title}">Delete</button>
+            </td>
+            <td>
+                <button class="btn-go">
+                    <i class="fas fa-question-circle"></i>Go
+                </button>
+            </td>
+        `;
+        quizTableBody.appendChild(row);
+        quizCounter++;
+        setupActionButtons(); // gán sự kiện cho các nút mới
+    }
+    function updateQuizInTable(id, title, description) {
+        const row = document.getElementById(`quiz-${id}`);
+        if (row) {
+            row.querySelector('.quiz-title').innerText = title;
+            row.querySelector('.quiz-description').innerText = description;
+            row.querySelector('.badge-updated').innerText = "Just now";
+        }
+    }
+    function deleteQuizFromTable(id) {
+        const row = document.getElementById(`quiz-${id}`);
+        if (row) {
+            row.remove();
+        }
+    }
+    function getCurrentDate() {
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const yy = String(today.getFullYear()).slice(2);
+        return `${dd}/${mm}/${yy}`;
+    }
+    function setupActionButtons() {
+    const editButtons = document.querySelectorAll('.btn-edit');
+    const deleteButtons = document.querySelectorAll('.btn-delete');
+
+    editButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            openEditQuiz(id);
+        });
+    });
+
+    deleteButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-id');
+            openDeleteQuiz(id);
+        });
+    });
+}
+</script>
