@@ -64,3 +64,373 @@
         </div>
     </div>
 </div>
+<script>
+    // DOM Elements
+document.addEventListener('DOMContentLoaded', function() {
+    // Sidebar functionality
+    const sidebar = document.querySelector('.sidebar');
+    const sidebarItems = document.querySelectorAll('.sidebar-item');
+    
+    // Initialize sidebar items
+    sidebarItems.forEach(item => {
+        item.addEventListener('click', function() {
+            sidebarItems.forEach(i => i.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+    
+    // Search functionality
+    const searchInput = document.querySelector('.search-bar input');
+    const clearSearch = document.querySelector('.clear-search');
+    
+    if (searchInput && clearSearch) {
+        searchInput.addEventListener('input', function() {
+            if (this.value.length > 0) {
+                clearSearch.style.display = 'block';
+            } else {
+                clearSearch.style.display = 'none';
+            }
+        });
+        
+        clearSearch.addEventListener('click', function() {
+            searchInput.value = '';
+            this.style.display = 'none';
+            searchInput.focus();
+        });
+    }
+    
+    // Dropdown functionality
+    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+    
+    dropdownToggles.forEach(toggle => {
+        toggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const dropdown = this.nextElementSibling;
+            
+            // Close all other dropdowns
+            document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                if (menu !== dropdown) {
+                    menu.style.display = 'none';
+                }
+            });
+            
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        });
+    });
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.style.display = 'none';
+        });
+    });
+    
+    // Quiz title editing
+    const quizTitle = document.querySelector('.quiz-title');
+    const quizTitleInput = document.getElementById('quiz-title-input');
+    
+    if (quizTitle && quizTitleInput) {
+        quizTitle.addEventListener('click', function() {
+            this.style.display = 'none';
+            quizTitleInput.style.display = 'block';
+            quizTitleInput.value = this.textContent.trim();
+            quizTitleInput.focus();
+        });
+        
+        quizTitleInput.addEventListener('blur', function() {
+            if (this.value.trim() !== '') {
+                quizTitle.textContent = this.value;
+            }
+            this.style.display = 'none';
+            quizTitle.style.display = 'block';
+            
+            // Show a toast notification for saving
+            showToast('Quiz title updated successfully', 'success');
+        });
+        
+        quizTitleInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                this.blur();
+            }
+        });
+    }
+    
+    // Question functionality
+    const questions = document.querySelectorAll('.question-card');
+    
+    questions.forEach(question => {
+        question.addEventListener('click', function() {
+            // Toggle question details or open question editor
+            // Implementation depends on your specific requirements
+        });
+    });
+    
+    // Answer options functionality
+    const answerOptions = document.querySelectorAll('.answer-option');
+    
+    answerOptions.forEach(option => {
+        option.addEventListener('click', function(e) {
+            e.stopPropagation(); // Prevent triggering question card click
+            
+            const questionAnswers = this.closest('.question-answers');
+            const options = questionAnswers.querySelectorAll('.answer-option');
+            
+            // Toggle correct/incorrect states
+            options.forEach(opt => {
+                opt.classList.remove('correct');
+            });
+            
+            this.classList.add('correct');
+            
+            // Show a toast notification
+            showToast('Correct answer set', 'success');
+        });
+    });
+    
+    // Add question button
+    const addQuestionBtn = document.querySelector('.add-question-btn');
+    
+    if (addQuestionBtn) {
+        addQuestionBtn.addEventListener('click', function() {
+            // Create a new question card
+            const newQuestion = createNewQuestion();
+            
+            // Add it to the questions container
+            const questionsSection = document.querySelector('.questions-section');
+            questionsSection.insertBefore(newQuestion, addQuestionBtn);
+            
+            // Show a toast notification
+            showToast('New question added', 'success');
+        });
+    }
+    
+    // Time and points dropdown functionality
+    setupTimePointsDropdowns();
+    
+    // Toggle switches
+    const toggleSwitches = document.querySelectorAll('.switch input');
+    
+    toggleSwitches.forEach(toggle => {
+        toggle.addEventListener('change', function() {
+            const settingName = this.getAttribute('data-setting');
+            const isChecked = this.checked;
+            
+            // Apply the setting
+            applySetting(settingName, isChecked);
+            
+            // Show a toast notification
+            showToast(`${settingName} ${isChecked ? 'enabled' : 'disabled'}`, 'info');
+        });
+    });
+    
+    // Initialize publish confirmation modal handling
+    initializeModals();
+});
+
+// Helper Functions
+function showToast(message, type = 'info') {
+    const toastContainer = document.querySelector('.toast-container') || createToastContainer();
+    
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `
+        <div class="toast-message">${message}</div>
+        <div class="toast-close">×</div>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }, 3000);
+    
+    // Close button functionality
+    toast.querySelector('.toast-close').addEventListener('click', function() {
+        toast.style.opacity = '0';
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    });
+}
+
+function createToastContainer() {
+    const container = document.createElement('div');
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+    return container;
+}
+
+function createNewQuestion() {
+    const questionCard = document.createElement('div');
+    questionCard.className = 'question-card';
+    
+    questionCard.innerHTML = `
+        <div class="question-title">New Question</div>
+        <div id="question-text" contenteditable="true">Enter your question here...</div>
+        <div class="question-answers">
+            <div class="answer-option">
+                <div class="answer-marker">A</div>
+                <div class="answer-text" contenteditable="true">Answer option 1</div>
+                <div class="answer-status"></div>
+            </div>
+            <div class="answer-option">
+                <div class="answer-marker">B</div>
+                <div class="answer-text" contenteditable="true">Answer option 2</div>
+                <div class="answer-status"></div>
+            </div>
+            <div class="answer-option">
+                <div class="answer-marker">C</div>
+                <div class="answer-text" contenteditable="true">Answer option 3</div>
+                <div class="answer-status"></div>
+            </div>
+            <div class="answer-option">
+                <div class="answer-marker">D</div>
+                <div class="answer-text" contenteditable="true">Answer option 4</div>
+                <div class="answer-status"></div>
+            </div>
+        </div>
+        <div class="question-edit-controls">
+            <button class="light-purple-button">
+                <i class="fas fa-plus"></i> Add Answer
+            </button>
+            <button class="light-purple-button">
+                <i class="fas fa-trash"></i> Delete
+            </button>
+        </div>
+    `;
+    
+    // Add event listeners to the new question card
+    const answerOptions = questionCard.querySelectorAll('.answer-option');
+    
+    answerOptions.forEach(option => {
+        option.addEventListener('click', function(e) {
+            e.stopPropagation();
+            
+            const questionAnswers = this.closest('.question-answers');
+            const options = questionAnswers.querySelectorAll('.answer-option');
+            
+            options.forEach(opt => {
+                opt.classList.remove('correct');
+            });
+            
+            this.classList.add('correct');
+            
+            showToast('Correct answer set', 'success');
+        });
+    });
+    
+    return questionCard;
+}
+
+function setupTimePointsDropdowns() {
+    const timeDropdownToggle = document.querySelector('.time-dropdown-toggle');
+    const pointDropdownToggle = document.querySelector('.point-dropdown-toggle');
+    
+    if (timeDropdownToggle) {
+        const timeDropdownItems = document.querySelectorAll('.time-menu .dropdown-item');
+        
+        timeDropdownItems.forEach(item => {
+            item.addEventListener('click', function() {
+                timeDropdownToggle.textContent = this.textContent;
+                showToast(`Time limit set to ${this.textContent}`, 'info');
+            });
+        });
+    }
+    
+    if (pointDropdownToggle) {
+        const pointDropdownItems = document.querySelectorAll('.point-menu .dropdown-item');
+        
+        pointDropdownItems.forEach(item => {
+            item.addEventListener('click', function() {
+                pointDropdownToggle.textContent = this.textContent;
+                showToast(`Points set to ${this.textContent}`, 'info');
+            });
+        });
+    }
+}
+
+function applySetting(settingName, value) {
+    // Apply settings based on the toggle switches
+    console.log(`Setting "${settingName}" changed to ${value}`);
+    // Implement specific settings behavior here
+}
+
+function initializeModals() {
+    // Create modal HTML if it doesn't exist
+    if (!document.querySelector('.publish-confirmation-modal')) {
+        const modalHtml = `
+            <div class="modal-overlay publish-confirmation-modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="modal-title">Xuất bản bài quiz</div>
+                        <div class="modal-close">×</div>
+                    </div>
+                    <div class="modal-body">
+                        <p>Bạn có chắc chắn muốn xuất bản bài quiz này?</p>
+                        <p>Sau khi xuất bản, bạn có thể chia sẻ hoạt động này với học sinh.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="light-purple-button cancel-btn">Hủy</button>
+                        <button class="purple-button confirm-btn">Xuất bản</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        const modalContainer = document.createElement('div');
+        modalContainer.innerHTML = modalHtml;
+        document.body.appendChild(modalContainer);
+    }
+    
+    // Get modal elements
+    const publishModal = document.querySelector('.publish-confirmation-modal');
+    const publishBtn = document.querySelector('.publish-btn');
+    const cancelBtn = document.querySelector('.cancel-btn');
+    const confirmBtn = document.querySelector('.confirm-btn');
+    const closeBtn = document.querySelector('.modal-close');
+    
+    // Show modal when publish button is clicked
+    if (publishBtn) {
+        publishBtn.addEventListener('click', function() {
+            publishModal.style.display = 'flex';
+        });
+    }
+    
+    // Close modal when cancel button is clicked
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', function() {
+            publishModal.style.display = 'none';
+        });
+    }
+    
+    // Confirm publish action
+    if (confirmBtn) {
+        confirmBtn.addEventListener('click', function() {
+            publishModal.style.display = 'none';
+            
+            // Implement publish action here
+            showToast('Quiz published successfully!', 'success');
+        });
+    }
+    
+    // Close button functionality
+    if (closeBtn) {
+        closeBtn.addEventListener('click', function() {
+            publishModal.style.display = 'none';
+        });
+    }
+    
+    // Close when clicking outside the modal
+    if (publishModal) {
+        publishModal.addEventListener('click', function(e) {
+            if (e.target === publishModal) {
+                publishModal.style.display = 'none';
+            }
+        });
+    }
+}
+</script>

@@ -4,7 +4,7 @@ import {Router} from 'express'
 const router = new Router()
 
 router.get('/', (req, res) => {
-    res.render('layouts/student', { 
+    res.render('student', { 
       title: 'Student Dashboard',
       layout: 'student'  
     });
@@ -12,7 +12,8 @@ router.get('/', (req, res) => {
 router.get('/editquiz', (req, res) => {
     res.render('quiz/editquiz', { 
       title: 'Student Dashboard',
-      layout: 'student'  
+      layout: 'student',
+      css:'editquiz.css'
     });
   });
 export default router
