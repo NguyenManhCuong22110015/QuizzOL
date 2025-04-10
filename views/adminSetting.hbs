@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cài đặt Hệ thống</title>
+    <link rel="stylesheet" href="/css/setting.css">
+</head>
+<body>
+    <div class="settings-container">
+        <h1>Cài đặt Hệ thống</h1>
+        <div class="settings-options">
+            <div class="setting-option card">
+                <h2>Thông báo hệ thống</h2>
+                <form action="/update-notifications" method="POST">
+                    <label class="switch">
+                        <input type="checkbox" name="enable-notifications" checked>
+                        <span class="slider round"></span>
+                    </label>
+                    <button type="submit" class="btn-save">Lưu cài đặt</button>
+                </form>
+            </div>
+
+            <div class="setting-option card">
+                <h2>Quản lý người dùng</h2>
+                <a href="/manage-users" class="btn-manage">Quản lý người dùng</a>
+            </div>
+
+            <div class="setting-option card">
+                <h2>Đổi mật khẩu</h2>
+                <form action="/update-password" method="POST">
+                    <label for="current-password">Mật khẩu hiện tại:</label>
+                    <input type="password" id="current-password" name="current-password" required>
+
+                    <label for="new-password">Mật khẩu mới:</label>
+                    <input type="password" id="new-password" name="new-password" required>
+
+                    <label for="confirm-password">Xác nhận mật khẩu:</label>
+                    <input type="password" id="confirm-password" name="confirm-password" required>
+
+                    <button type="submit" class="btn-save">Đổi mật khẩu</button>
+                </form>
+            </div>
+
+            <div class="setting-option card">
+                <h2>Cấu hình hệ thống</h2>
+                <form action="/update-system-settings" method="POST">
+                    <label for="site-name">Tên trang web:</label>
+                    <input type="text" id="site-name" name="site-name" value="{{siteName}}" required>
+
+                    <label for="maintenance-mode">Chế độ bảo trì:</label>
+                    <select name="maintenance-mode" id="maintenance-mode">
+                        <option value="off">Tắt</option>
+                        <option value="on">Bật</option>
+                    </select>
+
+                    <button type="submit" class="btn-save">Lưu cài đặt</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
