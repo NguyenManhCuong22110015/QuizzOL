@@ -25,4 +25,12 @@ router.get('/', (req, res) => {
       activePage: 'setting'     
     });
   }); 
+  router.get('/overview', (req, res) => {
+    res.render('overview', {
+      title: 'Admin Overview',
+      layout: 'admin',        
+      
+      activePage: 'overview'     
+    });
+  }); 
 export default router
