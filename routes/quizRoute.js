@@ -64,9 +64,7 @@ router.get('/quizzes/:id', async (req, res) => {
             return res.status(404).json({ error: 'Quiz not found' });
         }
 
-        
 
-        // Fetch all questions for the quiz
         const questionList = await questionService.getQuestionsByQuizId(quizId);
 
         // Fetch options for each question
