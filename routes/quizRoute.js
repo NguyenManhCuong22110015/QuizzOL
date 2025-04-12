@@ -3,7 +3,11 @@ import quizService from '../services/quizService.js'
 import questionService from '../services/questionService.js'
 import answerService from '../services/answerService.js'
 import categoryService from '../services/categoryService.js'
+import quizController from '../controllers/quizController.js'
+import pkg from 'passport';
+const { session } = pkg;
 const router = new Router()
+
 
 router.get('/quizzes', async (req, res) => {
     const data = await quizService.getAllQuizzes() || 0;
@@ -13,33 +17,70 @@ router.get('/quizzes', async (req, res) => {
 
 
 router.post('/quizzes', async (req, res) => {
-    const quiz = req.body
-    const data = await quizService.addQuiz(quiz) || 0
-    res.json(data)
-})
+    try {
+        const data = req.body;
+        const quiz = {
+            title: data.quizTitle,
+            description: data.quizDescription,
+            createdBy: session.userID || 1,
+            category: data.categoryId,
+            tag: data.tag,
+            time: new Date().toISOString().slice(0, 19).replace('T', ' '),
+            media: data.quizMedia
+        };
+
+        // Add the quiz to the database and get the inserted quiz ID
+        const quizId = await quizService.addQuiz(quiz) || 0;
+
+        // Get question from request body and add them to the quiz
+        const questions = data.questionList || [];
+
+        // Add quizId to each question object and add new question to the database
+        // This returns an array of inserted questions
+        const insertedQuestions = await questionService.addQuestions(quizId, questions) || 0;
+
+        // Now add options for each inserted question using their "option" property
+        await answerService.addOptionsForAllQuestions(questions, insertedQuestions) || 0;
+
+        res.json({
+            message: "Quiz created successfully",
+            quizId,
+            insertedQuestions
+        });
+    } catch (error) {
+        console.error('Error creating quiz:', error);
+        res.status(500).json({ error: 'Failed to create quiz' });
+    }
+});
 
 router.get('/quizzes/:id', async (req, res) => {
     const quizId = req.params.id;
 
     try {
         // Fetch the quiz details
-        const quiz = await quizService.getQuizById(quizId) || 0;
+        const quiz = await quizService.getQuizById(quizId);
+        
+        if (!quiz) {
+            return res.status(404).json({ error: 'Quiz not found' });
+        }
+
+        
 
         // Fetch all questions for the quiz
-        const questionList = await questionService.getQuestionsByQuizId(quizId) || 0;
+        const questionList = await questionService.getQuestionsByQuizId(quizId);
 
-        // Fetch answers for each question
-        const questionsWithAnswers = await Promise.all(
+        // Fetch options for each question
+        const questionsWithOptions = await Promise.all(
             questionList.map(async (question) => {
-                const answers = await answerService.getAnswersByQuestionId(question.id);
-                return { ...question, answers };
+                const options = await answerService.getAnswersByQuestionId(question.id);
+                return { ...question, options };
             })
         );
 
         // Combine the data
         const data = {
             quiz: quiz,
-            questions: questionsWithAnswers
+            questions: questionsWithOptions
         };
 
         res.json(data);
@@ -51,7 +92,7 @@ router.get('/quizzes/:id', async (req, res) => {
 
 
 
-router.post('/quizzes/:id', async (req, res) => {
+router.put('/quizzes/:id', async (req, res) => {
     const quizId = req.params.id
     const quiz = req.body
     const data = await quizService.updateQuiz(quizId, quiz) || 0
@@ -59,7 +100,7 @@ router.post('/quizzes/:id', async (req, res) => {
 })
 
 
-router.get('/quizzes/delete/:id', async (req, res) => {
+router.delete('/quizzes/:id', async (req, res) => {
     const quizId = req.params.id
     const data = await quizService.deleteQuiz(quizId) || 0
     res.json(data)
@@ -97,11 +138,7 @@ router.get('/do-test/:id', async (req, res) => {
 });
 
 
-router.get('/check-result', async (req, res) => {
-    //  const data = await quizService.getAllQuizs() || 0;
-     
-      res.render('quiz/checkResult')
-})
+router.get('/check-result/:id', quizController.checkResult)
 
 router.get('/all', async (req, res) => {
 

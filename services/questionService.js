@@ -22,6 +22,29 @@ export default {
                 .select('*')
                 .whereIn('id', questionIds);
                 
+            // Get media URLs for questions that have them
+            const mediaIds = questions
+                .map(q => q.img_url)
+                .filter(Boolean);
+                
+            if (mediaIds.length > 0) {
+                const media = await db('media')
+                    .select('id', 'url')
+                    .whereIn('id', mediaIds);
+                    
+                const mediaMap = media.reduce((acc, m) => {
+                    acc[m.id] = m.url;
+                    return acc;
+                }, {});
+                
+                // Attach media URLs to questions
+                questions.forEach(question => {
+                    if (question.img_url && mediaMap[question.img_url]) {
+                        question.imageUrl = mediaMap[question.img_url];
+                    }
+                });
+            }
+                
             return questions;
         }
         catch(error){
@@ -30,25 +53,32 @@ export default {
         }
     },
 
-    // Create questions and map them to the quiz
     async addQuestions(quizId, questions) {
-        return await db.transaction(async trx => {
+        return await db.transaction(async (trx) => {
             try {
-                // Insert questions into the question table
-                const questionIds = await trx('question')
-                    .insert(questions)
-                    .returning('id');
+                const insertedQuestions = [];
                 
-                // Prepare quiz_question mapping records
-                const mappings = questionIds.map(questionId => ({
+                // Insert each question individually to capture each inserted id
+                for (const question of questions) {
+                    const [id] = await trx('question').insert({
+                        content: question.content,
+                        type: question.type,
+                        img_url: question.img_url || null,
+                        points: question.points || 0
+                    });
+                    insertedQuestions.push({ id, ...question });
+                }
+    
+                // Prepare the quiz_question mapping records using every inserted question's id
+                const mappings = insertedQuestions.map((q) => ({
                     quiz_id: quizId,
-                    question_id: questionId
+                    question_id: q.id
                 }));
-                
-                // Insert the mappings
+    
+                // Insert all mappings at once
                 await trx('quiz_question').insert(mappings);
-                
-                return questionIds;
+    
+                return insertedQuestions;
             } catch (error) {
                 console.error('Error in addQuestions:', error);
                 throw error;
