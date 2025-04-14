@@ -33,4 +33,14 @@ router.get('/', (req, res) => {
       activePage: 'overview'     
     });
   }); 
+  router.get('/quizzes/:id/addquestion', (req, res) => {
+    const quizId = req.params.id;
+    res.render('addQuestion', {
+      title: 'Thêm câu hỏi',
+      layout: 'admin',
+      css:'addquestion',
+      quizId
+    });
+  });
+  
 export default router

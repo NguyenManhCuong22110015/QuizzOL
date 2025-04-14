@@ -1,0 +1,523 @@
+/* Reset và Cài đặt cơ bản */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f5f7fa;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 30px auto;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Header */
+.header {
+  padding: 25px 30px;
+  background: linear-gradient(to right, #3a7bd5, #00d2ff);
+  color: #fff;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.header h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* Content */
+.content {
+  padding: 30px;
+}
+
+/* Question Type Selector */
+.question-type-selector {
+  margin-bottom: 30px;
+}
+
+.question-type-selector h2 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #444;
+}
+
+.type-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.type-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 100px;
+  background-color: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.type-card i {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #666;
+}
+
+.type-card span {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.type-card:hover {
+  background-color: #e8f4ff;
+  border-color: #b9d9ff;
+}
+
+.type-card.active {
+  background-color: #e3f2fd;
+  border-color: #2196f3;
+  box-shadow: 0 0 10px rgba(33, 150, 243, 0.2);
+}
+
+.type-card.active i {
+  color: #2196f3;
+}
+
+/* Forms */
+.question-form-container {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 25px;
+  margin-bottom: 25px;
+}
+
+.question-form {
+  display: none;
+}
+
+.question-form.active {
+  display: block;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #444;
+}
+
+.form-hint {
+  font-size: 12px;
+  color: #888;
+  margin-top: 5px;
+}
+
+textarea,
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border 0.2s;
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+textarea:focus,
+input[type="text"]:focus,
+input[type="number"]:focus {
+  border-color: #3a7bd5;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(58, 123, 213, 0.2);
+}
+
+input.error,
+textarea.error {
+  border-color: #e53935;
+  background-color: #fff8f8;
+}
+
+/* Các lựa chọn cho câu hỏi trắc nghiệm */
+.options-container,
+.matching-container {
+  background-color: #fff;
+  border-radius: 6px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.options-container h3,
+.matching-container h3 {
+  font-size: 16px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 8px;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+}
+
+.option-item:hover {
+  background-color: #f1f8ff;
+}
+
+.option-input {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.option-input input[type="radio"] {
+  margin-right: 8px;
+}
+
+.option-input label {
+  margin: 0 10px 0 0;
+  font-size: 13px;
+  color: #666;
+  font-weight: normal;
+}
+
+.option-input input[type="text"] {
+  flex: 1;
+}
+
+.remove-option-btn,
+.remove-pair-btn {
+  background-color: transparent;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  font-size: 14px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 10px;
+  transition: all 0.2s;
+}
+
+.remove-option-btn:hover,
+.remove-pair-btn:hover {
+  background-color: #ffebee;
+  color: #e53935;
+}
+
+.add-option-btn,
+.add-answer-btn,
+.add-pair-btn {
+  background-color: transparent;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  color: #3a7bd5;
+  transition: all 0.2s;
+}
+
+.add-option-btn:hover,
+.add-answer-btn:hover,
+.add-pair-btn:hover {
+  background-color: #e3f2fd;
+  border-color: #2196f3;
+}
+
+.add-option-btn i,
+.add-answer-btn i,
+.add-pair-btn i {
+  margin-right: 4px;
+}
+
+/* Đúng/Sai */
+.true-false-options {
+  display: flex;
+  gap: 20px;
+}
+
+.true-false-options .option-item {
+  flex: 1;
+  justify-content: center;
+  padding: 15px;
+  cursor: pointer;
+}
+
+.true-false-options .option-item input[type="radio"] {
+  margin-right: 10px;
+}
+
+/* Matching */
+/* Matching */
+.matching-pair {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+}
+
+.matching-pair:hover {
+  background-color: #f1f8ff;
+}
+
+.matching-item {
+  flex: 1;
+}
+
+.matching-pair i {
+  margin: 0 15px;
+  color: #666;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.action-buttons button {
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancel-btn {
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  color: #666;
+}
+
+.cancel-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.save-btn {
+  background-color: #2196f3;
+  border: 1px solid #1e88e5;
+  color: white;
+}
+
+.save-btn:hover {
+  background-color: #1e88e5;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.save-add-more-btn {
+  background-color: #4caf50;
+  border: 1px solid #43a047;
+  color: white;
+}
+
+.save-add-more-btn:hover {
+  background-color: #43a047;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+      margin: 15px;
+      border-radius: 8px;
+  }
+  
+  .header {
+      padding: 20px;
+  }
+  
+  .content {
+      padding: 20px;
+  }
+  
+  .type-cards {
+      justify-content: center;
+  }
+  
+  .type-card {
+      width: 100px;
+      height: 90px;
+  }
+  
+  .question-form-container {
+      padding: 15px;
+  }
+  
+  .matching-pair {
+      flex-direction: column;
+      gap: 10px;
+  }
+  
+  .matching-pair i {
+      transform: rotate(90deg);
+      margin: 10px 0;
+  }
+  
+  .action-buttons {
+      flex-direction: column;
+  }
+  
+  .action-buttons button {
+      width: 100%;
+  }
+}
+
+/* Mobile Design */
+@media (max-width: 480px) {
+  .header h1 {
+      font-size: 20px;
+  }
+  
+  .type-card {
+      width: calc(50% - 8px);
+      height: 80px;
+  }
+  
+  .type-card i {
+      font-size: 20px;
+  }
+  
+  .type-card span {
+      font-size: 12px;
+  }
+  
+  .true-false-options {
+      flex-direction: column;
+      gap: 10px;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.question-form.active {
+  display: block;
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Focus states for accessibility */
+button:focus, 
+input:focus, 
+textarea:focus {
+  outline: 2px solid #2196f3;
+  outline-offset: 2px;
+}
+
+/* Better checkboxes and radio buttons */
+input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Word count for essay questions */
+.word-count {
+  font-size: 12px;
+  color: #888;
+  text-align: right;
+  margin-top: 5px;
+}
+
+/* File upload styling for image questions */
+.file-upload {
+  margin: 10px 0;
+}
+
+.file-upload-btn {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.file-upload-btn:hover {
+  background-color: #e3e3e3;
+}
+
+.file-name {
+  margin-left: 10px;
+  font-size: 13px;
+  color: #666;
+}
+
+/* Tooltip styles */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  margin-left: 5px;
+  color: #888;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  width: 200px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 4px;
+  padding: 8px;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 12px;
+  font-weight: normal;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}

@@ -18,6 +18,9 @@
                     <th class="column-small">#</th>
                     <th>Title</th>
                     <th>Description</th>
+                    <th>Category</th>
+                    <th>Tags</th>
+                    <th>Image</th>
                     <th>Created at</th>
                     <th>Updated</th>
                     <th>Actions</th>
@@ -25,124 +28,142 @@
                 </tr>
             </thead>
             <tbody id="quizTableBody">
-                <tr>
+                <tr id="quiz-1">
                     <td>1</td>
-                    <td>Táo Quan</td>
-                    <td>ha ha</td>
+                    <td class="quiz-title">Táo Quan</td>
+                    <td class="quiz-description">ha ha</td>
+                    <td class="quiz-category">Entertainment</td>
+                    <td class="quiz-tags">comedy, television</td>
+                    <td class="quiz-image"><img src="/api/placeholder/40/40" alt="Quiz thumbnail" class="quiz-thumbnail"></td>
                     <td>18/03/25</td>
                     <td><span class="badge-updated">2 days ago</span></td>
                     <td class="actions-cell">
-                        <button class="btn-edit" data-id="1" data-title="Táo Quan" data-desc="ha ha">
+                        <button class="btn-edit" data-id="1" data-title="Táo Quan" data-desc="ha ha" data-category="Entertainment" data-tags="comedy, television">
                             <i class="fas fa-edit"></i>
                             Edit
                         </button>
                         <button class="btn-delete" data-id="1" data-title="Táo Quan">Delete</button>
                     </td>
                     <td>
-                        <button class="btn-go">
+                        <a href="/admin/quizzes/1/addquestion" class="btn-go">
                             <i class="fas fa-question-circle"></i>
                             Go
-                        </button>
+                        </a>
                     </td>
                 </tr>
-                <tr>
+                <tr id="quiz-2">
                     <td>2</td>
-                    <td>33</td>
-                    <td>33</td>
+                    <td class="quiz-title">33</td>
+                    <td class="quiz-description">33</td>
+                    <td class="quiz-category">Math</td>
+                    <td class="quiz-tags">numbers</td>
+                    <td class="quiz-image"><img src="/api/placeholder/40/40" alt="Quiz thumbnail" class="quiz-thumbnail"></td>
                     <td>18/03/25</td>
                     <td><span class="badge-updated today">Today</span></td>
                     <td class="actions-cell">
-                        <button class="btn-edit" data-id="2" data-title="33" data-desc="33">
+                        <button class="btn-edit" data-id="2" data-title="33" data-desc="33" data-category="Math" data-tags="numbers">
                             <i class="fas fa-edit"></i>
                             Edit
                         </button>
                         <button class="btn-delete" data-id="2" data-title="33">Delete</button>
                     </td>
                     <td>
-                        <button class="btn-go">
+                        <a href="/admin/quizzes/2/addquestion" class="btn-go">
                             <i class="fas fa-question-circle"></i>
                             Go
-                        </button>
+                        </a>
                     </td>
                 </tr>
-                <tr>
+                <tr id="quiz-3">
                     <td>3</td>
-                    <td>te</td>
-                    <td>wew</td>
+                    <td class="quiz-title">te</td>
+                    <td class="quiz-description">wew</td>
+                    <td class="quiz-category">General</td>
+                    <td class="quiz-tags">test</td>
+                    <td class="quiz-image"><img src="/api/placeholder/40/40" alt="Quiz thumbnail" class="quiz-thumbnail"></td>
                     <td>18/03/25</td>
                     <td><span class="badge-updated">10 days ago</span></td>
                     <td class="actions-cell">
-                        <button class="btn-edit" data-id="3" data-title="te" data-desc="wew">
+                        <button class="btn-edit" data-id="3" data-title="te" data-desc="wew" data-category="General" data-tags="test">
                             <i class="fas fa-edit"></i>
                             Edit
                         </button>
                         <button class="btn-delete" data-id="3" data-title="te">Delete</button>
                     </td>
                     <td>
-                        <button class="btn-go">
+                        <a href="/admin/quizzes/3/addquestion" class="btn-go">
                             <i class="fas fa-question-circle"></i>
                             Go
-                        </button>
+                        </a>
                     </td>
                 </tr>
-                <tr>
+                <tr id="quiz-4">
                     <td>4</td>
-                    <td>1</td>
-                    <td>1</td>
+                    <td class="quiz-title">1</td>
+                    <td class="quiz-description">1</td>
+                    <td class="quiz-category">Other</td>
+                    <td class="quiz-tags">simple</td>
+                    <td class="quiz-image"><img src="/api/placeholder/40/40" alt="Quiz thumbnail" class="quiz-thumbnail"></td>
                     <td>18/03/25</td>
                     <td><span class="badge-updated">10 days ago</span></td>
                     <td class="actions-cell">
-                        <button class="btn-edit" data-id="4" data-title="1" data-desc="1">
+                        <button class="btn-edit" data-id="4" data-title="1" data-desc="1" data-category="Other" data-tags="simple">
                             <i class="fas fa-edit"></i>
                             Edit
                         </button>
                         <button class="btn-delete" data-id="4" data-title="1">Delete</button>
                     </td>
                     <td>
-                        <button class="btn-go">
+                        <a href="/admin/quizzes/4/addquestion" class="btn-go">
                             <i class="fas fa-question-circle"></i>
                             Go
-                        </button>
+                        </a>
                     </td>
                 </tr>
-                <tr>
+                <tr id="quiz-5">
                     <td>5</td>
-                    <td>Vòng quanh thế giới</td>
-                    <td>chuyến đi dài</td>
+                    <td class="quiz-title">Vòng quanh thế giới</td>
+                    <td class="quiz-description">chuyến đi dài</td>
+                    <td class="quiz-category">Geography</td>
+                    <td class="quiz-tags">travel, world</td>
+                    <td class="quiz-image"><img src="/api/placeholder/40/40" alt="Quiz thumbnail" class="quiz-thumbnail"></td>
                     <td>20/03/25</td>
                     <td><span class="badge-updated">4 days ago</span></td>
                     <td class="actions-cell">
-                        <button class="btn-edit" data-id="5" data-title="Vòng quanh thế giới" data-desc="chuyến đi dài">
+                        <button class="btn-edit" data-id="5" data-title="Vòng quanh thế giới" data-desc="chuyến đi dài" data-category="Geography" data-tags="travel, world">
                             <i class="fas fa-edit"></i>
                             Edit
                         </button>
                         <button class="btn-delete" data-id="5" data-title="Vòng quanh thế giới">Delete</button>
                     </td>
                     <td>
-                        <button class="btn-go">
+                        <a href="/admin/quizzes/5/addquestion" class="btn-go">
                             <i class="fas fa-question-circle"></i>
                             Go
-                        </button>
+                        </a>
                     </td>
                 </tr>
-                <tr>
+                <tr id="quiz-6">
                     <td>6</td>
-                    <td>Thế giới nayyy</td>
-                    <td>hia</td>
+                    <td class="quiz-title">Thế giới nayyy</td>
+                    <td class="quiz-description">hia</td>
+                    <td class="quiz-category">Geography</td>
+                    <td class="quiz-tags">world</td>
+                    <td class="quiz-image"><img src="/api/placeholder/40/40" alt="Quiz thumbnail" class="quiz-thumbnail"></td>
                     <td>20/03/25</td>
                     <td><span class="badge-updated">8 days ago</span></td>
                     <td class="actions-cell">
-                        <button class="btn-edit" data-id="6" data-title="Thế giới nayyy" data-desc="hia">
+                        <button class="btn-edit" data-id="6" data-title="Thế giới nayyy" data-desc="hia" data-category="Geography" data-tags="world">
                             <i class="fas fa-edit"></i>
                             Edit
                         </button>
                         <button class="btn-delete" data-id="6" data-title="Thế giới nayyy">Delete</button>
                     </td>
                     <td>
-                        <button class="btn-go">
+                        <a href="/admin/quizzes/6/addquestion" class="btn-go">
                             <i class="fas fa-question-circle"></i>
                             Go
-                        </button>
+                        </a>
                     </td>
                 </tr>
             </tbody>
@@ -166,6 +187,32 @@
                 <div class="form-group">
                     <label for="quizDescription">Description</label>
                     <textarea id="quizDescription" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="quizCategory">Category</label>
+                    <select id="quizCategory" required>
+                        <option value="">Select a category</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Math">Math</option>
+                        <option value="Science">Science</option>
+                        <option value="Geography">Geography</option>
+                        <option value="History">History</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Literature">Literature</option>
+                        <option value="General">General</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="quizTags">Tags</label>
+                    <input type="text" id="quizTags" placeholder="Enter tags separated by commas">
+                </div>
+                <div class="form-group">
+                    <label for="quizImage">Image</label>
+                    <div class="image-upload-container">
+                        <input type="file" id="quizImage" accept="image/*">
+                        <div class="image-preview" id="imagePreview"></div>
+                    </div>
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn-cancel">Cancel</button>
@@ -193,6 +240,34 @@
                 <div class="form-group">
                     <label for="editQuizDescription">Description</label>
                     <textarea id="editQuizDescription" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editQuizCategory">Category</label>
+                    <select id="editQuizCategory" required>
+                        <option value="">Select a category</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Math">Math</option>
+                        <option value="Science">Science</option>
+                        <option value="Geography">Geography</option>
+                        <option value="History">History</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Literature">Literature</option>
+                        <option value="General">General</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editQuizTags">Tags</label>
+                    <input type="text" id="editQuizTags" placeholder="Enter tags separated by commas">
+                </div>
+                <div class="form-group">
+                    <label for="editQuizImage">Image</label>
+                    <div class="image-upload-container">
+                        <input type="file" id="editQuizImage" accept="image/*">
+                        <div class="image-preview" id="editImagePreview">
+                            <img id="currentQuizImage" src="/api/placeholder/100/100" alt="Current quiz image">
+                        </div>
+                    </div>
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn-cancel">Cancel</button>
@@ -231,239 +306,206 @@
     </div>
     <div class="toast-progress"></div>
 </div>
+
 <script>
-        // DOM Elements
-        const addQuizBtn = document.getElementById('addQuizBtn');
-        const addQuizModal = document.getElementById('addQuizModal');
-        const editQuizModal = document.getElementById('editQuizModal');
-        const deleteQuizModal = document.getElementById('deleteQuizModal');
-        const toastNotification = document.getElementById('toastNotification');
-        const addQuizForm = document.getElementById('addQuizForm');
-        const editQuizForm = document.getElementById('editQuizForm');
-        const deleteQuizTitle = document.getElementById('deleteQuizTitle');
-        const confirmDeleteBtn = document.getElementById('confirmDelete');
-        const quizTableBody = document.getElementById('quizTableBody');
-        const closeButtons = document.querySelectorAll('.close, .btn-cancel');
-        const toastMessage = document.getElementById('toastMessage');
-    
-        // Current quiz ID to delete
-        let currentQuizIdToDelete = null;
-    
-        // Quiz counter for adding new quizzes
-        let quizCounter = document.querySelectorAll('#quizTableBody tr').length + 1;
-    
-        // Add Event Listeners
-        addQuizBtn.addEventListener('click', openAddQuizModal);
-        closeButtons.forEach(button => {
-            button.addEventListener('click', closeModals);
-        });
-    
-        // Setup edit and delete buttons
-        setupActionButtons();
-    
-        // Add Quiz Form Submit
-        addQuizForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const title = document.getElementById('quizTitle').value;
-            const description = document.getElementById('quizDescription').value;
-            
-            // Add new quiz to table
-            addQuizToTable(title, description);
+    // DOM Elements
+    const addQuizBtn = document.getElementById('addQuizBtn');
+    const addQuizModal = document.getElementById('addQuizModal');
+    const editQuizModal = document.getElementById('editQuizModal');
+    const deleteQuizModal = document.getElementById('deleteQuizModal');
+    const toastNotification = document.getElementById('toastNotification');
+    const addQuizForm = document.getElementById('addQuizForm');
+    const editQuizForm = document.getElementById('editQuizForm');
+    const deleteQuizTitle = document.getElementById('deleteQuizTitle');
+    const confirmDeleteBtn = document.getElementById('confirmDelete');
+    const quizTableBody = document.getElementById('quizTableBody');
+    const closeButtons = document.querySelectorAll('.close, .btn-cancel');
+    const toastMessage = document.getElementById('toastMessage');
+    const imagePreview = document.getElementById('imagePreview');
+    const editImagePreview = document.getElementById('editImagePreview');
+    const quizImage = document.getElementById('quizImage');
+    const editQuizImage = document.getElementById('editQuizImage');
+
+    // Current quiz ID to delete
+    let currentQuizIdToDelete = null;
+
+    // Quiz counter for adding new quizzes
+    let quizCounter = document.querySelectorAll('#quizTableBody tr').length + 1;
+
+    // Add Event Listeners
+    addQuizBtn.addEventListener('click', openAddQuizModal);
+    closeButtons.forEach(button => {
+        button.addEventListener('click', closeModals);
+    });
+
+    // Image preview handlers
+    quizImage.addEventListener('change', function() {
+        handleImagePreview(this, imagePreview);
+    });
+
+    editQuizImage.addEventListener('change', function() {
+        handleImagePreview(this, editImagePreview);
+    });
+
+    // Setup edit and delete buttons
+    setupActionButtons();
+
+    // Add Quiz Form Submit
+    addQuizForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const title = document.getElementById('quizTitle').value;
+        const description = document.getElementById('quizDescription').value;
+        const category = document.getElementById('quizCategory').value;
+        const tags = document.getElementById('quizTags').value;
+        
+        // Add new quiz to table
+        addQuizToTable(title, description, category, tags);
+        
+        // Close modal and show success notification
+        closeModals();
+        showToast('Quiz added successfully!');
+        
+        // Reset form
+        addQuizForm.reset();
+        imagePreview.innerHTML = '';
+    });
+
+    // Edit Quiz Form Submit
+    editQuizForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const id = document.getElementById('editQuizId').value;
+        const title = document.getElementById('editQuizTitle').value;
+        const description = document.getElementById('editQuizDescription').value;
+        const category = document.getElementById('editQuizCategory').value;
+        const tags = document.getElementById('editQuizTags').value;
+        
+        // Update quiz in table
+        updateQuizInTable(id, title, description, category, tags);
+        
+        // Close modal and show success notification
+        closeModals();
+        showToast('Quiz updated successfully!');
+    });
+
+    // Confirm Delete Button
+    confirmDeleteBtn.addEventListener('click', function() {
+        if (currentQuizIdToDelete) {
+            // Delete quiz from table
+            deleteQuizFromTable(currentQuizIdToDelete);
             
             // Close modal and show success notification
             closeModals();
-            showToast('Quiz added successfully!');
+            showToast('Quiz deleted successfully!');
             
-            // Reset form
-            addQuizForm.reset();
-        });
-    
-        // Edit Quiz Form Submit
-        editQuizForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const id = document.getElementById('editQuizId').value;
-            const title = document.getElementById('editQuizTitle').value;
-            const description = document.getElementById('editQuizDescription').value;
-            
-            // Update quiz in table
-            updateQuizInTable(id, title, description);
-            
-            // Close modal and show success notification
-            closeModals();
-            showToast('Quiz updated successfully!');
-        });
-    
-        // Confirm Delete Button
-        confirmDeleteBtn.addEventListener('click', function() {
-            if (currentQuizIdToDelete) {
-                // Delete quiz from table
-                deleteQuizFromTable(currentQuizIdToDelete);
-                
-                // Close modal and show success notification
-                closeModals();
-                showToast('Quiz deleted successfully!');
-                
-                currentQuizIdToDelete = null;
-            }
-        });
-    
-        // Functions
-        function openAddQuizModal() {
-            addQuizModal.classList.add('show');
+            currentQuizIdToDelete = null;
         }
-    
-        function openEditQuiz(id) {
-            const row = document.getElementById(`quiz-${id}`);
-            const title = row.querySelector('.quiz-title').innerText;
-            const description = row.querySelector('.quiz-description').innerText;
-    
-            document.getElementById('editQuizId').value = id;
-            document.getElementById('editQuizTitle').value = title;
-            document.getElementById('editQuizDescription').value = description;
-    
-            editQuizModal.classList.add('show');
-        }
-    
-        function openDeleteQuiz(id) {
-            currentQuizIdToDelete = id;
-            const row = document.getElementById(`quiz-${id}`);
-            const title = row.querySelector('.quiz-title').innerText;
-            deleteQuizTitle.innerText = `"${title}"`;
-            deleteQuizModal.classList.add('show');
-        }
-    
-        function closeModals() {
-            addQuizModal.classList.remove('show');
-            editQuizModal.classList.remove('show');
-            deleteQuizModal.classList.remove('show');
-        }
-    
-        function showToast(message) {
-            toastMessage.innerText = message;
-            toastNotification.classList.add('show');
-            setTimeout(() => {
-                toastNotification.classList.remove('show');
-            }, 3000);
-        }
-    
-        function addQuizToTable(title, description) {
-            const id = quizCounter++;
-            const row = document.createElement('tr');
-            row.id = `quiz-${id}`;
-            row.innerHTML = `
-                <td>${id}</td>
-                <td class="quiz-title">${title}</td>
-                <td class="quiz-description">${description}</td>
-                <td>
-                    <button class="btn-edit" data-id="${id}">Edit</button>
-                    <button class="btn-delete" data-id="${id}">Delete</button>
-                </td>
-            `;
-            quizTableBody.appendChild(row);
-            setupRowActions(row);
-        }
-    
-        function updateQuizInTable(id, title, description) {
-            const row = document.getElementById(`quiz-${id}`);
-            row.querySelector('.quiz-title').innerText = title;
-            row.querySelector('.quiz-description').innerText = description;
-        }
-    
-        function deleteQuizFromTable(id) {
-            const row = document.getElementById(`quiz-${id}`);
-            if (row) {
-                row.remove();
-            }
-        }
-    
-    function setupActionButtons() {
-        const editButtons = document.querySelectorAll('.btn-edit');
-        const deleteButtons = document.querySelectorAll('.btn-delete');
+    });
 
-        editButtons.forEach(button => {
-            button.addEventListener('click', function () {
-                const row = button.closest('tr');
-                const id = button.dataset.id;
-                const title = row.querySelector('td:nth-child(2)').innerText;
-                const description = row.querySelector('td:nth-child(3)').innerText;
-
-                document.getElementById('editQuizId').value = id;
-                document.getElementById('editQuizTitle').value = title;
-                document.getElementById('editQuizDescription').value = description;
-
-                editQuizModal.classList.add('show');
-            });
-        });
-
-        deleteButtons.forEach(button => {
-            button.addEventListener('click', function () {
-                const row = button.closest('tr');
-                const id = button.dataset.id;
-                const title = row.querySelector('td:nth-child(2)').innerText;
-
-                currentQuizIdToDelete = id;
-                deleteQuizTitle.innerText = title;
-                deleteQuizModal.classList.add('show');
-            });
-        });
+    // Functions
+    function openAddQuizModal() {
+        addQuizModal.classList.add('show');
     }
 
-    
-        function setupRowActions(row) {
-            const editButton = row.querySelector('.btn-edit');
-            const deleteButton = row.querySelector('.btn-delete');
-    
-            editButton.addEventListener('click', () => {
-                const id = editButton.getAttribute('data-id');
-                openEditQuiz(id);
-            });
-    
-            deleteButton.addEventListener('click', () => {
-                const id = deleteButton.getAttribute('data-id');
-                openDeleteQuiz(id);
-            });
+    function openEditQuiz(id) {
+        const row = document.getElementById(`quiz-${id}`);
+        const title = row.querySelector('.quiz-title').innerText;
+        const description = row.querySelector('.quiz-description').innerText;
+        const category = row.querySelector('.quiz-category').innerText;
+        const tags = row.querySelector('.quiz-tags').innerText;
+
+        document.getElementById('editQuizId').value = id;
+        document.getElementById('editQuizTitle').value = title;
+        document.getElementById('editQuizDescription').value = description;
+        document.getElementById('editQuizCategory').value = category;
+        document.getElementById('editQuizTags').value = tags;
+
+        editQuizModal.classList.add('show');
+    }
+
+    function openDeleteQuiz(id) {
+        currentQuizIdToDelete = id;
+        const row = document.getElementById(`quiz-${id}`);
+        const title = row.querySelector('.quiz-title').innerText;
+        deleteQuizTitle.innerText = title;
+        deleteQuizModal.classList.add('show');
+    }
+
+    function closeModals() {
+        addQuizModal.classList.remove('show');
+        editQuizModal.classList.remove('show');
+        deleteQuizModal.classList.remove('show');
+    }
+
+    function showToast(message) {
+        toastMessage.innerText = message;
+        toastNotification.classList.add('show');
+        setTimeout(() => {
+            toastNotification.classList.remove('show');
+        }, 3000);
+    }
+
+    function handleImagePreview(input, previewElement) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                previewElement.innerHTML = `<img src="${e.target.result}" alt="Image preview" class="preview-image">`;
+            }
+            
+            reader.readAsDataURL(input.files[0]);
         }
-    function addQuizToTable(title, description) {
+    }
+
+    function addQuizToTable(title, description, category, tags) {
         const row = document.createElement('tr');
         row.id = `quiz-${quizCounter}`;
         row.innerHTML = `
             <td>${quizCounter}</td>
             <td class="quiz-title">${title}</td>
             <td class="quiz-description">${description}</td>
+            <td class="quiz-category">${category}</td>
+            <td class="quiz-tags">${tags}</td>
+            <td class="quiz-image"><img src="/api/placeholder/40/40" alt="Quiz thumbnail" class="quiz-thumbnail"></td>
             <td>${getCurrentDate()}</td>
             <td><span class="badge-updated today">Today</span></td>
             <td class="actions-cell">
-                <button class="btn-edit" data-id="${quizCounter}" data-title="${title}" data-desc="${description}">
+                <button class="btn-edit" data-id="${quizCounter}" data-title="${title}" data-desc="${description}" data-category="${category}" data-tags="${tags}">
                     <i class="fas fa-edit"></i>Edit
                 </button>
                 <button class="btn-delete" data-id="${quizCounter}" data-title="${title}">Delete</button>
             </td>
             <td>
-                <button class="btn-go">
+                <a href="/admin/quizzes/${quizCounter}/addquestion" class="btn-go">
                     <i class="fas fa-question-circle"></i>Go
-                </button>
+                </a>
             </td>
         `;
         quizTableBody.appendChild(row);
         quizCounter++;
-        setupActionButtons(); // gán sự kiện cho các nút mới
+        setupActionButtons(); // Assign events to new buttons
     }
-    function updateQuizInTable(id, title, description) {
+    
+    function updateQuizInTable(id, title, description, category, tags) {
         const row = document.getElementById(`quiz-${id}`);
         if (row) {
             row.querySelector('.quiz-title').innerText = title;
             row.querySelector('.quiz-description').innerText = description;
+            row.querySelector('.quiz-category').innerText = category;
+            row.querySelector('.quiz-tags').innerText = tags;
             row.querySelector('.badge-updated').innerText = "Just now";
+            row.querySelector('.badge-updated').className = "badge-updated today";
         }
     }
+    
     function deleteQuizFromTable(id) {
         const row = document.getElementById(`quiz-${id}`);
         if (row) {
             row.remove();
         }
     }
+    
     function getCurrentDate() {
         const today = new Date();
         const dd = String(today.getDate()).padStart(2, '0');
@@ -471,22 +513,23 @@
         const yy = String(today.getFullYear()).slice(2);
         return `${dd}/${mm}/${yy}`;
     }
+    
     function setupActionButtons() {
-    const editButtons = document.querySelectorAll('.btn-edit');
-    const deleteButtons = document.querySelectorAll('.btn-delete');
+        const editButtons = document.querySelectorAll('.btn-edit');
+        const deleteButtons = document.querySelectorAll('.btn-delete');
 
-    editButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const id = btn.getAttribute('data-id');
-            openEditQuiz(id);
+        editButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                openEditQuiz(id);
+            });
         });
-    });
 
-    deleteButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const id = btn.getAttribute('data-id');
-            openDeleteQuiz(id);
+        deleteButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                openDeleteQuiz(id);
+            });
         });
-    });
-}
+    }
 </script>

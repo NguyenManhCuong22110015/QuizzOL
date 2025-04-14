@@ -1,436 +1,535 @@
-<div class="container">
-    <div class="quiz-card">
-        <div class="d-flex align-items-center">
-            <div class="quiz-image-container">
-                <img src="https://placehold.co/50x50/ADD8E6/FFFFFF?text=Q" alt="Quiz Image" class="quiz-image">
-            </div>
-            <div>
-                <h5 class="quiz-title">Bài Quiz không có tiêu đề <span class="draft-label">Bản thảo</span></h5>
-                <div class="quiz-details">
-                    <span><i class="fas fa-edit"></i> Đánh giá</span>
-                    <span><i class="fas fa-user"></i> Nguyen Cuong</span>
+<div class="content-wrapper">
+    <div class="page-header">
+        <div class="page-title">
+            <h1>Quizzes</h1>
+            <p>Manage your quizzes and questions</p>
+        </div>
+        <button class="btn-add-quiz" id="addQuizBtn">
+            <i class="fas fa-plus"></i>
+            Add Quiz
+        </button>
+    </div>
+
+    <!-- Quiz Table -->
+    <div class="table-responsive">
+        <table class="quiz-table">
+            <thead>
+                <tr>
+                    <th class="column-small">#</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Tags</th>
+                    <th>Image</th>
+                    <th>Created at</th>
+                    <th>Updated</th>
+                    <th>Actions</th>
+                    <th>Questions</th>
+                </tr>
+            </thead>
+            <tbody id="quizTableBody">
+                <tr id="quiz-1">
+                    <td>1</td>
+                    <td class="quiz-title">Táo Quan</td>
+                    <td class="quiz-description">ha ha</td>
+                    <td class="quiz-category">Entertainment</td>
+                    <td class="quiz-tags">comedy, television</td>
+                    <td class="quiz-image"><img src="/api/placeholder/40/40" alt="Quiz thumbnail" class="quiz-thumbnail"></td>
+                    <td>18/03/25</td>
+                    <td><span class="badge-updated">2 days ago</span></td>
+                    <td class="actions-cell">
+                        <button class="btn-edit" data-id="1" data-title="Táo Quan" data-desc="ha ha" data-category="Entertainment" data-tags="comedy, television">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="btn-delete" data-id="1" data-title="Táo Quan">Delete</button>
+                    </td>
+                    <td>
+                        <a href="/student/editquiz/1/addquestion" class="btn-go">
+                            <i class="fas fa-question-circle"></i>
+                            Go
+                        </a>
+                    </td>
+                </tr>
+                <tr id="quiz-2">
+                    <td>2</td>
+                    <td class="quiz-title">33</td>
+                    <td class="quiz-description">33</td>
+                    <td class="quiz-category">Math</td>
+                    <td class="quiz-tags">numbers</td>
+                    <td class="quiz-image"><img src="/api/placeholder/40/40" alt="Quiz thumbnail" class="quiz-thumbnail"></td>
+                    <td>18/03/25</td>
+                    <td><span class="badge-updated today">Today</span></td>
+                    <td class="actions-cell">
+                        <button class="btn-edit" data-id="2" data-title="33" data-desc="33" data-category="Math" data-tags="numbers">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="btn-delete" data-id="2" data-title="33">Delete</button>
+                    </td>
+                    <td>
+                        <a href="/student/editquiz/2/addquestion" class="btn-go">
+                            <i class="fas fa-question-circle"></i>
+                            Go
+                        </a>
+                    </td>
+                </tr>
+                <tr id="quiz-3">
+                    <td>3</td>
+                    <td class="quiz-title">te</td>
+                    <td class="quiz-description">wew</td>
+                    <td class="quiz-category">General</td>
+                    <td class="quiz-tags">test</td>
+                    <td class="quiz-image"><img src="/api/placeholder/40/40" alt="Quiz thumbnail" class="quiz-thumbnail"></td>
+                    <td>18/03/25</td>
+                    <td><span class="badge-updated">10 days ago</span></td>
+                    <td class="actions-cell">
+                        <button class="btn-edit" data-id="3" data-title="te" data-desc="wew" data-category="General" data-tags="test">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="btn-delete" data-id="3" data-title="te">Delete</button>
+                    </td>
+                    <td>
+                        <a href="/student/editquiz3/addquestion" class="btn-go">
+                            <i class="fas fa-question-circle"></i>
+                            Go
+                        </a>
+                    </td>
+                </tr>
+                <tr id="quiz-4">
+                    <td>4</td>
+                    <td class="quiz-title">1</td>
+                    <td class="quiz-description">1</td>
+                    <td class="quiz-category">Other</td>
+                    <td class="quiz-tags">simple</td>
+                    <td class="quiz-image"><img src="/api/placeholder/40/40" alt="Quiz thumbnail" class="quiz-thumbnail"></td>
+                    <td>18/03/25</td>
+                    <td><span class="badge-updated">10 days ago</span></td>
+                    <td class="actions-cell">
+                        <button class="btn-edit" data-id="4" data-title="1" data-desc="1" data-category="Other" data-tags="simple">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="btn-delete" data-id="4" data-title="1">Delete</button>
+                    </td>
+                    <td>
+                        <a href="/student/editquizaddquestion" class="btn-go">
+                            <i class="fas fa-question-circle"></i>
+                            Go
+                        </a>
+                    </td>
+                </tr>
+                <tr id="quiz-5">
+                    <td>5</td>
+                    <td class="quiz-title">Vòng quanh thế giới</td>
+                    <td class="quiz-description">chuyến đi dài</td>
+                    <td class="quiz-category">Geography</td>
+                    <td class="quiz-tags">travel, world</td>
+                    <td class="quiz-image"><img src="/api/placeholder/40/40" alt="Quiz thumbnail" class="quiz-thumbnail"></td>
+                    <td>20/03/25</td>
+                    <td><span class="badge-updated">4 days ago</span></td>
+                    <td class="actions-cell">
+                        <button class="btn-edit" data-id="5" data-title="Vòng quanh thế giới" data-desc="chuyến đi dài" data-category="Geography" data-tags="travel, world">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="btn-delete" data-id="5" data-title="Vòng quanh thế giới">Delete</button>
+                    </td>
+                    <td>
+                        <a href="/student/editquiz5/addquestion" class="btn-go">
+                            <i class="fas fa-question-circle"></i>
+                            Go
+                        </a>
+                    </td>
+                </tr>
+                <tr id="quiz-6">
+                    <td>6</td>
+                    <td class="quiz-title">Thế giới nayyy</td>
+                    <td class="quiz-description">hia</td>
+                    <td class="quiz-category">Geography</td>
+                    <td class="quiz-tags">world</td>
+                    <td class="quiz-image"><img src="/api/placeholder/40/40" alt="Quiz thumbnail" class="quiz-thumbnail"></td>
+                    <td>20/03/25</td>
+                    <td><span class="badge-updated">8 days ago</span></td>
+                    <td class="actions-cell">
+                        <button class="btn-edit" data-id="6" data-title="Thế giới nayyy" data-desc="hia" data-category="Geography" data-tags="world">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="btn-delete" data-id="6" data-title="Thế giới nayyy">Delete</button>
+                    </td>
+                    <td>
+                        <a href="/student/editquiz6/addquestion" class="btn-go">
+                            <i class="fas fa-question-circle"></i>
+                            Go
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Quiz Modal -->
+<div id="addQuizModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Add New Quiz</h2>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="addQuizForm">
+                <div class="form-group">
+                    <label for="quizTitle">Title</label>
+                    <input type="text" id="quizTitle" required>
                 </div>
-            </div>
-        </div>
-        <div class="action-buttons mt-3">
-            <button class="btn btn-light btn-sm"><i class="fas fa-save"></i> Lưu</button>
-            <button class="btn btn-light btn-sm"><i class="fas fa-share"></i> Chia sẻ <i class="fas fa-caret-down"></i></button>
-            <button class="btn btn-light btn-sm"><i class="fas fa-table"></i> Bảng tính</button>
-            <button class="btn btn-light btn-sm"><i class="fas fa-ellipsis-v"></i></button>
-            <button class="light-purple-button btn-sm"><i class="fas fa-edit"></i> Chỉnh sửa</button>
-            <button class="purple-button btn-sm"><i class="fas fa-upload"></i> Xuất bản</button>
-        </div>
-    </div>
-    
-    <div class="draft-info-card">
-        <p><i class="fas fa-info-circle"></i> Đây là bản nháp</p>
-        <p>Xuất bản hoạt động này để có thể chia sẻ với học sinh của bạn</p>
-    </div>
-    
-    <div class="questions-section">
-        <h5>1 CÂU HỎI</h5>
-        <div class="question-card">
-            <h6 class="question-title">1. NHIỀU LỰA CHỌN</h6>
-            <p>as</p>
-        </div>
-    </div>
-    
-    <div class="question-options">
-        <div class="d-flex justify-content-between align-items-center">
-            <div></div>
-            <div class="toggle-options">
-                Hiển thị các phương án trả lời
-                <label class="switch">
-                    <input type="checkbox">
-                    <span class="slider"></span>
-                </label>
-            </div>
-        </div>
-        <div class="d-flex justify-content-between align-items-center mt-2">
-            <div></div>
-            <div class="question-time">
-                30 sec • 1 pt
-            </div>
-        </div>
-    </div>
-    
-    <div class="similar-activities">
-        <h5>Hoạt động tương tự</h5>
-        <div class="similar-activity-card">
-            <p>Tạo hoạt động phù hợp với nhu cầu của bạn bằng cách sử dụng</p>
-        </div>
-        <div class="d-flex justify-content-end">
-            <button class="btn btn-light btn-sm">Xem thêm ></button>
+                <div class="form-group">
+                    <label for="quizDescription">Description</label>
+                    <textarea id="quizDescription" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="quizCategory">Category</label>
+                    <select id="quizCategory" required>
+                        <option value="">Select a category</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Math">Math</option>
+                        <option value="Science">Science</option>
+                        <option value="Geography">Geography</option>
+                        <option value="History">History</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Literature">Literature</option>
+                        <option value="General">General</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="quizTags">Tags</label>
+                    <input type="text" id="quizTags" placeholder="Enter tags separated by commas">
+                </div>
+                <div class="form-group">
+                    <label for="quizImage">Image</label>
+                    <div class="image-upload-container">
+                        <input type="file" id="quizImage" accept="image/*">
+                        <div class="image-preview" id="imagePreview"></div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel">Cancel</button>
+                    <button type="submit" class="btn-submit">Add Quiz</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-<script>
-    // DOM Elements
-document.addEventListener('DOMContentLoaded', function() {
-    // Sidebar functionality
-    const sidebar = document.querySelector('.sidebar');
-    const sidebarItems = document.querySelectorAll('.sidebar-item');
-    
-    // Initialize sidebar items
-    sidebarItems.forEach(item => {
-        item.addEventListener('click', function() {
-            sidebarItems.forEach(i => i.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
-    
-    // Search functionality
-    const searchInput = document.querySelector('.search-bar input');
-    const clearSearch = document.querySelector('.clear-search');
-    
-    if (searchInput && clearSearch) {
-        searchInput.addEventListener('input', function() {
-            if (this.value.length > 0) {
-                clearSearch.style.display = 'block';
-            } else {
-                clearSearch.style.display = 'none';
-            }
-        });
-        
-        clearSearch.addEventListener('click', function() {
-            searchInput.value = '';
-            this.style.display = 'none';
-            searchInput.focus();
-        });
-    }
-    
-    // Dropdown functionality
-    const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
-    
-    dropdownToggles.forEach(toggle => {
-        toggle.addEventListener('click', function(e) {
-            e.stopPropagation();
-            const dropdown = this.nextElementSibling;
-            
-            // Close all other dropdowns
-            document.querySelectorAll('.dropdown-menu').forEach(menu => {
-                if (menu !== dropdown) {
-                    menu.style.display = 'none';
-                }
-            });
-            
-            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-        });
-    });
-    
-    // Close dropdowns when clicking outside
-    document.addEventListener('click', function() {
-        document.querySelectorAll('.dropdown-menu').forEach(menu => {
-            menu.style.display = 'none';
-        });
-    });
-    
-    // Quiz title editing
-    const quizTitle = document.querySelector('.quiz-title');
-    const quizTitleInput = document.getElementById('quiz-title-input');
-    
-    if (quizTitle && quizTitleInput) {
-        quizTitle.addEventListener('click', function() {
-            this.style.display = 'none';
-            quizTitleInput.style.display = 'block';
-            quizTitleInput.value = this.textContent.trim();
-            quizTitleInput.focus();
-        });
-        
-        quizTitleInput.addEventListener('blur', function() {
-            if (this.value.trim() !== '') {
-                quizTitle.textContent = this.value;
-            }
-            this.style.display = 'none';
-            quizTitle.style.display = 'block';
-            
-            // Show a toast notification for saving
-            showToast('Quiz title updated successfully', 'success');
-        });
-        
-        quizTitleInput.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                this.blur();
-            }
-        });
-    }
-    
-    // Question functionality
-    const questions = document.querySelectorAll('.question-card');
-    
-    questions.forEach(question => {
-        question.addEventListener('click', function() {
-            // Toggle question details or open question editor
-            // Implementation depends on your specific requirements
-        });
-    });
-    
-    // Answer options functionality
-    const answerOptions = document.querySelectorAll('.answer-option');
-    
-    answerOptions.forEach(option => {
-        option.addEventListener('click', function(e) {
-            e.stopPropagation(); // Prevent triggering question card click
-            
-            const questionAnswers = this.closest('.question-answers');
-            const options = questionAnswers.querySelectorAll('.answer-option');
-            
-            // Toggle correct/incorrect states
-            options.forEach(opt => {
-                opt.classList.remove('correct');
-            });
-            
-            this.classList.add('correct');
-            
-            // Show a toast notification
-            showToast('Correct answer set', 'success');
-        });
-    });
-    
-    // Add question button
-    const addQuestionBtn = document.querySelector('.add-question-btn');
-    
-    if (addQuestionBtn) {
-        addQuestionBtn.addEventListener('click', function() {
-            // Create a new question card
-            const newQuestion = createNewQuestion();
-            
-            // Add it to the questions container
-            const questionsSection = document.querySelector('.questions-section');
-            questionsSection.insertBefore(newQuestion, addQuestionBtn);
-            
-            // Show a toast notification
-            showToast('New question added', 'success');
-        });
-    }
-    
-    // Time and points dropdown functionality
-    setupTimePointsDropdowns();
-    
-    // Toggle switches
-    const toggleSwitches = document.querySelectorAll('.switch input');
-    
-    toggleSwitches.forEach(toggle => {
-        toggle.addEventListener('change', function() {
-            const settingName = this.getAttribute('data-setting');
-            const isChecked = this.checked;
-            
-            // Apply the setting
-            applySetting(settingName, isChecked);
-            
-            // Show a toast notification
-            showToast(`${settingName} ${isChecked ? 'enabled' : 'disabled'}`, 'info');
-        });
-    });
-    
-    // Initialize publish confirmation modal handling
-    initializeModals();
-});
 
-// Helper Functions
-function showToast(message, type = 'info') {
-    const toastContainer = document.querySelector('.toast-container') || createToastContainer();
-    
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.innerHTML = `
-        <div class="toast-message">${message}</div>
-        <div class="toast-close">×</div>
-    `;
-    
-    toastContainer.appendChild(toast);
-    
-    // Auto remove after 3 seconds
-    setTimeout(() => {
-        toast.style.opacity = '0';
-        setTimeout(() => {
-            toast.remove();
-        }, 300);
-    }, 3000);
-    
-    // Close button functionality
-    toast.querySelector('.toast-close').addEventListener('click', function() {
-        toast.style.opacity = '0';
-        setTimeout(() => {
-            toast.remove();
-        }, 300);
-    });
-}
-
-function createToastContainer() {
-    const container = document.createElement('div');
-    container.className = 'toast-container';
-    document.body.appendChild(container);
-    return container;
-}
-
-function createNewQuestion() {
-    const questionCard = document.createElement('div');
-    questionCard.className = 'question-card';
-    
-    questionCard.innerHTML = `
-        <div class="question-title">New Question</div>
-        <div id="question-text" contenteditable="true">Enter your question here...</div>
-        <div class="question-answers">
-            <div class="answer-option">
-                <div class="answer-marker">A</div>
-                <div class="answer-text" contenteditable="true">Answer option 1</div>
-                <div class="answer-status"></div>
-            </div>
-            <div class="answer-option">
-                <div class="answer-marker">B</div>
-                <div class="answer-text" contenteditable="true">Answer option 2</div>
-                <div class="answer-status"></div>
-            </div>
-            <div class="answer-option">
-                <div class="answer-marker">C</div>
-                <div class="answer-text" contenteditable="true">Answer option 3</div>
-                <div class="answer-status"></div>
-            </div>
-            <div class="answer-option">
-                <div class="answer-marker">D</div>
-                <div class="answer-text" contenteditable="true">Answer option 4</div>
-                <div class="answer-status"></div>
-            </div>
+<!-- Edit Quiz Modal -->
+<div id="editQuizModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Edit Quiz</h2>
+            <span class="close">&times;</span>
         </div>
-        <div class="question-edit-controls">
-            <button class="light-purple-button">
-                <i class="fas fa-plus"></i> Add Answer
-            </button>
-            <button class="light-purple-button">
-                <i class="fas fa-trash"></i> Delete
-            </button>
-        </div>
-    `;
-    
-    // Add event listeners to the new question card
-    const answerOptions = questionCard.querySelectorAll('.answer-option');
-    
-    answerOptions.forEach(option => {
-        option.addEventListener('click', function(e) {
-            e.stopPropagation();
-            
-            const questionAnswers = this.closest('.question-answers');
-            const options = questionAnswers.querySelectorAll('.answer-option');
-            
-            options.forEach(opt => {
-                opt.classList.remove('correct');
-            });
-            
-            this.classList.add('correct');
-            
-            showToast('Correct answer set', 'success');
-        });
-    });
-    
-    return questionCard;
-}
-
-function setupTimePointsDropdowns() {
-    const timeDropdownToggle = document.querySelector('.time-dropdown-toggle');
-    const pointDropdownToggle = document.querySelector('.point-dropdown-toggle');
-    
-    if (timeDropdownToggle) {
-        const timeDropdownItems = document.querySelectorAll('.time-menu .dropdown-item');
-        
-        timeDropdownItems.forEach(item => {
-            item.addEventListener('click', function() {
-                timeDropdownToggle.textContent = this.textContent;
-                showToast(`Time limit set to ${this.textContent}`, 'info');
-            });
-        });
-    }
-    
-    if (pointDropdownToggle) {
-        const pointDropdownItems = document.querySelectorAll('.point-menu .dropdown-item');
-        
-        pointDropdownItems.forEach(item => {
-            item.addEventListener('click', function() {
-                pointDropdownToggle.textContent = this.textContent;
-                showToast(`Points set to ${this.textContent}`, 'info');
-            });
-        });
-    }
-}
-
-function applySetting(settingName, value) {
-    // Apply settings based on the toggle switches
-    console.log(`Setting "${settingName}" changed to ${value}`);
-    // Implement specific settings behavior here
-}
-
-function initializeModals() {
-    // Create modal HTML if it doesn't exist
-    if (!document.querySelector('.publish-confirmation-modal')) {
-        const modalHtml = `
-            <div class="modal-overlay publish-confirmation-modal" style="display: none;">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <div class="modal-title">Xuất bản bài quiz</div>
-                        <div class="modal-close">×</div>
-                    </div>
-                    <div class="modal-body">
-                        <p>Bạn có chắc chắn muốn xuất bản bài quiz này?</p>
-                        <p>Sau khi xuất bản, bạn có thể chia sẻ hoạt động này với học sinh.</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="light-purple-button cancel-btn">Hủy</button>
-                        <button class="purple-button confirm-btn">Xuất bản</button>
+        <div class="modal-body">
+            <form id="editQuizForm">
+                <input type="hidden" id="editQuizId">
+                <div class="form-group">
+                    <label for="editQuizTitle">Title</label>
+                    <input type="text" id="editQuizTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="editQuizDescription">Description</label>
+                    <textarea id="editQuizDescription" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editQuizCategory">Category</label>
+                    <select id="editQuizCategory" required>
+                        <option value="">Select a category</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Math">Math</option>
+                        <option value="Science">Science</option>
+                        <option value="Geography">Geography</option>
+                        <option value="History">History</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Literature">Literature</option>
+                        <option value="General">General</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editQuizTags">Tags</label>
+                    <input type="text" id="editQuizTags" placeholder="Enter tags separated by commas">
+                </div>
+                <div class="form-group">
+                    <label for="editQuizImage">Image</label>
+                    <div class="image-upload-container">
+                        <input type="file" id="editQuizImage" accept="image/*">
+                        <div class="image-preview" id="editImagePreview">
+                            <img id="currentQuizImage" src="/api/placeholder/100/100" alt="Current quiz image">
+                        </div>
                     </div>
                 </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel">Cancel</button>
+                    <button type="submit" class="btn-submit">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Quiz Modal -->
+<div id="deleteQuizModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Delete Quiz</h2>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete the quiz "<span id="deleteQuizTitle"></span>"?</p>
+            <p class="warning-text">This action cannot be undone.</p>
+            <div class="form-actions">
+                <button type="button" class="btn-cancel">Cancel</button>
+                <button type="button" id="confirmDelete" class="btn-delete-confirm">Delete</button>
             </div>
-        `;
+        </div>
+    </div>
+</div>
+
+<!-- Success Toast Notification -->
+<div id="toastNotification" class="toast">
+    <div class="toast-content">
+        <i class="fas fa-check-circle"></i>
+        <div class="toast-message">
+            <span id="toastMessage">Action completed successfully!</span>
+        </div>
+    </div>
+    <div class="toast-progress"></div>
+</div>
+
+<script>
+    // DOM Elements
+    const addQuizBtn = document.getElementById('addQuizBtn');
+    const addQuizModal = document.getElementById('addQuizModal');
+    const editQuizModal = document.getElementById('editQuizModal');
+    const deleteQuizModal = document.getElementById('deleteQuizModal');
+    const toastNotification = document.getElementById('toastNotification');
+    const addQuizForm = document.getElementById('addQuizForm');
+    const editQuizForm = document.getElementById('editQuizForm');
+    const deleteQuizTitle = document.getElementById('deleteQuizTitle');
+    const confirmDeleteBtn = document.getElementById('confirmDelete');
+    const quizTableBody = document.getElementById('quizTableBody');
+    const closeButtons = document.querySelectorAll('.close, .btn-cancel');
+    const toastMessage = document.getElementById('toastMessage');
+    const imagePreview = document.getElementById('imagePreview');
+    const editImagePreview = document.getElementById('editImagePreview');
+    const quizImage = document.getElementById('quizImage');
+    const editQuizImage = document.getElementById('editQuizImage');
+
+    // Current quiz ID to delete
+    let currentQuizIdToDelete = null;
+
+    // Quiz counter for adding new quizzes
+    let quizCounter = document.querySelectorAll('#quizTableBody tr').length + 1;
+
+    // Add Event Listeners
+    addQuizBtn.addEventListener('click', openAddQuizModal);
+    closeButtons.forEach(button => {
+        button.addEventListener('click', closeModals);
+    });
+
+    // Image preview handlers
+    quizImage.addEventListener('change', function() {
+        handleImagePreview(this, imagePreview);
+    });
+
+    editQuizImage.addEventListener('change', function() {
+        handleImagePreview(this, editImagePreview);
+    });
+
+    // Setup edit and delete buttons
+    setupActionButtons();
+
+    // Add Quiz Form Submit
+    addQuizForm.addEventListener('submit', function(e) {
+        e.preventDefault();
         
-        const modalContainer = document.createElement('div');
-        modalContainer.innerHTML = modalHtml;
-        document.body.appendChild(modalContainer);
-    }
-    
-    // Get modal elements
-    const publishModal = document.querySelector('.publish-confirmation-modal');
-    const publishBtn = document.querySelector('.publish-btn');
-    const cancelBtn = document.querySelector('.cancel-btn');
-    const confirmBtn = document.querySelector('.confirm-btn');
-    const closeBtn = document.querySelector('.modal-close');
-    
-    // Show modal when publish button is clicked
-    if (publishBtn) {
-        publishBtn.addEventListener('click', function() {
-            publishModal.style.display = 'flex';
-        });
-    }
-    
-    // Close modal when cancel button is clicked
-    if (cancelBtn) {
-        cancelBtn.addEventListener('click', function() {
-            publishModal.style.display = 'none';
-        });
-    }
-    
-    // Confirm publish action
-    if (confirmBtn) {
-        confirmBtn.addEventListener('click', function() {
-            publishModal.style.display = 'none';
+        const title = document.getElementById('quizTitle').value;
+        const description = document.getElementById('quizDescription').value;
+        const category = document.getElementById('quizCategory').value;
+        const tags = document.getElementById('quizTags').value;
+        
+        // Add new quiz to table
+        addQuizToTable(title, description, category, tags);
+        
+        // Close modal and show success notification
+        closeModals();
+        showToast('Quiz added successfully!');
+        
+        // Reset form
+        addQuizForm.reset();
+        imagePreview.innerHTML = '';
+    });
+
+    // Edit Quiz Form Submit
+    editQuizForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const id = document.getElementById('editQuizId').value;
+        const title = document.getElementById('editQuizTitle').value;
+        const description = document.getElementById('editQuizDescription').value;
+        const category = document.getElementById('editQuizCategory').value;
+        const tags = document.getElementById('editQuizTags').value;
+        
+        // Update quiz in table
+        updateQuizInTable(id, title, description, category, tags);
+        
+        // Close modal and show success notification
+        closeModals();
+        showToast('Quiz updated successfully!');
+    });
+
+    // Confirm Delete Button
+    confirmDeleteBtn.addEventListener('click', function() {
+        if (currentQuizIdToDelete) {
+            // Delete quiz from table
+            deleteQuizFromTable(currentQuizIdToDelete);
             
-            // Implement publish action here
-            showToast('Quiz published successfully!', 'success');
-        });
+            // Close modal and show success notification
+            closeModals();
+            showToast('Quiz deleted successfully!');
+            
+            currentQuizIdToDelete = null;
+        }
+    });
+
+    // Functions
+    function openAddQuizModal() {
+        addQuizModal.classList.add('show');
     }
-    
-    // Close button functionality
-    if (closeBtn) {
-        closeBtn.addEventListener('click', function() {
-            publishModal.style.display = 'none';
-        });
+
+    function openEditQuiz(id) {
+        const row = document.getElementById(`quiz-${id}`);
+        const title = row.querySelector('.quiz-title').innerText;
+        const description = row.querySelector('.quiz-description').innerText;
+        const category = row.querySelector('.quiz-category').innerText;
+        const tags = row.querySelector('.quiz-tags').innerText;
+
+        document.getElementById('editQuizId').value = id;
+        document.getElementById('editQuizTitle').value = title;
+        document.getElementById('editQuizDescription').value = description;
+        document.getElementById('editQuizCategory').value = category;
+        document.getElementById('editQuizTags').value = tags;
+
+        editQuizModal.classList.add('show');
     }
-    
-    // Close when clicking outside the modal
-    if (publishModal) {
-        publishModal.addEventListener('click', function(e) {
-            if (e.target === publishModal) {
-                publishModal.style.display = 'none';
+
+    function openDeleteQuiz(id) {
+        currentQuizIdToDelete = id;
+        const row = document.getElementById(`quiz-${id}`);
+        const title = row.querySelector('.quiz-title').innerText;
+        deleteQuizTitle.innerText = title;
+        deleteQuizModal.classList.add('show');
+    }
+
+    function closeModals() {
+        addQuizModal.classList.remove('show');
+        editQuizModal.classList.remove('show');
+        deleteQuizModal.classList.remove('show');
+    }
+
+    function showToast(message) {
+        toastMessage.innerText = message;
+        toastNotification.classList.add('show');
+        setTimeout(() => {
+            toastNotification.classList.remove('show');
+        }, 3000);
+    }
+
+    function handleImagePreview(input, previewElement) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                previewElement.innerHTML = `<img src="${e.target.result}" alt="Image preview" class="preview-image">`;
             }
+            
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function addQuizToTable(title, description, category, tags) {
+        const row = document.createElement('tr');
+        row.id = `quiz-${quizCounter}`;
+        row.innerHTML = `
+            <td>${quizCounter}</td>
+            <td class="quiz-title">${title}</td>
+            <td class="quiz-description">${description}</td>
+            <td class="quiz-category">${category}</td>
+            <td class="quiz-tags">${tags}</td>
+            <td class="quiz-image"><img src="/api/placeholder/40/40" alt="Quiz thumbnail" class="quiz-thumbnail"></td>
+            <td>${getCurrentDate()}</td>
+            <td><span class="badge-updated today">Today</span></td>
+            <td class="actions-cell">
+                <button class="btn-edit" data-id="${quizCounter}" data-title="${title}" data-desc="${description}" data-category="${category}" data-tags="${tags}">
+                    <i class="fas fa-edit"></i>Edit
+                </button>
+                <button class="btn-delete" data-id="${quizCounter}" data-title="${title}">Delete</button>
+            </td>
+            <td>
+                <a href="/student/editquiz/${quizCounter}/addquestion" class="btn-go">
+                    <i class="fas fa-question-circle"></i>Go
+                </a>
+            </td>
+        `;
+        quizTableBody.appendChild(row);
+        quizCounter++;
+        setupActionButtons(); // Assign events to new buttons
+    }
+    
+    function updateQuizInTable(id, title, description, category, tags) {
+        const row = document.getElementById(`quiz-${id}`);
+        if (row) {
+            row.querySelector('.quiz-title').innerText = title;
+            row.querySelector('.quiz-description').innerText = description;
+            row.querySelector('.quiz-category').innerText = category;
+            row.querySelector('.quiz-tags').innerText = tags;
+            row.querySelector('.badge-updated').innerText = "Just now";
+            row.querySelector('.badge-updated').className = "badge-updated today";
+        }
+    }
+    
+    function deleteQuizFromTable(id) {
+        const row = document.getElementById(`quiz-${id}`);
+        if (row) {
+            row.remove();
+        }
+    }
+    
+    function getCurrentDate() {
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const yy = String(today.getFullYear()).slice(2);
+        return `${dd}/${mm}/${yy}`;
+    }
+    
+    function setupActionButtons() {
+        const editButtons = document.querySelectorAll('.btn-edit');
+        const deleteButtons = document.querySelectorAll('.btn-delete');
+
+        editButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                openEditQuiz(id);
+            });
+        });
+
+        deleteButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-id');
+                openDeleteQuiz(id);
+            });
         });
     }
-}
 </script>
