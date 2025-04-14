@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Question - Quiz Online</title>
+    <link rel="stylesheet" href="/css/addquestionUser.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Thêm câu hỏi cho Quiz <span id="quizId"></span></h1>
+            <p class="subtitle">Chọn loại câu hỏi và điền thông tin cần thiết</p>
+        </header>
+
+        <div class="content">
+            <div class="question-type-selector">
+                <h2>Chọn loại câu hỏi</h2>
+                <div class="type-cards">
+                    <div class="type-card active" data-type="multiple-choice">
+                        <i class="fas fa-list-ul"></i>
+                        <span>Trắc nghiệm</span>
+                    </div>
+                    <div class="type-card" data-type="true-false">
+                        <i class="fas fa-toggle-on"></i>
+                        <span>Đúng/Sai</span>
+                    </div>
+                    <div class="type-card" data-type="fill-blank">
+                        <i class="fas fa-pencil-alt"></i>
+                        <span>Điền vào chỗ trống</span>
+                    </div>
+                    <div class="type-card" data-type="matching">
+                        <i class="fas fa-arrows-alt-h"></i>
+                        <span>Nối câu</span>
+                    </div>
+                    <div class="type-card" data-type="essay">
+                        <i class="fas fa-paragraph"></i>
+                        <span>Tự luận</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-form-container">
+                <!-- Trắc nghiệm form -->
+                <form id="multiple-choice-form" class="question-form active">
+                    <div class="form-group">
+                        <label for="mc-question">Câu hỏi:</label>
+                        <textarea id="mc-question" placeholder="Nhập câu hỏi trắc nghiệm" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Điểm số:</label>
+                        <input type="number" min="1" max="100" value="1" class="points-input">
+                    </div>
+
+                    <div class="options-container">
+                        <h3>Các lựa chọn <button type="button" class="add-option-btn"><i class="fas fa-plus"></i> Thêm lựa chọn</button></h3>
+                        
+                        <div class="option-item">
+                            <div class="option-input">
+                                <input type="radio" name="correct-answer" id="option1" checked>
+                                <label for="option1">Đáp án đúng</label>
+                                <input type="text" placeholder="Nhập lựa chọn A" required>
+                            </div>
+                            <button type="button" class="remove-option-btn"><i class="fas fa-trash"></i></button>
+                        </div>
+                        
+                        <div class="option-item">
+                            <div class="option-input">
+                                <input type="radio" name="correct-answer" id="option2">
+                                <label for="option2">Đáp án đúng</label>
+                                <input type="text" placeholder="Nhập lựa chọn B" required>
+                            </div>
+                            <button type="button" class="remove-option-btn"><i class="fas fa-trash"></i></button>
+                        </div>
+                        
+                        <div class="option-item">
+                            <div class="option-input">
+                                <input type="radio" name="correct-answer" id="option3">
+                                <label for="option3">Đáp án đúng</label>
+                                <input type="text" placeholder="Nhập lựa chọn C" required>
+                            </div>
+                            <button type="button" class="remove-option-btn"><i class="fas fa-trash"></i></button>
+                        </div>
+                        
+                        <div class="option-item">
+                            <div class="option-input">
+                                <input type="radio" name="correct-answer" id="option4">
+                                <label for="option4">Đáp án đúng</label>
+                                <input type="text" placeholder="Nhập lựa chọn D" required>
+                            </div>
+                            <button type="button" class="remove-option-btn"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mc-explanation">Giải thích (tùy chọn):</label>
+                        <textarea id="mc-explanation" placeholder="Nhập giải thích cho câu hỏi này"></textarea>
+                    </div>
+                </form>
+
+                <!-- Đúng/sai form -->
+                <form id="true-false-form" class="question-form">
+                    <div class="form-group">
+                        <label for="tf-question">Câu hỏi:</label>
+                        <textarea id="tf-question" placeholder="Nhập câu hỏi đúng/sai" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Điểm số:</label>
+                        <input type="number" min="1" max="100" value="1" class="points-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Đáp án đúng:</label>
+                        <div class="true-false-options">
+                            <div class="option-item">
+                                <input type="radio" name="tf-correct" id="true-option" checked>
+                                <label for="true-option">Đúng</label>
+                            </div>
+                            <div class="option-item">
+                                <input type="radio" name="tf-correct" id="false-option">
+                                <label for="false-option">Sai</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tf-explanation">Giải thích (tùy chọn):</label>
+                        <textarea id="tf-explanation" placeholder="Nhập giải thích cho câu hỏi này"></textarea>
+                    </div>
+                </form>
+
+                <!-- Điền vào chỗ trống form -->
+                <form id="fill-blank-form" class="question-form">
+                    <div class="form-group">
+                        <label for="fb-question">Câu hỏi:</label>
+                        <textarea id="fb-question" placeholder="Nhập câu hỏi với [blank] cho chỗ trống cần điền" required></textarea>
+                        <p class="form-hint">Ví dụ: Thủ đô của Việt Nam là [blank].</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Điểm số:</label>
+                        <input type="number" min="1" max="100" value="1" class="points-input">
+                    </div>
+
+                    <div class="options-container">
+                        <h3>Đáp án có thể chấp nhận <button type="button" class="add-answer-btn"><i class="fas fa-plus"></i> Thêm đáp án</button></h3>
+                        
+                        <div class="option-item">
+                            <div class="option-input">
+                                <input type="text" placeholder="Nhập đáp án 1" required>
+                            </div>
+                            <button type="button" class="remove-option-btn"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fb-explanation">Giải thích (tùy chọn):</label>
+                        <textarea id="fb-explanation" placeholder="Nhập giải thích cho câu hỏi này"></textarea>
+                    </div>
+                </form>
+
+                <!-- Nối câu form -->
+                <form id="matching-form" class="question-form">
+                    <div class="form-group">
+                        <label for="matching-instructions">Hướng dẫn:</label>
+                        <textarea id="matching-instructions" placeholder="Nhập hướng dẫn cho câu hỏi nối" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Điểm số:</label>
+                        <input type="number" min="1" max="100" value="1" class="points-input">
+                    </div>
+
+                    <div class="matching-container">
+                        <h3>Các cặp nối <button type="button" class="add-pair-btn"><i class="fas fa-plus"></i> Thêm cặp</button></h3>
+                        
+                        <div class="matching-pair">
+                            <div class="matching-item">
+                                <input type="text" placeholder="Cột A" required>
+                            </div>
+                            <i class="fas fa-arrow-right"></i>
+                            <div class="matching-item">
+                                <input type="text" placeholder="Cột B" required>
+                            </div>
+                            <button type="button" class="remove-pair-btn"><i class="fas fa-trash"></i></button>
+                        </div>
+                        
+                        <div class="matching-pair">
+                            <div class="matching-item">
+                                <input type="text" placeholder="Cột A" required>
+                            </div>
+                            <i class="fas fa-arrow-right"></i>
+                            <div class="matching-item">
+                                <input type="text" placeholder="Cột B" required>
+                            </div>
+                            <button type="button" class="remove-pair-btn"><i class="fas fa-trash"></i></button>
+                        </div>
+                        
+                        <div class="matching-pair">
+                            <div class="matching-item">
+                                <input type="text" placeholder="Cột A" required>
+                            </div>
+                            <i class="fas fa-arrow-right"></i>
+                            <div class="matching-item">
+                                <input type="text" placeholder="Cột B" required>
+                            </div>
+                            <button type="button" class="remove-pair-btn"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="matching-explanation">Giải thích (tùy chọn):</label>
+                        <textarea id="matching-explanation" placeholder="Nhập giải thích cho câu hỏi này"></textarea>
+                    </div>
+                </form>
+
+                <!-- Tự luận form -->
+                <form id="essay-form" class="question-form">
+                    <div class="form-group">
+                        <label for="essay-question">Câu hỏi:</label>
+                        <textarea id="essay-question" placeholder="Nhập câu hỏi tự luận" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Điểm số:</label>
+                        <input type="number" min="1" max="100" value="5" class="points-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="word-limit">Giới hạn từ (tùy chọn):</label>
+                        <input type="number" id="word-limit" min="0" placeholder="Nhập giới hạn số từ">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="essay-answer-guide">Hướng dẫn chấm điểm (tùy chọn):</label>
+                        <textarea id="essay-answer-guide" placeholder="Nhập hướng dẫn chấm điểm hoặc gợi ý đáp án cho người chấm"></textarea>
+                    </div>
+                </form>
+            </div>
+
+            <div class="action-buttons">
+                <button class="cancel-btn">Hủy</button>
+                <button class="save-btn">Lưu câu hỏi</button>
+                <button class="save-add-more-btn">Lưu và thêm câu hỏi khác</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Lấy ID quiz từ URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const quizId = window.location.pathname.split('/')[3] || 'Unknown';
+        document.getElementById('quizId').textContent = quizId;
+
+        // Chuyển đổi giữa các loại câu hỏi
+        const typeCards = document.querySelectorAll('.type-card');
+        const questionForms = document.querySelectorAll('.question-form');
+
+        typeCards.forEach(card => {
+            card.addEventListener('click', () => {
+                // Xóa class active từ tất cả cards
+                typeCards.forEach(c => c.classList.remove('active'));
+                // Thêm class active vào card được chọn
+                card.classList.add('active');
+                
+                // Ẩn tất cả forms
+                questionForms.forEach(form => form.classList.remove('active'));
+                
+                // Hiện form tương ứng với loại được chọn
+                const formType = card.getAttribute('data-type');
+                document.getElementById(`${formType}-form`).classList.add('active');
+            });
+        });
+
+        // Xử lý thêm/xóa lựa chọn cho câu hỏi trắc nghiệm
+        const addOptionBtn = document.querySelector('.add-option-btn');
+        const optionsContainer = document.querySelector('.options-container');
+
+        addOptionBtn.addEventListener('click', () => {
+            const optionItems = document.querySelectorAll('.option-item');
+            const newOptionId = optionItems.length + 1;
+            
+            const newOption = document.createElement('div');
+            newOption.className = 'option-item';
+            newOption.innerHTML = `
+                <div class="option-input">
+                    <input type="radio" name="correct-answer" id="option${newOptionId}">
+                    <label for="option${newOptionId}">Đáp án đúng</label>
+                    <input type="text" placeholder="Nhập lựa chọn mới" required>
+                </div>
+                <button type="button" class="remove-option-btn"><i class="fas fa-trash"></i></button>
+            `;
+            
+            // Thêm ở vị trí trước button "Thêm lựa chọn"
+            optionsContainer.appendChild(newOption);
+            
+            // Thêm sự kiện xóa cho nút mới
+            newOption.querySelector('.remove-option-btn').addEventListener('click', function() {
+                if (document.querySelectorAll('.option-item').length > 2) {
+                    this.parentElement.remove();
+                } else {
+                    alert('Phải có ít nhất 2 lựa chọn!');
+                }
+            });
+        });
+
+        // Gán sự kiện xóa lựa chọn
+        document.querySelectorAll('.remove-option-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (document.querySelectorAll('.option-item').length > 2) {
+                    this.parentElement.remove();
+                } else {
+                    alert('Phải có ít nhất 2 lựa chọn!');
+                }
+            });
+        });
+
+        // Xử lý thêm/xóa đáp án cho câu hỏi điền vào chỗ trống
+        const addAnswerBtn = document.querySelector('.add-answer-btn');
+        const fillBlankContainer = document.getElementById('fill-blank-form').querySelector('.options-container');
+
+        addAnswerBtn.addEventListener('click', () => {
+            const newAnswer = document.createElement('div');
+            newAnswer.className = 'option-item';
+            newAnswer.innerHTML = `
+                <div class="option-input">
+                    <input type="text" placeholder="Nhập đáp án mới" required>
+                </div>
+                <button type="button" class="remove-option-btn"><i class="fas fa-trash"></i></button>
+            `;
+            
+            fillBlankContainer.appendChild(newAnswer);
+            
+            newAnswer.querySelector('.remove-option-btn').addEventListener('click', function() {
+                if (fillBlankContainer.querySelectorAll('.option-item').length > 1) {
+                    this.parentElement.remove();
+                } else {
+                    alert('Phải có ít nhất 1 đáp án!');
+                }
+            });
+        });
+
+        // Xử lý thêm/xóa cặp nối
+        const addPairBtn = document.querySelector('.add-pair-btn');
+        const matchingContainer = document.querySelector('.matching-container');
+
+        addPairBtn.addEventListener('click', () => {
+            const newPair = document.createElement('div');
+            newPair.className = 'matching-pair';
+            newPair.innerHTML = `
+                <div class="matching-item">
+                    <input type="text" placeholder="Cột A" required>
+                </div>
+                <i class="fas fa-arrow-right"></i>
+                <div class="matching-item">
+                    <input type="text" placeholder="Cột B" required>
+                </div>
+                <button type="button" class="remove-pair-btn"><i class="fas fa-trash"></i></button>
+            `;
+            
+            matchingContainer.appendChild(newPair);
+            
+            newPair.querySelector('.remove-pair-btn').addEventListener('click', function() {
+                if (matchingContainer.querySelectorAll('.matching-pair').length > 2) {
+                    this.parentElement.remove();
+                } else {
+                    alert('Phải có ít nhất 2 cặp nối!');
+                }
+            });
+        });
+
+        // Gán sự kiện xóa cặp nối
+        document.querySelectorAll('.remove-pair-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (matchingContainer.querySelectorAll('.matching-pair').length > 2) {
+                    this.parentElement.remove();
+                } else {
+                    alert('Phải có ít nhất 2 cặp nối!');
+                }
+            });
+        });
+
+        // Xử lý nút lưu
+        document.querySelector('.save-btn').addEventListener('click', () => {
+            saveQuestion(false);
+        });
+
+        document.querySelector('.save-add-more-btn').addEventListener('click', () => {
+            saveQuestion(true);
+        });
+
+        document.querySelector('.cancel-btn').addEventListener('click', () => {
+            if (confirm('Bạn có chắc muốn hủy? Mọi thay đổi sẽ bị mất.')) {
+                window.location.href = `/admin/quizzes`;
+            }
+        });
+
+        function saveQuestion(addMore) {
+            // Xác định loại câu hỏi đang được chọn
+            const activeForm = document.querySelector('.question-form.active');
+            const questionType = activeForm.id.replace('-form', '');
+            
+            // Kiểm tra dữ liệu hợp lệ
+            if (!validateForm(activeForm)) {
+                return;
+            }
+            
+            // Thu thập dữ liệu từ form
+            const formData = collectFormData(activeForm, questionType);
+            
+            // Giả lập việc gửi dữ liệu
+            console.log('Dữ liệu câu hỏi:', formData);
+            
+            // Thông báo thành công
+            alert('Đã lưu câu hỏi thành công!');
+            
+            if (addMore) {
+                // Reset form hiện tại
+                activeForm.reset();
+            } else {
+                // Quay lại trang quản lý quiz
+                window.location.href = `/admin/quizzes`;
+            }
+        }
+
+        function validateForm(form) {
+            const requiredInputs = form.querySelectorAll('[required]');
+            let valid = true;
+            
+            requiredInputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.classList.add('error');
+                    valid = false;
+                } else {
+                    input.classList.remove('error');
+                }
+            });
+            
+            if (!valid) {
+                alert('Vui lòng điền đầy đủ thông tin bắt buộc!');
+            }
+            
+            return valid;
+        }
+
+        function collectFormData(form, type) {
+            // Mẫu để thu thập dữ liệu dựa trên loại câu hỏi
+            // Thực tế sẽ cần code riêng cho từng loại
+            const formData = {
+                type: type,
+                quizId: quizId,
+                points: form.querySelector('.points-input').value
+            };
+            
+            // Thu thập dữ liệu dựa trên loại câu hỏi
+            switch (type) {
+                case 'multiple-choice':
+                    formData.question = form.querySelector('#mc-question').value;
+                    formData.explanation = form.querySelector('#mc-explanation').value;
+                    formData.options = [];
+                    formData.correctAnswer = null;
+                    
+                    form.querySelectorAll('.option-item').forEach((item, index) => {
+                        const text = item.querySelector('input[type="text"]').value;
+                        const isCorrect = item.querySelector('input[type="radio"]').checked;
+                        
+                        formData.options.push({ text, index });
+                        
+                        if (isCorrect) {
+                            formData.correctAnswer = index;
+                        }
+                    });
+                    break;
+                    
+                // Các loại câu hỏi khác tương tự
+            }
+            
+            return formData;
+        }
+    </script>
+</body>
+</html>

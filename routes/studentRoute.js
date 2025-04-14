@@ -16,4 +16,12 @@ router.get('/editquiz', (req, res) => {
       css:'editquiz.css'
     });
   });
+  router.get('/editquiz/:id/addquestion', (req, res) => {
+    const quizId = req.params.id;
+    res.render('addQuestionStudent', {
+      title: 'Thêm câu hỏi',
+      layout: 'student',
+      quizId
+    });
+  });
 export default router
