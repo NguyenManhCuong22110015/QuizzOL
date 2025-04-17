@@ -7,6 +7,7 @@ import cloudinary from "cloudinary";
 import { engine } from "express-handlebars";
 import path from "path";
 import { fileURLToPath } from "url";
+import halenTestRoute from "./routes/halenTestRoute.js";
 import quizRoute from "./routes/quizRoute.js";
 import authLoginRoute from "./routes/authLoginRoute.js";
 import flashCardRoute from "./routes/flashCardRoute.js";
@@ -131,6 +132,18 @@ app.engine(
 
         return html;
       },
+      math: function(lvalue, operator, rvalue) {
+        lvalue = parseFloat(lvalue);
+        rvalue = parseFloat(rvalue);
+        
+        return {
+            '+': lvalue + rvalue,
+            '-': lvalue - rvalue,
+            '*': lvalue * rvalue,
+            '/': lvalue / rvalue,
+            '%': lvalue % rvalue
+        }[operator];
+    }
     },
   })
 );
@@ -199,6 +212,9 @@ app.use("/user", userRoute);
 app.use("/media", mediaRoute);
 app.use("/admin", adminRoute);
 app.use("/student", studentRoute);
+
+//for testing
+app.use("/halenTest", halenTestRoute);
 
 app.get("/", (req, res) => {
   res.send("Hello word");

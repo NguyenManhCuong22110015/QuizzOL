@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+{{!-- HEAD and BODY structure remain the same --}}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcard Study Session | Study Smarter</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/flashcard.css">
+</head>
+<body>
+    {{!-- Top Bar, Backgrounds --}}
+    <div class="gradient-overlay"></div>
+    <div class="grid-background"></div>
+    <nav class="navbar top-bar py-3"> /* ... */ </nav>
+
+    <main class="container flex-grow-1 d-flex py-4">
+        <div class="row w-100 justify-content-center">
+            <div class="col-lg-8 d-flex flex-column align-items-center">
+                {{!-- Info Bar uses deckInfo and currentCard.index --}}
+                <div class="info-bar py-3 px-4 d-flex justify-content-between align-items-center mb-4 w-100">
+                     <div class="d-flex align-items-center gap-2">
+                        <span id="learning-count" class="badge rounded-circle d-flex align-items-center justify-content-center badge-learning" style="width: 26px; height: 26px;">{{deckInfo.learningCount}}</span>
+                        <span>Đang học</span>
+                    </div>
+                    <div class="d-flex flex-column align-items-center">
+                        <span id="progress-text" class="text-white-50 small">{{currentCard.index}} / {{deckInfo.totalCards}} Cards</span>
+                        <div class="custom-progress rounded-pill w-100" style="width: 100px;">
+                            <div id="progress-bar" class="progress-bar" role="progressbar" style="width: {{#if deckInfo.totalCards}}{{math currentCard.index '*' 100 '/' deckInfo.totalCards}}{{else}}0{{/if}}%"></div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-center gap-2">
+                        <span>Đã thuộc</span>
+                        <span id="mastered-count" class="badge rounded-circle d-flex align-items-center justify-content-center badge-mastered" style="width: 26px; height: 26px;">{{deckInfo.masteredCount}}</span>
+                    </div>
+                </div>
+
+                {{!-- Add IDs to front/back text elements for easier JS targeting --}}
+                <div id="flashcard" class="flashcard w-100" data-flashcard-id="{{currentCard.id}}">
+                    <div class="flashcard-inner">
+                        <div class="flashcard-front d-flex flex-column justify-content-center align-items-center">
+                            <div id="front-emoji" class="card-emoji mb-4">{{#if currentCard.frontEmoji}}{{currentCard.frontEmoji}}{{else}}❓{{/if}}</div>
+                            <div id="question-image-container"> {{!-- Container for image --}}
+                                {{#if currentCard.questionImageUrl}}
+                                    <img src="{{currentCard.questionImageUrl}}" alt="Question Image" class="flashcard-image mb-3">
+                                {{/if}}
+                            </div>
+                            <div id="question-text" class="flashcard-text text-center mb-4">{{currentCard.questionText}}</div>
+                            <div class="flashcard-actions text-center">Nhấp chuột <i class="fas fa-hand-pointer"></i> hoặc nhấn <span class="key-hint">Space</span> để lật thẻ</div>
+                        </div>
+                        <div class="flashcard-back d-flex flex-column justify-content-center align-items-center">
+                            <div id="back-emoji" class="card-emoji mb-4">{{#if currentCard.backEmoji}}{{currentCard.backEmoji}}{{else}}💡{{/if}}</div>
+                            <div id="answer-text" class="flashcard-text text-center">{{{currentCard.answerText}}}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4" style="width: 80%;">
+                    <button id="prev-card-btn" class="nav-btn d-flex align-items-center justify-content-center"> <i class="fas fa-chevron-left"></i> </button>
+                    <button id="next-card-btn" class="nav-btn d-flex align-items-center justify-content-center"> <i class="fas fa-chevron-right"></i> </button>
+                </div>
+            </div>
+
+            <div class="col-lg-4 d-flex flex-column gap-3 mt-4 mt-lg-0">
+                {{!-- Action Buttons --}}
+                 <button id="create-card-btn" class="btn action-btn btn-create text-white py-3 d-flex align-items-center gap-2"><i class="fas fa-plus"></i> Tạo mới</button>
+                 <button class="btn action-btn btn-flip text-white py-3 d-flex align-items-center gap-2" id="flip-btn"><i class="fas fa-sync-alt"></i> Lật thẻ</button>
+                 <button id="save-card-btn" class="btn action-btn btn-save text-white py-3 d-flex align-items-center gap-2"><i class="fas fa-save"></i> Lưu</button>
+                 <button id="delete-card-btn" class="btn action-btn btn-delete text-white py-3 d-flex align-items-center gap-2"><i class="fas fa-trash"></i> Xóa</button>
+                 <button id="share-deck-btn" class="btn action-btn btn-share text-white py-3 d-flex align-items-center gap-2"><i class="fas fa-share-alt"></i> Chia sẻ</button>
+                 <div class="d-flex flex-column gap-2 mt-3">
+                    <button class="btn difficulty-btn btn-hard rounded-3 py-2" data-difficulty="hard">Khó</button>
+                    <button class="btn difficulty-btn btn-medium rounded-3 py-2" data-difficulty="medium">Vừa</button>
+                    <button class="btn difficulty-btn btn-easy rounded-3 py-2" data-difficulty="easy">Dễ</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bottom-bar py-3 px-4"> /* ... Footer using userInfo ... */ </footer>
+
+    {{!-- Embed FULL flashcard data JSON --}}
+    <script id="flashcard-data" type="application/json">
+        {{{allFlashcardsJson}}}
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    {{!-- <script src="/js/flashcard-interactions.js"></script> --}}
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log("DOM Loaded. Initializing flashcard script."); // Debug: Script start
+
+            // --- Data Setup ---
+            const flashcardElement = document.getElementById('flashcard');
+            const flashcardDataElement = document.getElementById('flashcard-data');
+            const initialFlashcardId = parseInt(flashcardElement?.dataset.flashcardId, 10);
+
+            let allFlashcards = [];
+            let currentIndex = -1;
+            let totalCards = 0;
+
+            // --- DOM Element References ---
+            const prevButton = document.getElementById('prev-card-btn');
+            const nextButton = document.getElementById('next-card-btn');
+            const frontEmojiEl = document.getElementById('front-emoji');
+            const questionImageContainerEl = document.getElementById('question-image-container');
+            const questionTextEl = document.getElementById('question-text');
+            const backEmojiEl = document.getElementById('back-emoji');
+            const answerTextEl = document.getElementById('answer-text');
+            const progressTextEl = document.getElementById('progress-text');
+            const progressBarEl = document.getElementById('progress-bar');
+            const flipButton = document.getElementById('flip-btn'); // Ref for flip button
+
+            try {
+                if (flashcardDataElement?.textContent) {
+                    allFlashcards = JSON.parse(flashcardDataElement.textContent);
+                    totalCards = allFlashcards.length;
+                    console.log(`Parsed ${totalCards} flashcards.`); // Debug: Log count
+                    // console.log("Parsed Data:", allFlashcards); // Debug: Log full data (can be large)
+                } else {
+                     console.error("Flashcard data script tag not found or empty!");
+                }
+
+                if (!isNaN(initialFlashcardId) && totalCards > 0) {
+                    currentIndex = allFlashcards.findIndex(fc => fc.id === initialFlashcardId);
+                    if (currentIndex === -1) {
+                         console.warn(`Initial flashcard ID ${initialFlashcardId} not found in data. Defaulting to index 0.`);
+                         currentIndex = 0;
+                    }
+                } else if (totalCards > 0) {
+                    currentIndex = 0;
+                } else {
+                    console.warn("No valid initial index determined. Disabling navigation.");
+                }
+                 console.log(`Initial card index set to: ${currentIndex}`); // Debug: Log initial index
+
+            } catch (e) {
+                console.error("Error parsing flashcard data:", e);
+                // Disable nav buttons if data parsing failed
+                if(prevButton) prevButton.disabled = true;
+                if(nextButton) nextButton.disabled = true;
+            }
+
+            // --- Function to Update Displayed Card ---
+            function updateDisplayedCard(index, isInitialLoad = false) {
+                console.log(`Attempting to display card at index: ${index}`); // Debug: Log index
+                if (index < 0 || index >= totalCards) {
+                    console.error(`Skipping update: Index ${index} is out of bounds (0-${totalCards - 1}).`);
+                    return;
+                }
+
+                const cardData = allFlashcards[index];
+                if (!cardData) {
+                     console.error(`Skipping update: No card data found for index ${index}.`);
+                     return;
+                }
+                console.log("Card Data:", cardData); // Debug: Log the data for the card being displayed
+
+                // --- Update DOM ---
+                if(flashcardElement) flashcardElement.dataset.flashcardId = cardData.id; else console.error("Element #flashcard not found");
+
+                if (frontEmojiEl) frontEmojiEl.textContent = cardData.frontEmoji || '❓'; else console.error("Element #front-emoji not found");
+                if (questionTextEl) questionTextEl.textContent = cardData.questionText || ''; else console.error("Element #question-text not found");
+
+                if (questionImageContainerEl) {
+                     questionImageContainerEl.innerHTML = ''; // Clear previous image
+                    if (cardData.questionImageUrl) {
+                        console.log("Setting image src:", cardData.questionImageUrl); // Debug image URL
+                        const img = document.createElement('img');
+                        img.src = cardData.questionImageUrl;
+                        img.alt = "Question Image";
+                        img.className = "flashcard-image mb-3";
+                        img.onerror = () => console.error(`Failed to load image: ${cardData.questionImageUrl}`); // Debug image load errors
+                        questionImageContainerEl.appendChild(img);
+                    }
+                } else console.error("Element #question-image-container not found");
+
+                if (backEmojiEl) backEmojiEl.textContent = cardData.backEmoji || '💡'; else console.error("Element #back-emoji not found");
+                // Use innerHTML for answer to render potential formatting from triple braces
+                if (answerTextEl) answerTextEl.innerHTML = cardData.answerText || ''; else console.error("Element #answer-text not found");
+
+                if(flashcardElement) flashcardElement.classList.remove('flipped'); // Reset flip state
+
+                if (progressTextEl) progressTextEl.textContent = `${index + 1} / ${totalCards} Cards`; else console.error("Element #progress-text not found");
+
+                if (progressBarEl) {
+                     const percentage = totalCards > 0 ? Math.round(((index + 1) / totalCards) * 100) : 0;
+                     progressBarEl.style.width = `${percentage}%`;
+                     console.log(`Progress bar updated to ${percentage}%`); // Debug progress bar
+                } else console.error("Element #progress-bar not found");
+
+
+                // --- History Update Logic ---
+                const cardUrl = `/flashcards/${cardData.id}`; // ASSUMES /flashcards is the correct base path
+                const currentPath = window.location.pathname;
+                // Update URL only if needed and generally avoid on initial load unless correcting from /study
+                const needsHistoryUpdate = currentPath !== cardUrl && (!isInitialLoad || currentPath.endsWith('/study'));
+
+                if (needsHistoryUpdate) {
+                    console.log(`Client-side: Updating URL via replaceState to: ${cardUrl}`);
+                    window.history.replaceState({ flashcardId: cardData.id }, '', cardUrl);
+                } else {
+                    console.log(`Client-side: History update skipped. Current: ${currentPath}, Target: ${cardUrl}, InitialLoad: ${isInitialLoad}`); // Debug history skip
+                }
+
+                // --- Update Nav Buttons ---
+                updateNavButtonStates();
+            }
+
+            // --- Function to Update Button States ---
+            function updateNavButtonStates() {
+                 if (!prevButton || !nextButton) {
+                     console.warn("Navigation buttons not found.");
+                     return;
+                 };
+                prevButton.disabled = (currentIndex <= 0);
+                nextButton.disabled = (currentIndex < 0 || currentIndex >= totalCards - 1);
+                 console.log(`Nav buttons updated: Prev disabled=${prevButton.disabled}, Next disabled=${nextButton.disabled}`); // Debug button state
+             }
+
+            // --- Event Listeners for Navigation ---
+            if (prevButton) {
+                prevButton.addEventListener('click', () => {
+                     console.log("Previous button clicked."); // Debug click
+                    if (currentIndex > 0) {
+                        currentIndex--;
+                        updateDisplayedCard(currentIndex);
+                    } else {
+                         console.log("Already at the first card."); // Debug click boundary
+                    }
+                });
+            } else {
+                console.error("Previous button not found!");
+            }
+
+            if (nextButton) {
+                nextButton.addEventListener('click', () => {
+                    console.log("Next button clicked."); // Debug click
+                    if (currentIndex >= 0 && currentIndex < totalCards - 1) {
+                        currentIndex++;
+                        updateDisplayedCard(currentIndex);
+                    } else {
+                         console.log("Already at the last card."); // Debug click boundary
+                    }
+                });
+            } else {
+                 console.error("Next button not found!");
+            }
+
+            // --- Flip Logic & Other Listeners ---
+             if (flashcardElement) {
+                 flashcardElement.addEventListener('click', () => flashcardElement.classList.toggle('flipped'));
+             } else {
+                 console.error("Flashcard element not found for flip listener!");
+             }
+             if (flipButton) {
+                 flipButton.addEventListener('click', () => flashcardElement?.classList.toggle('flipped'));
+             } else {
+                  console.warn("Flip button not found!");
+             }
+             // ... keyboard listeners etc. ...
+
+
+            // --- Initial Setup ---
+            if (currentIndex !== -1) {
+                console.log("Initialising display for card index:", currentIndex); // Debug initial call
+                // Call update but prevent history change if URL is already correct
+                updateDisplayedCard(currentIndex, true);
+            } else {
+                 console.warn("Initial card index is invalid. Cannot display initial card.");
+                 updateNavButtonStates(); // Still update buttons (likely disable them)
+            }
+
+            // --- Add other listeners (Delete, Difficulty etc.) ---
+             // ...
+
+        }); // End DOMContentLoaded
+    </script>
+
+</body>
+</html>
