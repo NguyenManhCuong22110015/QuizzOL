@@ -1,0 +1,302 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{quiz.title}} - Quiz App</title> {{!-- Dynamic Title --}}
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+  />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="/css/quizDetail.css"/> {{!-- Ensure this CSS path is correct --}}
+</head>
+<body>
+  <div class="main-content">
+    <div class="container">
+      <div class="quiz-header">
+        {{!-- Use quiz cover image, fallback to placeholder --}}
+        <img
+          src="{{#if quiz.coverImageUrl}}{{quiz.coverImageUrl}}{{else}}https://placehold.co/600x300/3498db/FFFFFF?text=Quiz+Image{{/if}}"
+          alt="Quiz Image for {{quiz.title}}"
+        />
+        <h2 class="quiz-title">{{quiz.title}}</h2>
+      </div>
+
+      {{!-- Display Stats --}}
+      <div class="quiz-stats">
+        <div class="stat-item">
+          <div class="stat-value">{{stats.playerCount}}</div>
+          <div class="stat-label">Người chơi</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">{{stats.averageRating}}</div>
+          <div class="stat-label">Đánh giá</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">{{stats.questionCount}}</div>
+          <div class="stat-label">Câu hỏi</div>
+        </div>
+        <div class="stat-item">
+          {{!-- Using estimated time based on question count --}}
+          <div class="stat-value">~{{stats.estimatedMinutes}}m</div>
+          <div class="stat-label">Thời gian</div>
+        </div>
+      </div>
+
+      <div class="quiz-details">
+        <div class="rating">
+          {{!-- You would ideally use a Handlebars helper here to generate star icons based on stats.averageRating --}}
+          {{!-- Simple display for now: --}}
+           {{{stars stats.averageRating }}} <span class="rating-count text-secondary">{{rating.count}} lượt đánh giá</span> {{!-- Assuming stats.ratingCount is the number of ratings --}}
+        </div>
+        <h3 class="description-title">
+          <i class="fas fa-info-circle"></i> Mô tả
+        </h3>
+        <p class="description-text">
+         {{quiz.description}}
+        </p>
+
+        {{!-- Display Tags --}}
+        <div class="quiz-tags">
+          {{#each quiz.tags}}
+            <span class="quiz-tag"><i class="fas fa-tag"></i> {{this.name}}</span> {{!-- Added generic tag icon --}}
+          {{/each}}
+           {{!-- You could add Category here too if fetched: --}}
+           {{!-- {{#if quiz.categoryName}}<span class="quiz-tag"><i class="fas fa-folder"></i> {{quiz.categoryName}}</span>{{/if}} --}}
+        </div>
+
+        {{!-- The Start button likely links to the quiz taking page --}}
+        <button class="start-button" onclick="location.href='/quiz/{{quiz.id}}/start'"> {{!-- Example Link --}}
+          <i class="fas fa-play"></i> Bắt đầu ngay!
+        </button>
+
+        <div class="quiz-info">
+          <span><i class="far fa-question-circle"></i> {{stats.questionCount}} câu hỏi</span>
+          <span><i class="fas fa-users"></i> {{stats.playerCount}} người chơi</span>
+          <span><i class="far fa-clock"></i> ~{{stats.estimatedMinutes}} phút</span>
+        </div>
+      </div>
+
+      {{!-- Comments Section --}}
+      <div class="comments-section">
+        <h3 class="comments-title">
+           {{!-- Dynamically update comment count --}}
+          <i class="far fa-comment-dots"></i> Bình luận ({{comments.length}})
+        </h3>
+
+        <div class="comments-list">
+          {{#each comments}}
+          <div class="comment-item">
+            <div class="comment-avatar">
+              {{#if this.authorAvatarUrl}}
+                <img src="{{this.authorAvatarUrl}}" alt="{{this.authorUsername}} avatar" style="width: 100%; height: 100%; border-radius: 50%;">
+              {{else}}
+                {{this.authorInitials}} {{!-- Fallback to initials --}}
+              {{/if}}
+            </div>
+            <div class="comment-content">
+              <div class="comment-header">
+                <span class="comment-author">{{this.authorUsername}}</span>
+                {{!-- Cannot display relative time as 'created_at' is missing from comment table schema --}}
+                {{!-- <span class="comment-time">{{this.relativeTime}}</span> --}}
+              </div>
+              <p class="comment-text">
+                {{this.message}}
+              </p>
+            </div>
+          </div>
+          {{else}}
+           <p>Chưa có bình luận nào.</p> {{!-- Message when no comments exist --}}
+          {{/each}}
+        </div>
+
+        {{!-- Comment Form - Client-side JS handles submission --}}
+         {{!-- IMPORTANT: The existing JS needs to send data to a backend endpoint --}}
+        <form class="comment-form" onsubmit="handleCommentSubmit(event, {{quiz.id}})"> {{!-- Pass quizId if needed --}}
+          <input
+            type="text"
+            class="comment-input"
+            placeholder="Thêm bình luận của bạn..."
+            id="commentInput"
+          />
+          <button type="submit" class="comment-submit" id="commentSubmit" disabled>
+            Gửi
+          </button>
+        </form>
+      </div>
+    </div>
+
+    {{!-- Leaderboard Section --}}
+    <div class="leaderboard">
+      <div class="leaderboard-header">
+        <h3 class="leaderboard-title">
+          <i class="fas fa-trophy"></i> Bảng xếp hạng
+        </h3>
+        <button class="leaderboard-refresh" onclick="location.reload()"> {{!-- Simple refresh --}}
+          <i class="fas fa-sync-alt"></i>
+        </button>
+      </div>
+      <ul class="leaderboard-list">
+        {{#each leaderboard}}
+        <li class="leaderboard-item">
+           {{!-- Dynamic rank and class --}}
+          <div class="leaderboard-rank
+            {{#if (eq @index 0)}}rank-1{{/if}}
+            {{#if (eq @index 1)}}rank-2{{/if}}
+            {{#if (eq @index 2)}}rank-3{{/if}}
+            {{#if (gt @index 2)}}rank-other{{/if}}">
+            {{add @index 1}} {{!-- Display rank number (1-based) --}}
+          </div>
+          <div class="leaderboard-info">
+            <div class="leaderboard-name">{{this.username}}</div>
+            {{!-- Display score (you might want score/total) --}}
+            <div class="leaderboard-score">Điểm: {{this.scoreFormatted}}</div>
+            {{!-- Display formatted time --}}
+            <div class="leaderboard-time">Thời gian: {{this.timeTakenFormatted}}</div>
+          </div>
+        </li>
+        {{else}}
+        <li class="leaderboard-item">
+            <div class="leaderboard-info">Chưa có ai hoàn thành quiz này.</div>
+        </li>
+        {{/each}}
+      </ul>
+    </div>
+  </div>
+
+   {{!-- Keep existing client-side script, but note it needs backend integration --}}
+   <script>
+     // You might need to modify this JS to:
+     // 1. Get the quizId (maybe from a data attribute or the URL).
+     // 2. Send the comment via fetch() to a server endpoint (e.g., POST /quiz/{quizId}/comments).
+     // 3. Optionally update the UI optimistically OR wait for server confirmation.
+
+     function handleCommentSubmit(event, quizId) { // Pass quizId if needed
+       event.preventDefault();
+
+       const input = document.getElementById('commentInput');
+       const commentText = input.value.trim();
+
+       if (!commentText || !quizId) return; // Ensure quizId is available
+
+       // --- TODO: Send data to server ---
+       // Example using fetch:
+       /*
+       fetch(`/api/quiz/${quizId}/comments`, { // Adjust URL as needed
+           method: 'POST',
+           headers: { 'Content-Type': 'application/json' },
+           body: JSON.stringify({ message: commentText })
+       })
+       .then(response => {
+           if (!response.ok) { throw new Error('Network response was not ok'); }
+           return response.json();
+       })
+       .then(newCommentData => {
+           // --- Update UI with data from server ---
+           // (Or update optimistically before fetch)
+           const commentsList = document.querySelector('.comments-list');
+           const newComment = document.createElement('div');
+           newComment.className = 'comment-item';
+
+           // Use actual user data if available, otherwise placeholders
+           const userInitials = newCommentData.authorInitials || 'U';
+           const authorName = newCommentData.authorUsername || 'User';
+           const avatarUrl = newCommentData.authorAvatarUrl; // Assuming server returns this
+
+           newComment.innerHTML = `
+             <div class="comment-avatar">${avatarUrl ? `<img src="${avatarUrl}" alt="${authorName} avatar" style="width: 100%; height: 100%; border-radius: 50%;">` : userInitials}</div>
+             <div class="comment-content">
+               <div class="comment-header">
+                 <span class="comment-author">${authorName}</span>
+                 <span class="comment-time">Vừa xong</span> {{!-- Static time until refresh --}}
+               </div>
+               <p class="comment-text">${newCommentData.message}</p>
+             </div>
+           `;
+           commentsList.insertBefore(newComment, commentsList.firstChild);
+
+           // Update count
+           const commentCountElement = document.querySelector('.comments-title');
+           const currentCount = commentsList.children.length;
+           commentCountElement.innerHTML = `<i class="far fa-comment-dots"></i> Bình luận (${currentCount})`;
+
+           input.value = ''; // Reset input
+           document.getElementById('commentSubmit').disabled = true; // Disable button
+       })
+       .catch(error => {
+           console.error('Error submitting comment:', error);
+           alert('Không thể gửi bình luận. Vui lòng thử lại.');
+       });
+       */
+
+       // --- OPTIMISTIC UI Update (Example - do this OR the fetch().then() update) ---
+        const commentsList = document.querySelector('.comments-list');
+        const newComment = document.createElement('div');
+        newComment.className = 'comment-item';
+        const userInitials = 'U'; // Placeholder - get real user if logged in
+        newComment.innerHTML = `
+          <div class="comment-avatar">${userInitials}</div>
+          <div class="comment-content">
+            <div class="comment-header">
+              <span class="comment-author">User</span> {{!-- Placeholder --}}
+              <span class="comment-time">Vừa xong</span>
+            </div>
+            <p class="comment-text">${commentText}</p>
+          </div>
+        `;
+        commentsList.insertBefore(newComment, commentsList.firstChild);
+        const commentCount = document.querySelector('.comments-title');
+        const currentCount = commentsList.children.length; // Re-count after adding
+        commentCount.innerHTML = `<i class="far fa-comment-dots"></i> Bình luận (${currentCount})`;
+        input.value = '';
+        document.getElementById('commentSubmit').disabled = true; // Disable button after submit
+        // Remember to also send the data to the server!
+        // The optimistic update should ideally be replaced/synced with server response.
+        console.log("TODO: Send comment to server:", { quizId, commentText });
+     }
+
+     // Disable submit button logic
+     document.getElementById('commentInput').addEventListener('input', function(e) {
+       const submitButton = document.getElementById('commentSubmit');
+       submitButton.disabled = !e.target.value.trim();
+     });
+     // Initial check in case input has value on load
+     document.addEventListener('DOMContentLoaded', () => {
+        const input = document.getElementById('commentInput');
+        const submitButton = document.getElementById('commentSubmit');
+        submitButton.disabled = !input.value.trim();
+     });
+
+     // Handlebars helper for adding numbers (needed for rank)
+     Handlebars.registerHelper('add', function(a, b) {
+        return a + b;
+     });
+     // Handlebars helper for equality check (needed for rank class)
+     Handlebars.registerHelper('eq', function(a, b) {
+        return a === b;
+     });
+     // Handlebars helper for greater than check (needed for rank class)
+     Handlebars.registerHelper('gt', function(a, b) {
+        return a > b;
+     });
+     // TODO: Add a Handlebars helper for generating star ratings
+     /* Example Star Helper:
+     Handlebars.registerHelper('stars', function(rating) {
+        rating = parseFloat(rating) || 0;
+        let html = '';
+        const fullStars = Math.floor(rating);
+        const halfStar = (rating % 1 >= 0.4) ? 1 : 0; // Adjust threshold? 0.5?
+        const emptyStars = 5 - fullStars - halfStar;
+        for(let i=0; i<fullStars; i++) html += '<i class="fas fa-star"></i>';
+        if(halfStar) html += '<i class="fas fa-star-half-alt"></i>';
+        for(let i=0; i<emptyStars; i++) html += '<i class="far fa-star"></i>'; // Use far for empty
+        return new Handlebars.SafeString(html + ` (${rating})`);
+     });
+     // Then in HBS: {{{stars stats.averageRating}}}
+     */
+   </script>
+</body>
+</html>
