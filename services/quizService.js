@@ -189,14 +189,14 @@ export default {
         const ratingStats = await db('rate')
             .where('quiz', quizId)
             .select(
-                db.raw('COALESCE(AVG(score), 0) as averageRating'),
-                db.raw('COUNT(score) as ratingCount')
+            db.raw('COALESCE(AVG(score), 0) as averageRating'),
+            db.raw('COUNT(score) as ratingCount')
             )
             .first();
-        
-        // Ensure rating is a number, default to 0, max 5
-        const rating = Math.min(5, Number(ratingStats?.averageRating) || 0);
-        const ratingCount = Number(ratingStats?.ratingCount) || 0;
+
+        // Ensure rating is a number, default to 0, and round it to one decimal place
+        const rating = Math.round((Math.max(0, Math.min(5, parseFloat(ratingStats?.averageRating || 0))) + Number.EPSILON) * 10) / 10;
+        const ratingCount = parseInt(ratingStats?.ratingCount || 0, 10);
 
         // --- Comments ---
         // NOTE: Comment table schema lacks timestamp. Fetching user info.
