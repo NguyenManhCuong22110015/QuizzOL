@@ -29,32 +29,33 @@ body {
 
 .container {
     display: flex;
-    max-width: 1200px;
-    margin: 20px auto; /* Reduced top/bottom margin */
+    width: 80%; /* Set to 80% of viewport width (10% margin on each side) */
+    margin: 20px auto;
     box-shadow: var(--shadow);
     border-radius: var(--border-radius);
     overflow: hidden;
     background-color: var(--light-color);
-    flex: 1; /* Allow the container to grow and take up available space */
+    flex: 1;
+    max-width: none; /* Remove max-width to allow 80% width */
 }
 
 .left-panel {
-    width: 70%;
-    padding: 30px; /* Reduced padding */
+    width: 60%; /* Changed from 70% to 60% */
+    padding: 30px;
     background-color: #fff;
     border-right: 5px solid var(--secondary-color);
-    overflow-y: auto; /* Enable vertical scrolling */
-    height: auto; /* Remove fixed height */
+    overflow-y: auto;
+    height: auto;
 }
 
 .right-panel {
-    width: 30%;
+    width: 40%; /* Changed from 30% to 40% */
     background-color: #f8f9fa;
-    padding: 30px; /* Reduced padding */
-    position: sticky; /* Make it stick */
-    top: 20px; /* Stick below the top margin of the container */
-    height: auto; /* Remove fixed height */
-    overflow-y: auto; /* Enable scrolling if content overflows */
+    padding: 30px;
+    position: sticky;
+    top: 20px;
+    height: auto;
+    overflow-y: auto;
 }
 
 /* Section Header */
@@ -228,4 +229,114 @@ body {
     background-color: var(--success-color);
     border-color: var(--success-color);
     color: white;
+}
+.time-warning {
+    color: red;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.timer-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}/* Fill in the blank styling */
+.fill-blank-container {
+    margin: 15px 0;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+.input-wrapper {
+    position: relative;
+    margin: 10px 0;
+}
+
+.fill-blank-input {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    background-color: white;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.fill-blank-input:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 3px 8px rgba(76, 175, 80, 0.2);
+}
+
+.fill-blank-input::placeholder {
+    color: #aaa;
+    font-style: italic;
+}
+
+.input-border {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background-color: #4CAF50;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.fill-blank-input:focus + .input-border {
+    width: 100%;
+}
+
+
+/* Visual cues for filled answers */
+.fill-blank-input:not(:placeholder-shown) {
+    background-color: #f0f7f0;
+    border-color: #9ed1a1;
+}
+
+.question-card {
+    margin-bottom: 30px;
+    padding: 25px;
+    background-color: #fff;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    border: 2px solid #eee;
+    transition: border-color 0.3s ease, transform 0.2s ease;
+    position: relative;
+}
+
+.question-card:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-3px);
+}
+
+.question-number {
+    position: absolute;
+    top: -15px;
+    left: 20px;
+    background-color: var(--primary-color);
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.question-text {
+    margin: 10px 0 20px;
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--dark-color);
 }

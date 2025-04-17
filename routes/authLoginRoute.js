@@ -36,4 +36,22 @@ router.get( '/github',(req, res, next) => {req.logout((err) => {
 
 router.get( '/github', githubPassport.authenticate('github', { failureRedirect: '/login' }), loginToGithub );
 
+router.get('/logout', (req, res, next) => {
+  
+    req.logout(function(err) {
+      if (err) { return next(err); }
+      
+      // Xóa toàn bộ session
+      req.session.destroy((err) => {
+        if (err) {
+          return next(err);
+        }
+        res.clearCookie('connect.sid');
+        
+        res.redirect(req.headers.referer || '/' );
+      });
+    });
+  });
+
+
 export default router;

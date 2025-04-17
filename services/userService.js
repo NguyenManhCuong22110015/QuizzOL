@@ -50,22 +50,26 @@ export default {
           
         if (account) {
           // Nếu account đã tồn tại, cập nhật last_login
-          await trx('account')
-            .where({ id: account.id })
-            .update({ 
-              last_login: trx.fn.now() 
-            });
+         
             
           // Lấy thông tin user tương ứng
           let user = await trx('user')
-            .where({ id: account.user_id })
+            .where({ id: account.user })
             .first();
           
           // Cập nhật avatar nếu user chưa có
-          if (!user.avatar && avatarUrl) {
+          if (!user.avata && avatarUrl) {
+            // First, insert the avatar URL into the media table
+            const [mediaId] = await trx('media')
+              .insert({
+                url: avatarUrl,
+                resource_type: 'IMAGE',
+              });
+              
+            // Then update the user table with the media ID
             await trx('user')
               .where({ id: user.id })
-              .update({ avatar: avatarUrl });
+              .update({ avata: mediaId });
               
             // Refresh user data
             user = await trx('user')
@@ -83,15 +87,15 @@ export default {
             id: updatedAccount.id,
             email: updatedAccount.email,
             username: user.username,
-            avatar: user.avatar,
+            avata: user.avatar,
             role: updatedAccount.role,
             provider: updatedAccount.provider,
-            last_login: updatedAccount.last_login,
+            // last_login: updatedAccount.last_login,
             created_at: updatedAccount.created_at,
-            user_id: user.id,
+            user: user.id,
           };
         } else {
-          // Tìm xem email này đã tồn tại trong bảng account chưa để lấy user_id
+          // Tìm xem email này đã tồn tại trong bảng account chưa để lấy user
           const existingAccount = await trx('account')
             .where({ email })
             .first();
@@ -99,8 +103,8 @@ export default {
           let userId;
           
           if (existingAccount) {
-            // Nếu email đã tồn tại trong account khác, sử dụng user_id đó
-            userId = existingAccount.user_id;
+            // Nếu email đã tồn tại trong account khác, sử dụng user đó
+            userId = existingAccount.user;
             
             // Cập nhật thông tin user nếu cần
             const existingUser = await trx('user')
@@ -108,29 +112,50 @@ export default {
               .first();
               
             if (!existingUser.avatar && avatarUrl) {
+              // First, insert the avatar URL into the media table
+              const [mediaId] = await trx('media')
+                .insert({
+                  url: avatarUrl,
+                  resource_type: 'IMAGE',
+                });
+                
+              // Then update the user table with the media ID
               await trx('user')
                 .where({ id: userId })
-                .update({ avatar: avatarUrl });
+                .update({ avata: mediaId });
             }
           } else {
             // Nếu email chưa tồn tại, tạo user mới
+            let avatarId = null;
+            
+            // If there's an avatar URL, store it in media table first
+            if (avatarUrl) {
+              const [mediaId] = await trx('media')
+                .insert({
+                  url: avatarUrl,
+                  resource_type: 'IMAGE',
+                });
+              avatarId = mediaId;
+            }
+            
+            // Now create user with the media ID (not the URL)
             const [newUserId] = await trx('user')
               .insert({
                 username: username,
-                avatar: avatarUrl
+                avata: avatarId // Store ID, not URL
               });
               
             userId = newUserId;
           }
           
-          // Tạo account mới với email và user_id
+          // Tạo account mới với email và user
           const [accountId] = await trx('account')
             .insert({
               email: email,
-              user_id: userId,
+              user: userId,
               role: 'USER', // Mặc định là USER
               provider: providerUpperCase,
-              last_login: trx.fn.now(),
+              // last_login: trx.fn.now(),
               created_at: trx.fn.now()
               // password để null vì đây là OAuth
             });
@@ -149,12 +174,12 @@ export default {
             id: newAccount.id,
             email: newAccount.email,
             username: newUser.username,
-            avatar: newUser.avatar,
+            avata: newUser.avatar,
             role: newAccount.role,
             provider: newAccount.provider,
-            last_login: newAccount.last_login,
+            // last_login: newAccount.last_login,
             created_at: newAccount.created_at,
-            user_id: newUser.id,
+            user: newUser.id,
           };
         }
       });
@@ -167,14 +192,14 @@ export default {
     try {
         const account = await db('account')
             .where('id', accountId)
-            .select('user_id')
+            .select('user')
             .first();
         
         if (!account) {
             console.log("Account not found!");
             return null; 
         }
-        const userId = account.user_id;
+        const userId = account.user;
         const result = await db('user')
             .where('id', userId)
             .update({ dob: birthday });
@@ -186,21 +211,52 @@ export default {
 
   async updateFields(userId, field, value) {
     try {
-      const allowedFields = ['username', 'avatar', 'gender', 'password', 'dob'];
+      const allowedFields = ['username', 'avata', 'gender', 'password', 'dob'];
       if (!allowedFields.includes(field)) {
         throw new Error(`Field not allowed: ${field}`);
       }
 
-      const updateData = { [field]: value };
-      
-      if (field === 'password') {
+      // Special handling for avatar field
+      if (field === 'avata') {
+        return await db.transaction(async (trx) => {
+          // First, insert the avatar URL into the media table
+          const [mediaId] = await trx('media')
+            .insert({
+              url: value,
+              type: 'IMAGE',
+              user: userId,
+              upload_date: trx.fn.now()
+            });
+            
+          // Then update the user with the media ID
+          await trx('user')
+            .where({ id: userId })
+            .update({ avatar: mediaId });
+            
+          const user = await trx('user')
+            .where({ id: userId })
+            .first();
+            
+          const account = await trx('account')
+            .where({ user: userId })
+            .first();
+    
+          return {
+            ...user
+          };
+        });
+      } 
+      // Password handling
+      else if (field === 'password') {
         await db('account')
-          .where({ user_id: userId })
-          .update(updateData);
-      } else {
+          .where({ user: userId })
+          .update({ [field]: value });
+      } 
+      // Other fields
+      else {
         await db('user')
           .where({ id: userId })
-          .update(updateData);
+          .update({ [field]: value });
       }
 
       const user = await db('user')
@@ -208,12 +264,11 @@ export default {
         .first();
         
       const account = await db('account')
-        .where({ user_id: userId })
+        .where({ user: userId })
         .first();
 
       return {
         ...user,
-       
       };
     } catch (error) {
       console.error(`Error updating ${field}:`, error);
@@ -234,7 +289,7 @@ export default {
       
       // Lấy thông tin user
       const user = await db('user')
-        .where({ id: account.user_id })
+        .where({ id: account.user })
         .first();
         
       if (!user) {
@@ -246,10 +301,10 @@ export default {
         id: account.id,
         email: account.email,
         username: user.username,
-        avatar: user.avatar,
+        avata: user.avatar,
         role: account.role,
         provider: account.provider,
-        user_id: user.id
+        user: user.id
       };
     } catch (error) {
       console.error('Error in findUserByEmail:', error);
@@ -259,31 +314,35 @@ export default {
   
   async findUserById(userId) {
     try {
-      // Lấy thông tin user
+      // Get user with avatar URL
       const user = await db('user')
-        .where({ id: userId })
+        .leftJoin('media', 'user.avata', 'media.id')
+        .select('user.*', 'media.url as avatar_url')
+        .where('user.id', userId)
         .first();
         
       if (!user) {
         return null;
       }
       
-      // Lấy tài khoản liên kết
+      // Use avatar_url instead of avatar ID
+      const avatarUrl = user.avatar_url || null;
+      
+      // Get linked accounts
       const accounts = await db('account')
-        .where({ user_id: userId });
+        .where({ user: userId });
         
-      // Lấy tài khoản chính (có thể là tài khoản đầu tiên hoặc có provider là LOCAL)
+      // Get primary account
       const primaryAccount = accounts.find(acc => acc.provider === 'USER') || accounts[0];
       
-      // Kết hợp thông tin
       return {
         id: primaryAccount.id,
         email: primaryAccount.email,
         username: user.username,
-        avatar: user.avatar,
+        avatar: avatarUrl, // Use the URL instead of the ID
         role: primaryAccount.role,
         provider: primaryAccount.provider,
-        user_id: user.id,
+        user: user.id,
         linked_accounts: accounts.map(acc => acc.provider)
       };
     } catch (error) {
@@ -296,19 +355,19 @@ export default {
     try {
       // Đếm số lượng quiz của user
       const quizCount = await db('quiz')
-        .where({ user_id: userId })
+        .where({ user: userId })
         .count('id as count')
         .first();
         
       // Đếm số lượng flashcard sets
       const flashcardCount = await db('flashcard_set')
-        .where({ user_id: userId })
+        .where({ user: userId })
         .count('id as count')
         .first();
         
       // Lấy thông tin subscription
       const subscription = await db('subscription')
-        .where({ user_id: userId })
+        .where({ user: userId })
         .orderBy('expiry_date', 'desc')
         .first();
         

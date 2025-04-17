@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+   
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/css/index.css">
+  <style>
+    body {
+        padding-top: 56px; /* Height of navbar */
+    }
+    .main-container {
+    width: 100%;
+    max-width: 1400px;  /* Add max-width for container behavior */
+    margin: 0 auto;     /* Center the container */
+    padding-right: 15px; /* Standard Bootstrap padding */
+    padding-left: 15px;
+    box-sizing: border-box; /* Include padding in width calculation */
+}
+
+@media (min-width: 768px) {
+    .main-container {
+        padding-right: 30px;
+        padding-left: 30px;
+    }
+}
+</style>
+
+</head>
+<body>
+
+
+<div class="main-container">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-light fixed-top main-container">
+  <a class="navbar-brand" href="/">NEWS</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+
+        {{#if this.main_cat}}
+        <li class="nav-item">
+          <a class="nav-link" style="color:red !important" >{{this.main_cat}}</a>
+        </li>
+        {{/if}}
+
+       {{#each this.categories}}
+      
+      <li class="nav-item"><a class="nav-link" href="/article/byCat?id={{id}}">{{name}}</a></li>
+
+        {{/each}}
+
+    </ul>
+
+    <form class="form-inline my-2 my-lg-0">
+    <input 
+        id="searchInput" 
+        class="form-control mr-sm-2" 
+        style="border: 1px solid #000000 !important;"
+        type="search" 
+        placeholder="Search" 
+        aria-label="Search">
+    <button id="search-icon" class="btn btn-outline-dark my-2 my-sm-0 ml-2" type="button">
+        <i class="fas fa-search"></i>
+    </button>
+</form>
+    
+   
+    {{#if auth}}
+        
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person-circle" style="color:rgb(0, 0, 0);font-size:20px" ></i>
+          </a>
+          <div class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" href="/account/profile"> <i class="bi bi-person"></i> Profile</a>
+            {{#if (eq authUser.role 'admin')}}
+               <a class="dropdown-item" href="/admin/categories"> <i class="bi bi-gear"></i> Admin</a>
+            {{/if}}
+            {{#if (eq authUser.role 'editor')}}
+               <a class="dropdown-item" href="/editor/articles"> <i class="bi bi-gear"></i> Editor</a>
+            {{/if}}
+            {{#if (eq authUser.role 'writer')}}
+               <a class="dropdown-item" href="/writer/articles"> <i class="bi bi-pencil"></i></i>Writer</a>
+            {{/if}}
+            
+            <a class="dropdown-item" href="/logout"> <i class="bi bi-box-arrow-right"></i> Log out</a>
+          </div>
+        
+      {{else}}
+      <button class="btn btn-outline-success my-2 my-sm-0 ml-2" type="button"   >
+          <a href="/login" style="color:black"  >Log in</a>
+      </button>
+        {{/if}}
+    
+    
+  </div>
+</nav>
+
+
+{{{body}}}
+
+<div class="footer ">
+  <div class="navbar">
+    <a href="https://edition.cnn.com" class="logo-link">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/CNN.svg" alt="CNN Logo">
+    </a>
+
+    <div class="nav-content">
+      <div class="footer-links">
+        <a href="https://edition.cnn.com/videos" class="footer-link">Watch</a>
+        <a href="https://edition.cnn.com/audio" class="footer-link">Listen</a>
+        <a href="https://edition.cnn.com/videos/live" class="footer-link">Live TV</a>
+        <a style="color: white" >|</a>
+        <span  style="font-weight: bold; color: white">FOLLOW CNN</span>
+      </div>
+      
+      <div class="social-icons">
+        <a href="https://www.facebook.com/cnn/" class="social-link"><i class="fab fa-facebook"></i></a>
+  
+        <a href="https://www.instagram.com/CNN/" class="social-link"><i class="fab fa-instagram"></i></a>
+        <a href="https://www.tiktok.com/@cnn?lang=en" class="social-link"><i class="fab fa-tiktok"></i></a>
+        <a href="https://www.linkedin.com/company/cnn" class="social-link"><i class="fab fa-linkedin"></i></a>
+      </div>
+      <div class="sign-font">
+        <a href ="https://edition.cnn.com/account/log-in" class="sign-link" style="font-weight: bold;">Sign in</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom mt-5">
+    <div class="policy-links">
+      <a href="https://www.cnn.com/terms" class="footer-link">Terms of Use</a>
+      <a href="https://www.cnn.com/privacy" class="footer-link">Privacy Policy</a>
+      <a href="https://www.cnn.com/cookie-settings" class="footer-link">Cookie Settings</a>
+      <a href="https://www.cnn.com/adchoices" class="footer-link">Ad Choices</a>
+      <a href="https://www.cnn.com/accessibility" class="footer-link">Accessibility & CC</a>
+      <a href="https://www.cnn.com/about" class="footer-link">About</a>
+      <a href="https://www.cnn.com/newsletters" class="footer-link">Newsletters</a>
+      <a href="https://www.cnn.com/transcripts" class="footer-link">Transcripts</a>
+    </div>
+    <br/>
+    <br/>
+    <div>© 2024 Cable News Network. A Warner Bros. Discovery Company. All Rights Reserved.</div>
+    <div>CNN Sans ™ & © 2016 Cable News Network.</div>
+  </div>
+</div>
+</div>
+
+</body>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="/js/index.js"></script>
+<script>
+  
+
+  $(document).ready(function() {
+    $('.dropdown-toggle').dropdown();
+    
+});
+
+ document.addEventListener('DOMContentLoaded', function() {
+    const searchForm = document.querySelector('.form-inline');
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('search-icon');
+
+    function handleSearch(e) {
+        e.preventDefault();
+        
+        const searchTerm = searchInput?.value?.trim();
+        
+        if (!searchTerm || searchTerm.length < 2) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Search Error',
+                text: 'Please enter at least 2 characters to search'
+            });
+            return;
+        }
+
+        try {
+            window.location.href = `/article/search?q=${encodeURIComponent(searchTerm)}`;
+        } catch (error) {
+            console.error('Search error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred while searching. Please try again.'
+            });
+        }
+    }
+
+    searchForm?.addEventListener('submit', handleSearch);
+    searchButton?.addEventListener('click', handleSearch);
+    searchInput?.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            handleSearch(e);
+        }
+    });
+});
+
+</script>
+</html>

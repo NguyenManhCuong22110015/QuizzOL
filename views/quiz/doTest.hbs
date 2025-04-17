@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/doTest.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -16,60 +18,91 @@
             </div>
 
             {{#each this.quiz.questions}}
-                {{#if (eq type "SINGLE_ANSWER")}}
-                 <div class="question-card" id="question-{{question_number}}">
+               {{#if (eq type "SINGLE_ANSWER")}}
+                    <div class="question-card" id="question-{{question_number}}" data-question-id="{{id}}" data-question-number="{{question_number}}">
+                        <span class="question-number">{{question_number}}</span>
+                        <div class="question-text">{{content}}</div>
+                        {{#if imageUrl}}
+                        <div class="image-placeholder">
+                            <img src="{{imageUrl}}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                        {{/if}}
+                        <div class="options">
+                       {{#each options}}
+                            <div>
+                                <input 
+                                type="radio" 
+                                id="q{{../question_number}}_option{{@index}}" 
+                                name="question-{{../question_number}}" 
+                                value="{{id}}" 
+                                {{#if (eq ../option_id id)}}checked{{/if}}>
+                                <label for="q{{../question_number}}_option{{@index}}">{{content}}</label>
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                {{else if (eq type "FILL_IN_THE_BLANK")}}
+                    <div class="question-card" id="question-{{question_number}}" data-question-id="{{id}}" data-question-number="{{question_number}}">
+                        <span class="question-number">{{question_number}}</span>
+                        <div class="question-text">{{content}}</div>
+                        {{#if imageUrl}}
+                        <div class="image-placeholder">
+                            <img src="{{imageUrl}}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                        {{/if}}
+                        <div class="fill-blank-container">
+                            <div class="input-wrapper">
+                                <input 
+                                    type="text" 
+                                    id="q{{question_number}}_input" 
+                                    class="fill-blank-input" 
+                                    placeholder="Type your answer here..."
+                                    value="{{#if text_answer}}{{text_answer}}{{/if}}"
+                                >
+                                <div class="input-border"></div>
+                            </div>
+                        </div>
+                    </div>
+                {{else if (eq type "TRUE_FALSE")}}
+                    <div class="question-card" id="question-{{question_number}}" data-question-id="{{id}}" data-question-number="{{question_number}}">
                     <span class="question-number">{{question_number}}</span>
                     <div class="question-text">{{content}}</div>
-                   {{#if imageUrl}}
-                    <div class="image-placeholder">
+                    {{#if imageUrl}}
+                        <div class="image-placeholder">
                         <img src="{{imageUrl}}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
-                    </div>
-                   {{/if}}
+                        </div>
+                    {{/if}}
                     <div class="options">
-                       {{#each options}}
+                        {{#each options}}
                         <div>
-                            <input type="radio" id="{{id}}"  onclick="markCompleted({{id}})"><label>{{content}}</label>
+                            <input 
+                            type="radio" 
+                            id="q{{../question_number}}_option{{@index}}" 
+                            name="question-{{../question_number}}" 
+                            value="{{id}}">
+                            <label for="q{{../question_number}}_option{{@index}}">{{content}}</label>
                         </div>
-                       {{/each}}
+                        {{/each}}
                     </div>
-                </div>
-                {{else if (eq type "FILL_IN_THE_BLANK")}}
-                <div class="question-card" id="question-40">
-                        <span class="question-number">40</span>
-                        <div class="question-text">Fill in the blank: The meeting will be held _____ 9 AM and 11 AM.</div>
-                        <div class="options">
-                            <div><label for="q40a">Answer:</label> <input type="text" id="q40a" name="q40" onblur="markCompleted(40)"></div>
-                        </div>
-                </div>
-                {{else if (eq type "TRUE_FALSE")}}
-                <div class="question-card" id="question-{{question_number}}">
-                    <span class="question-number">{{question_number}}</span>
-                    <div class="question-text">What is shown in the picture?</div>
-                    <div class="image-placeholder">
-                        <img src="https://placehold.co/600x400?text=Office+Meeting&font=Roboto" alt="" style="width: 100%; height: 100%; object-fit: cover;">
-                   </div>
-                    <div class="options">
-                       {{#each options}}
-                        <div>
-                            <input type="radio" id="{{id}}"  onclick="markCompleted({{id}})"><label>{{content}}</label>
-                        </div>
-                       {{/each}}
                     </div>
-                 </div>
                 {{/if}}
             {{/each}}
 
-           
-
-           
+    
 
             <button class="submit-button">Submit Answers</button>
         </div>
 
         <div class="right-panel">
-            <div class="timer">
-                <p>Time Elapsed:</p>
-                <p class="time" id="timer">00:00</p>
+            <div class="timer-container">
+                <div class="timer">
+                    <p>Time Elapsed:</p>
+                    <p class="time" id="timer">00:00</p>
+                </div>
+                <div class="timer">
+                    <p>Time Remaining:</p>
+                    <p class="time" id="timeLeft">00:00</p>
+                </div>
             </div>
             <button class="submit-button">Submit Answers</button>
             <p class="review-note">Review before submitting.</p>
@@ -86,37 +119,397 @@
         </div>
     </div>
     <script>
-        let seconds = 0;
-        let minutes = 0;
-
-        function updateTimer() {
+    // Get result data from server
+    const resultId = '{{resultId}}';
+    const startTime = new Date('{{startTime}}');
+    const endTime = new Date('{{endTime}}');
+    let currentResultId = resultId;
+    
+    // Timer variables
+    let timeDiff = 0;
+    let seconds = 0;
+    let minutes = 0;
+    let timeLeft = 0; // Time left in seconds
+    
+    // Setup timer based on start time
+    function initializeTimer() {
+        const now = new Date();
+        
+        // Calculate how much time has passed since start
+        timeDiff = Math.floor((now - startTime) / 1000);
+        seconds = timeDiff % 60;
+        minutes = Math.floor(timeDiff / 60);
+        
+        // Calculate time left until end
+        timeLeft = Math.max(0, Math.floor((endTime - now) / 1000));
+        
+        updateTimerDisplay();
+        
+        // Start the timer
+        const timerInterval = setInterval(() => {
+            // Update elapsed time
             seconds++;
             if (seconds === 60) {
                 seconds = 0;
                 minutes++;
             }
-
-            const formattedSeconds = String(seconds).padStart(2, '0');
-            const formattedMinutes = String(minutes).padStart(2, '0');
-
-            document.getElementById('timer').innerText = `${formattedMinutes}:${formattedSeconds}`;
-        }
-
-        setInterval(updateTimer, 1000);
-
-        function scrollToQuestion(questionNumber) {
-            const questionElement = document.getElementById(`question-${questionNumber}`);
-            if (questionElement) {
-                questionElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            
+            // Update time left
+            timeLeft--;
+            
+            updateTimerDisplay();
+            
+            // Check if time is up
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                submitQuiz('Time is up!');
+            } else if (timeLeft <= 60) {
+                // Show warning at last minute
+                if (timeLeft === 60) {
+                    Swal.fire({
+                        title: 'Last Minute!',
+                        text: 'You have 1 minute left to complete the quiz.',
+                        icon: 'warning',
+                        timer: 5000,
+                        timerProgressBar: true,
+                        showConfirmButton: false
+                    });
+                }
+                
+                // Blink the timer in red during the last minute
+                document.getElementById('timer').classList.add('time-warning');
+            } else if (timeLeft === 300) { // 5 minutes left
+                Swal.fire({
+                    title: '5 Minutes Left',
+                    text: 'You have 5 minutes left to complete the quiz.',
+                    icon: 'info',
+                    timer: 5000,
+                    timerProgressBar: true,
+                    showConfirmButton: false
+                });
             }
+        }, 1000);
+    }
+    
+    function updateTimerDisplay() {
+        // Format for elapsed time
+        const formattedSeconds = String(seconds).padStart(2, '0');
+        const formattedMinutes = String(minutes).padStart(2, '0');
+        
+        // Format for time left
+        const timeLeftMinutes = Math.floor(timeLeft / 60);
+        const timeLeftSeconds = timeLeft % 60;
+        const formattedTimeLeftMinutes = String(timeLeftMinutes).padStart(2, '0');
+        const formattedTimeLeftSeconds = String(timeLeftSeconds).padStart(2, '0');
+        
+        // Update displays
+        document.getElementById('timer').innerText = `${formattedMinutes}:${formattedSeconds}`;
+        document.getElementById('timeLeft').innerText = `${formattedTimeLeftMinutes}:${formattedTimeLeftSeconds}`;
+    }
+    
+    function scrollToQuestion(questionNumber) {
+        const questionElement = document.getElementById(`question-${questionNumber}`);
+        if (questionElement) {
+            questionElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
+    }
 
-        function markCompleted(questionNumber) {
-            const button = document.getElementById(`question-button-${questionNumber}`);
-            if (button) {
-                button.classList.add('completed');
-            }
+    function markCompleted(questionNumber) {
+        const button = document.getElementById(`question-button-${questionNumber}`);
+        if (button) {
+            button.classList.add('completed');
         }
-    </script>
+    }
+
+    // Function to handle saving radio button answers
+    async function saveRadioAnswer(event) {
+        const questionElement = event.target.closest('.question-card');
+        
+        if (!questionElement || !currentResultId) return;
+        
+        const questionId = questionElement.getAttribute('data-question-id');
+        const questionNumber = questionElement.getAttribute('data-question-number');
+        const answerId = event.target.value;
+        
+        // Visual feedback - mark as completed
+        markCompleted(parseInt(questionNumber));
+        
+        try {
+            // Try to update first
+            const updateResponse = await fetch('/user-answer/update', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    resultId: currentResultId,
+                    questionId: questionId,
+                    answerId: answerId
+                })
+            });
+            
+            // If update returns 404 (not found), create a new answer
+            if (!updateResponse.ok && updateResponse.status === 404) {
+                const addResponse = await fetch('/user-answer/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        resultId: currentResultId,
+                        questionId: questionId,
+                        answerId: answerId
+                    })
+                });
+                
+                if (!addResponse.ok) {
+                    throw new Error('Failed to create answer');
+                }
+            } else if (!updateResponse.ok) {
+                throw new Error('Failed to update answer');
+            }
+            
+            console.log(`Successfully saved answer for question ${questionId}`);
+            
+        } catch (error) {
+            console.error('Error saving answer:', error);
+            
+            // Show error notification only if saving fails
+            Swal.fire({
+                title: 'Error',
+                text: 'Failed to save your answer. Please try again.',
+                icon: 'error',
+                toast: true,
+                position: 'top-end',
+                timer: 3000,
+                showConfirmButton: false
+            });
+        }
+    }
+
+    // Function to handle saving text input answers
+    async function saveTextAnswer(event) {
+        const questionElement = event.target.closest('.question-card');
+        
+        if (!questionElement || !currentResultId) return;
+        
+        const questionId = questionElement.getAttribute('data-question-id');
+        const questionNumber = questionElement.getAttribute('data-question-number');
+        const textAnswer = event.target.value.trim();
+        
+        // Only save if there's actual content
+        if (!textAnswer) return;
+        
+        // Visual feedback - mark as completed
+        markCompleted(parseInt(questionNumber));
+        
+        try {
+            // Try to update first
+            const updateResponse = await fetch('/user-answer/update-text', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    resultId: currentResultId,
+                    questionId: questionId,
+                    textAnswer: textAnswer
+                })
+            });
+            
+            // If update returns 404 (not found), create a new answer
+            if (!updateResponse.ok && updateResponse.status === 404) {
+                const addResponse = await fetch('/user-answer/add-text', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        resultId: currentResultId,
+                        questionId: questionId,
+                        textAnswer: textAnswer
+                    })
+                });
+                
+                if (!addResponse.ok) {
+                    throw new Error('Failed to create text answer');
+                }
+            } else if (!updateResponse.ok) {
+                throw new Error('Failed to update text answer');
+            }
+            
+            console.log(`Successfully saved text answer for question ${questionId}`);
+            
+        } catch (error) {
+            console.error('Error saving text answer:', error);
+        }
+    }
+    
+    // Function to submit quiz automatically or manually
+    async function submitQuiz(message = 'Submit Quiz?') {
+        try {
+            // If it's auto-submission due to time expiry
+            if (message === 'Time is up!') {
+                Swal.fire({
+                    title: message,
+                    text: 'Your quiz is being submitted automatically.',
+                    icon: 'warning',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+                
+                // Mark the result as completed
+                const response = await fetch(`/result/complete/${currentResultId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to complete quiz');
+                }
+                
+                // Redirect after a short delay
+                setTimeout(() => {
+                   // {{!-- window.location.href = `/result/${currentResultId}`; --}}
+                     window.location.href = `/`;
+                }, 3000);
+                
+                return;
+            }
+            
+            // For manual submission, show confirmation
+            Swal.fire({
+                title: message,
+                text: 'Are you sure you want to submit your answers?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Submit',
+                cancelButtonText: 'Cancel'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        // Mark the result as completed
+                        const response = await fetch(`/result/complete/${currentResultId}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            }
+                           
+                        });
+                        
+                        if (!response.ok) {
+                            throw new Error('Failed to complete quiz');
+                        }
+                        
+                        // Redirect to results page
+                        window.location.href = `/result/${currentResultId}`;
+                        
+                    } catch (error) {
+                        console.error('Error submitting quiz:', error);
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Failed to submit quiz. Please try again.',
+                            icon: 'error'
+                        });
+                    }
+                }
+            });
+        } catch (error) {
+            console.error('Error in submit function:', error);
+        }
+    }
+
+    // Initialize the quiz when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize timer based on start time
+        initializeTimer();
+        
+        // Get existing answers from server
+        const existingAnswers = {{{json existingAnswers}}};
+        
+        // When starting a new quiz
+        if (!existingAnswers || existingAnswers.length === 0) {
+            // Show "new quiz" notification
+            Swal.fire({
+                title: 'New Quiz',
+                text: 'You are starting a new quiz. Good luck!',
+                icon: 'success',
+                confirmButtonText: 'Start',
+                confirmButtonColor: '#4CAF50',
+                timer: 5000,
+                timerProgressBar: true,
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false
+            });
+        } else {
+            // Show "continuing quiz" notification
+            Swal.fire({
+                title: 'Welcome Back!',
+                text: 'You are continuing your previous attempt.',
+                icon: 'info',
+                confirmButtonText: 'Continue',
+                confirmButtonColor: '#4CAF50',
+                timer: 5000,
+                timerProgressBar: true,
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false
+            });
+            
+            // Restore previous answers
+            existingAnswers.forEach(answer => {
+                if (answer.question_id) {
+                    const questionElement = document.querySelector(`[data-question-id="${answer.question_id}"]`);
+                    if (questionElement) {
+                        const questionNumber = questionElement.getAttribute('data-question-number');
+                        if (questionNumber) {
+                            markCompleted(parseInt(questionNumber));
+                            
+                            // If single answer, select the right radio button
+                            if (answer.option_id) {
+                                const radioButton = document.querySelector(`input[value="${answer.option_id}"]`);
+                                if (radioButton) {
+                                    radioButton.checked = true;
+                                }
+                            }
+                            
+                            // If text answer, populate the text field
+                            if (answer.text_answer) {
+                                const textField = document.querySelector(`#question-${questionNumber} input[type="text"]`);
+                                if (textField) {
+                                    textField.value = answer.text_answer;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Add event listeners for radio buttons
+        const radioButtons = document.querySelectorAll('input[type="radio"]');
+        radioButtons.forEach(radio => {
+            radio.addEventListener('change', saveRadioAnswer);
+        });
+        
+        // Add event listeners for text inputs
+        const textInputs = document.querySelectorAll('input[type="text"]');
+        textInputs.forEach(input => {
+            input.addEventListener('blur', saveTextAnswer);
+        });
+        
+        // Handle submit button
+        document.querySelectorAll('.submit-button').forEach(button => {
+            button.addEventListener('click', function() {
+                if (!currentResultId) return;
+                submitQuiz();
+            });
+        });
+    });
+</script>
 </body>
 </html>

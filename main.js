@@ -20,13 +20,14 @@ import  {options} from './configs/db.js';
 import moment from 'moment-timezone';
 import dotenv from 'dotenv'; 
 import mediaRoute from './routes/mediaRoute.js';
-
+import userAnswerRoute from './routes/userAnswerRoute.js';
+import resultRoute from './routes/resultRoute.js';
 
 dotenv.config();
 const app = express()
 app.set('trust proxy', 1);
 
-   app.engine('hbs', engine({
+app.engine('hbs', engine({
     extname : 'hbs',
     helpers: {
       extractFirstImage: function (content) {
@@ -36,12 +37,21 @@ app.set('trust proxy', 1);
         const imgTagMatch = content.match(/<img[^>]+src="([^">]+)"/);
         return imgTagMatch ? imgTagMatch[1] : 'imgs/no_image.jpg';
       },
+      inc: function (value) {
+        return parseInt(value) + 1;
+      },
+      ifEquals: function (arg1, arg2, options) {
+        return arg1 == arg2 ? options.fn(this) : options.inverse(this);
+      },
       chunk: function (array, size) {
         const chunkedArr = [];
         for (let i = 0; i < array.length; i += size) {
           chunkedArr.push(array.slice(i, i + size));
         }
         return chunkedArr;
+      },
+      firstLetter: function(text) {
+        return text ? text.charAt(0).toUpperCase() : '';
       },
       eq: function (a, b) {
         return a === b;
@@ -62,6 +72,9 @@ app.set('trust proxy', 1);
       isUndefined: function(value) {
         return value === null || value === undefined;
        },
+       json: function(context) {
+        return JSON.stringify(context);
+      },
        toUpperCase: function(text) {
         return text ? text.toUpperCase() : '';
     },
@@ -103,7 +116,8 @@ app.set('trust proxy', 1);
     return `${diffDays} days remaining`;
 }
     
-    }
+    },
+    partialsDir: 'views/partials'
   }));
   app.set('view engine', 'hbs');
   app.set('views', './views');
@@ -161,6 +175,8 @@ app.use(express.json());
 //   app.use(githubPassport.initialize());
  // app.use(githubPassport.session());
   
+
+
 app.use('/quiz', quizRoute);
 app.use('/auth', authLoginRoute);
 app.use("/flashCard", flashCardRoute);
@@ -170,6 +186,9 @@ app.use("/user", userRoute);
 app.use("/media", mediaRoute);
 app.use("/admin", adminRoute);
 app.use("/student", studentRoute);
+app.use("/user-answer", userAnswerRoute);  
+app.use("/result", resultRoute);
+
 
 app.get("/", (req, res) => {
     res.send("Hello word")

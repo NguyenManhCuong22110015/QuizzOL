@@ -14,7 +14,7 @@ export default {
             content: opt.content,
             isCorrect: opt.isCorrect
         }));
-        // Bulk insert options. (Note: .returning() is optional based on your DB.)
+        
         await db('option').insert(preparedOptions);
     },
 

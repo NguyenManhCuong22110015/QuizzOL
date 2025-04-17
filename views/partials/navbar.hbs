@@ -42,8 +42,37 @@
         </button>
       </form>
       <div class="d-flex">
-        <a href="#" class="btn btn-outline-light me-2">Log In</a>
-        <a href="#" class="btn btn-primary">Sign Up</a>
+        {{#if auth}}
+          <!-- User is logged in -->
+          <div class="user-profile">
+            <button id="profileDropdownBtn" class="profile-button">
+              {{#if auth.avatar}}
+                <img src="{{auth.avatar}}" alt="Profile" class="avatar">
+              {{else}}
+                <div class="avatar-placeholder">{{firstLetter auth.name}}</div>
+              {{/if}}
+              <span class="username">{{auth.name}}</span>
+              <i class="dropdown-icon">▼</i>
+            </button>
+            
+            <!-- Dropdown Menu -->
+            <div id="profileDropdown" class="dropdown-menu">
+              <a href="/user/profile">Profile</a>
+              <a href="/my-quizzes">My Quizzes</a>
+              <a href="/settings">Settings</a>
+              <div class="divider"></div>
+              <a href="/auth/logout" class="logout">Logout</a>
+            </div>
+          </div>
+        {{else}}
+          <!-- User is not logged in -->
+          <div class="auth-buttons">
+           
+            <a href="/auth/login" class="btn btn-outline-light me-2">Log In</a>
+            <a href="/register" class="btn btn-primary">Sign Up</a>
+          </div>
+        {{/if}}
+        
       </div>
     </div>
   </div>

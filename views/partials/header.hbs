@@ -1,0 +1,406 @@
+<!-- header.hbs -->
+<style>
+  /* public/css/header.css */
+
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+/* Header styles */
+.header {
+  background-color: #4f46e5; /* Indigo color */
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 0;
+}
+
+/* Logo */
+.logo a {
+  display: flex;
+  align-items: center;
+  color: white;
+}
+
+.logo img {
+  height: 32px;
+  width: auto;
+  margin-right: 10px;
+}
+
+.logo span {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* Main Navigation */
+.main-nav ul {
+  display: flex;
+}
+
+.main-nav li {
+  margin-right: 25px;
+}
+
+.main-nav a {
+  color: white;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.main-nav a:hover {
+  opacity: 0.8;
+}
+
+/* Auth Section */
+.auth-section {
+  display: flex;
+  align-items: center;
+}
+
+.auth-buttons {
+  display: flex;
+}
+
+.login-btn, .register-btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.login-btn {
+  background-color: white;
+  color: #4f46e5;
+  margin-right: 10px;
+}
+
+.login-btn:hover {
+  background-color: #f9fafb;
+}
+
+.register-btn {
+  background-color: #4338ca; /* Darker indigo */
+  color: white;
+}
+
+.register-btn:hover {
+  background-color: #3730a3;
+}
+
+/* User Profile */
+.user-profile {
+  position: relative;
+}
+
+.profile-button {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.avatar, .avatar-placeholder {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  margin-right: 8px;
+  object-fit: cover;
+}
+
+.avatar-placeholder {
+  background-color: #6366f1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.username {
+  margin-right: 5px;
+}
+
+.dropdown-icon {
+  font-size: 10px;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 200px;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 5px;
+  z-index: 100;
+  display: none;
+}
+
+.dropdown-menu.active {
+  display: block;
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 10px 15px;
+  color: #333;
+  transition: background-color 0.2s;
+}
+
+.dropdown-menu a:hover {
+  background-color: #f3f4f6;
+}
+
+.dropdown-menu .divider {
+  height: 1px;
+  background-color: #e5e7eb;
+  margin: 5px 0;
+}
+
+.dropdown-menu .logout {
+  color: #ef4444; /* Red color */
+}
+
+.dropdown-menu .logout:hover {
+  background-color: #fef2f2; /* Light red background */
+}
+
+/* Mobile Menu Button */
+.mobile-menu-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 24px;
+  height: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 15px;
+}
+
+.mobile-menu-btn span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background-color: white;
+  transition: all 0.3s;
+}
+
+/* Mobile Menu */
+.mobile-menu {
+  display: none;
+  padding: 15px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-menu.active {
+  display: block;
+}
+
+.mobile-menu ul {
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-menu a {
+  display: block;
+  padding: 12px 0;
+  color: white;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-menu li:last-child a {
+  border-bottom: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .main-nav {
+    display: none;
+  }
+  
+  .mobile-menu-btn {
+    display: flex;
+  }
+  
+  .auth-buttons .register-btn {
+    display: none;
+  }
+  
+  .user-profile .username {
+    display: none;
+  }
+}
+</style>
+
+
+<header class="header">
+  <div class="container">
+    <div class="header-content">
+      <!-- Logo and Brand -->
+      <div class="logo">
+        <a href="/">
+          <img src="/images/quiz-logo.png" alt="QuizMaster Logo">
+          <span>QuizMaster</span>
+        </a>
+      </div>
+      
+      <!-- Navigation -->
+      <nav class="main-nav">
+        <ul>
+          <li><a href="/quiz/create">Create Quiz</a></li>
+          <li><a href="/quiz/all">Category</a></li>
+          <li><a href="/room">Room</a></li>
+        </ul>
+      </nav>
+      
+      <!-- Auth Section -->
+      <div class="auth-section">
+        {{#if auth}}
+          <!-- User is logged in -->
+          <div class="user-profile">
+            <button id="profileDropdownBtn" class="profile-button">
+              {{#if auth.avatar}}
+                <img src="{{auth.avatar}}" alt="Profile" class="avatar">
+              {{else}}
+                <div class="avatar-placeholder">{{firstLetter auth.name}}</div>
+              {{/if}}
+              <span class="username">{{auth.name}}</span>
+              <i class="dropdown-icon">▼</i>
+            </button>
+            
+            <!-- Dropdown Menu -->
+            <div id="profileDropdown" class="dropdown-menu">
+              <a href="/user/profile">Profile</a>
+              <a href="/my-quizzes">My Quizzes</a>
+              <a href="/settings">Settings</a>
+              <div class="divider"></div>
+              <a href="/auth/logout" class="logout">Logout</a>
+            </div>
+          </div>
+        {{else}}
+          <!-- User is not logged in -->
+          <div class="auth-buttons">
+            <a href="/auth/login" class="login-btn">Login</a>
+            <a href="/register" class="register-btn">Register</a>
+          </div>
+        {{/if}}
+        
+        <!-- Mobile Menu Button -->
+        <button id="mobileMenuBtn" class="mobile-menu-btn">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Mobile Menu (Hidden by default) -->
+    <div id="mobileMenu" class="mobile-menu">
+      <ul>
+        <li><a href="/quiz/create">Create Quiz</a></li>
+        <li><a href="/quiz/all">Category</a></li>
+        <li><a href="/room">Room</a></li>
+        {{#unless auth}}
+          <li><a href="/auth/login">Login</a></li>
+          <li><a href="/register">Register</a></li>
+        {{else}}
+          <li><a href="/user/profile">Profile</a></li>
+          <li><a href="/my-quizzes">My Quizzes</a></li>
+          <li><a href="/settings">Settings</a></li>
+          <li><a href="/auth/logout">Logout</a></li>
+        {{/unless}}
+      </ul>
+    </div>
+  </div>
+</header>
+
+
+<script>
+  // public/js/header.js
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Profile dropdown toggle
+  const profileDropdownBtn = document.getElementById('profileDropdownBtn');
+  const profileDropdown = document.getElementById('profileDropdown');
+  
+  if (profileDropdownBtn && profileDropdown) {
+    profileDropdownBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      profileDropdown.classList.toggle('active');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function() {
+      profileDropdown.classList.remove('active');
+    });
+    
+    // Prevent dropdown from closing when clicking inside it
+    profileDropdown.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+  }
+  
+  // Mobile menu toggle
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  
+  if (mobileMenuBtn && mobileMenu) {
+    mobileMenuBtn.addEventListener('click', function() {
+      mobileMenu.classList.toggle('active');
+      
+      // Animate hamburger to X
+      const spans = mobileMenuBtn.querySelectorAll('span');
+      if (mobileMenu.classList.contains('active')) {
+        spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+        spans[1].style.opacity = '0';
+        spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+      } else {
+        spans[0].style.transform = 'none';
+        spans[1].style.opacity = '1';
+        spans[2].style.transform = 'none';
+      }
+    });
+  }
+});
+
+// Helper function for handlebars to get first letter of name
+if (typeof Handlebars !== 'undefined') {
+  Handlebars.registerHelper('firstLetter', function(name) {
+    return name ? name.charAt(0).toUpperCase() : '';
+  });
+}
+</script>

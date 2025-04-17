@@ -17,7 +17,8 @@
                     <h2 class="category-title"><i class="fas fa-calculator"></i>{{name}}</h2>
                      <div class="category-carousel">
                         {{#each quizzes}}
-                                <div class="card">
+                                <a href="/quiz/do-test/{{id}}" class="text-decoration-none">
+                                    <div class="card">
                                     <img src={{image}} alt="Math Equation">
                                     <div class="card-content">
                                         <h3 class="card-title">{{title}}</h3>
@@ -27,6 +28,7 @@
                                         </div>
                                     </div>
                                 </div>  
+                                </a>
                         {{/each}}
                     </div>
             </section>

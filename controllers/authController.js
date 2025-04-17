@@ -5,7 +5,9 @@ export const renderLoginPage = (req, res) => {
     if (req.headers.referer && !req.headers.referer.includes('/login')) {
         req.session.retUrl = req.headers.referer;
     }
-    res.render('pages/login_page');
+    res.render('pages/login_page', {
+      layout:false
+    });
 }
 
 export const loginToFacebook = async (req, res) => {

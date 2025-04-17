@@ -5,6 +5,9 @@ import answerService from '../services/answerService.js'
 import categoryService from '../services/categoryService.js'
 import quizController from '../controllers/quizController.js'
 import pkg from 'passport';
+import check from '../middlewares/auth.mdw.js'
+import resultService from '../services/resultService.js'
+
 const { session } = pkg;
 const router = new Router()
 
@@ -107,11 +110,14 @@ router.delete('/quizzes/:id', async (req, res) => {
 
 
 // quizz-test routes
-router.get('/do-test/:id', async (req, res) => {
+router.get('/do-test/:id',check, async (req, res) => {
     try {
         const quizId = req.params.id;
         const test = await quizService.getFullQuizDetails(quizId);
-
+        const userId = req.session.authUser.user || 1;
+         
+        let startTime = new Date();
+        let endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // Default 1 hour
         if (!test) {
             return res.status(404).json({ error: 'Quiz not found' });
         }
@@ -123,10 +129,56 @@ router.get('/do-test/:id', async (req, res) => {
         test.questions.forEach((question, index) => {
             question.question_number = index + 1;
         });
+        let answer = [] ;
+        let resultId = null;
+        let newResultId = 0;
+        const checkExistResult =  await resultService.checkExistResult(test.id, userId) || 0
+
+        if (checkExistResult) {
+            resultId = checkExistResult.result.id;
+            answer = checkExistResult.userAnswers || [];
+            
+            // Use the existing timestamps
+            if (checkExistResult.result.start_time) {
+                startTime = new Date(checkExistResult.result.start_time);
+            }
+            
+            if (checkExistResult.result.end_time) {
+                endTime = new Date(checkExistResult.result.end_time);
+            }
+        }
+        else {
+            const newResult =  await resultService.createResult(test.id, userId) || []
+            
+            if (newResult) {
+                resultId = newResult.id;
+                
+                // Use the new timestamps
+                if (newResult.start_time) {
+                    startTime = new Date(newResult.start_time);
+                }
+                
+                if (newResult.end_time) {
+                    endTime = new Date(newResult.end_time);
+                }
+                
+                console.log('Created new result:', resultId);
+            } else {
+                console.error('Failed to create a new result');
+                return res.status(500).json({ error: 'Failed to create quiz result' });
+            }
+        }
+        
+        
 
         res.render('quiz/doTest', {
+            layout: false,
             quiz: test,
+            resultId: resultId,
+            startTime: startTime.toISOString(), 
+            endTime: endTime.toISOString(),
             numberOfQuestions: test.questions.length,
+            existingAnswers : answer.length > 0 ? answer : []
         });
     }
     catch (error) {
@@ -166,6 +218,7 @@ router.get('/all', async (req, res) => {
         
         })).then(results => results.filter(result => result !== null && result.quizzes.length > 0)); 
         res.render('home/homePage', {
+            layout: 'main',
             quizzesOfCategory
         })
 
