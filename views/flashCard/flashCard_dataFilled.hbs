@@ -194,7 +194,7 @@
 
 
                 // --- History Update Logic ---
-                const cardUrl = `/flashcards/${cardData.id}`; // ASSUMES /flashcards is the correct base path
+                const cardUrl = `/flashCard/${cardData.id}`; // ASSUMES /flashcards is the correct base path
                 const currentPath = window.location.pathname;
                 // Update URL only if needed and generally avoid on initial load unless correcting from /study
                 const needsHistoryUpdate = currentPath !== cardUrl && (!isInitialLoad || currentPath.endsWith('/study'));
