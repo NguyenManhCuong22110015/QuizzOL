@@ -1,8 +1,8 @@
-import express from 'express';
-import passport from 'passport';
-import session from 'express-session'
-import mysqlSession from 'express-mysql-session';
-import cloudinary from 'cloudinary';
+import express from "express";
+import passport from "passport";
+import session from "express-session";
+import mysqlSession from "express-mysql-session";
+import cloudinary from "cloudinary";
 
 import { engine } from 'express-handlebars'; 
 import path from 'path';
@@ -22,20 +22,19 @@ import dotenv from 'dotenv';
 import mediaRoute from './routes/mediaRoute.js';
 import userAnswerRoute from './routes/userAnswerRoute.js';
 import resultRoute from './routes/resultRoute.js';
-
 dotenv.config();
-const app = express()
-app.set('trust proxy', 1);
+const app = express();
+app.set("trust proxy", 1);
 
-app.engine('hbs', engine({
+   app.engine('hbs', engine({
     extname : 'hbs',
     helpers: {
       extractFirstImage: function (content) {
         if (!content) {
-          return 'imgs/no_image.jpg';
+          return "imgs/no_image.jpg";
         }
         const imgTagMatch = content.match(/<img[^>]+src="([^">]+)"/);
-        return imgTagMatch ? imgTagMatch[1] : 'imgs/no_image.jpg';
+        return imgTagMatch ? imgTagMatch[1] : "imgs/no_image.jpg";
       },
       inc: function (value) {
         return parseInt(value) + 1;
@@ -50,31 +49,28 @@ app.engine('hbs', engine({
         }
         return chunkedArr;
       },
-      firstLetter: function(text) {
-        return text ? text.charAt(0).toUpperCase() : '';
-      },
       eq: function (a, b) {
         return a === b;
       },
       noteq: function (a, b) {
         return a !== b;
       },
+      gt: function (a, b) {
+        return a > b;
+      },
       formatDate: function (dateString) {
         return moment(dateString)
-          .tz('Asia/Ho_Chi_Minh')  
-          .format('h:mm A z, dddd MMMM D, YYYY');  
+          .tz("Asia/Ho_Chi_Minh")
+          .format("h:mm A z, dddd MMMM D, YYYY");
       },
-      formatLongDate: function(dateString) {
+      formatLongDate: function (dateString) {
         return moment(dateString)
-            .tz('Asia/Ho_Chi_Minh')
-            .format('dddd, MMMM Do YYYY');
-    },
-      isUndefined: function(value) {
+          .tz("Asia/Ho_Chi_Minh")
+          .format("dddd, MMMM Do YYYY");
+      },
+      isUndefined: function (value) {
         return value === null || value === undefined;
        },
-       json: function(context) {
-        return JSON.stringify(context);
-      },
        toUpperCase: function(text) {
         return text ? text.toUpperCase() : '';
     },
@@ -116,8 +112,7 @@ app.engine('hbs', engine({
     return `${diffDays} days remaining`;
 }
     
-    },
-    partialsDir: 'views/partials'
+    }
   }));
   app.set('view engine', 'hbs');
   app.set('views', './views');
@@ -147,25 +142,21 @@ app.engine('hbs', engine({
     }
 }));
 app.use(passport.initialize());
-  app.use(passport.session());
-
+app.use(passport.session());
 
 app.use(async function (req, res, next) {
-    if(req.session.auth === null || req.session.auth === undefined){
-      req.session.auth = false;
-    }
-    
-    res.locals.auth = req.session.auth;
-    res.locals.authUser = req.session.authUser || null;
-    
-    next();
+  if (req.session.auth === null || req.session.auth === undefined) {
+    req.session.auth = false;
+  }
+
+  res.locals.auth = req.session.auth;
+  res.locals.authUser = req.session.authUser || null;
+
+  next();
 });
 
-
-
-  
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json()); 
+app.use(express.json());
 //   app.use(facebookPassport.initialize());
 //   app.use(facebookPassport.session());
 //   app.use(googlePassport.initialize());
@@ -175,8 +166,6 @@ app.use(express.json());
 //   app.use(githubPassport.initialize());
  // app.use(githubPassport.session());
   
-
-
 app.use('/quiz', quizRoute);
 app.use('/auth', authLoginRoute);
 app.use("/flashCard", flashCardRoute);
@@ -191,11 +180,11 @@ app.use("/result", resultRoute);
 
 
 app.get("/", (req, res) => {
-    res.send("Hello word")
-})
+  res.send("Hello word");
+});
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, ()  => {
-    console.log("App is running")
-})
+app.listen(PORT, () => {
+  console.log("App is running");
+});

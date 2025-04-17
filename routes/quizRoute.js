@@ -56,41 +56,66 @@ router.post('/quizzes', async (req, res) => {
     }
 });
 
+
+// router.get('/quizzes/:id', async (req, res) => {
+//     const quizId = req.params.id;
+
+//     try {
+//         // Fetch the quiz details
+//         const quiz = await quizService.getQuizById(quizId);
+        
+//         if (!quiz) {
+//             return res.status(404).json({ error: 'Quiz not found' });
+//         }
+
+
+//         const questionList = await questionService.getQuestionsByQuizId(quizId);
+
+//         // Fetch options for each question
+//         const questionsWithOptions = await Promise.all(
+//             questionList.map(async (question) => {
+//                 const options = await answerService.getAnswersByQuestionId(question.id);
+//                 return { ...question, options };
+//             })
+//         );
+
+//         // Combine the data
+//         const data = {
+//             quiz: quiz,
+//             questions: questionsWithOptions
+//         };
+
+//         res.json(data);
+//     } catch (error) {
+//         console.error('Error fetching quiz details:', error);
+//         res.status(500).json({ error: 'Failed to fetch quiz details' });
+//     }
+// });
+//old GET quiz by id router
 router.get('/quizzes/:id', async (req, res) => {
     const quizId = req.params.id;
 
     try {
-        // Fetch the quiz details
-        const quiz = await quizService.getQuizById(quizId);
-        
-        if (!quiz) {
-            return res.status(404).json({ error: 'Quiz not found' });
+        // Fetch quiz details using the getQuizPageDetails function
+        const quizPageDetails = await quizService.getQuizPageDetails(quizId);
+
+        if (!quizPageDetails) {
+            return res.status(404).render('quiz/quizDetail', { message: 'Quiz not found' });
         }
 
-
-        const questionList = await questionService.getQuestionsByQuizId(quizId);
-
-        // Fetch options for each question
-        const questionsWithOptions = await Promise.all(
-            questionList.map(async (question) => {
-                const options = await answerService.getAnswersByQuestionId(question.id);
-                return { ...question, options };
-            })
-        );
-
-        // Combine the data
-        const data = {
-            quiz: quiz,
-            questions: questionsWithOptions
-        };
-
-        res.json(data);
+        // Render the quizDetail view with the fetched data
+        res.render('quiz/quizDetail_dataFilled', {
+            quiz: quizPageDetails.quiz,
+            stats: quizPageDetails.stats,
+            rating : quizPageDetails.rating,
+            comments: quizPageDetails.comments,
+            leaderboard: quizPageDetails.leaderboard
+        });
     } catch (error) {
-        console.error('Error fetching quiz details:', error);
-        res.status(500).json({ error: 'Failed to fetch quiz details' });
+        console.error('Error rendering quiz details:', error);
+        res.status(500, { message: 'Failed to render quiz details' });
     }
 });
-
 
 
 router.put('/quizzes/:id', async (req, res) => {
