@@ -1,271 +1,235 @@
-<div class="container-fluid p-0">
-    <div class="d-flex">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Analytics Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/overview.css">
+</head>
+<body>
+    <div class="container-fluid p-0">
+        <div class="d-flex">
             <!-- Dashboard Content -->
             <div class="dashboard-content">
                 <div class="row">
-                    <!-- Statistics Card -->
+                    <!-- Analytics & Charts Area -->
                     <div class="col-lg-8">
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5>Quiz Performance Analytics</h5>
+                                <div class="dropdown">
+                                    <span>Last 30 Days</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="performanceChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h5>Quiz Category Distribution</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart-container">
+                                            <canvas id="categoryPieChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h5>Weekly Quiz Completion</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart-container">
+                                            <canvas id="weeklyCompletionChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5>Performance by Quiz Category</h5>
+                                <div class="chart-legend">
+                                    <span class="legend-item"><span class="color-box correct"></span>Correct</span>
+                                    <span class="legend-item"><span class="color-box incorrect"></span>Incorrect</span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="categoryPerformanceChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sidebar - User Stats & Leaderboard -->
+                    <div class="col-lg-4">
                         <div class="card mb-4">
                             <div class="card-header">
-                                <h5>Statistics</h5>
+                                <h5>Your Quiz Stats</h5>
                             </div>
                             <div class="card-body">
-                                <h2 class="balance">$45,090.09</h2>
-                                
-                                <div class="time-filter">
-                                    <button class="time-btn">1H</button>
-                                    <button class="time-btn active">24H</button>
-                                    <button class="time-btn">1W</button>
-                                    <button class="time-btn">1M</button>
-                                    <button class="time-btn">3M</button>
-                                    <button class="time-btn">6M</button>
-                                </div>
-                                
-                                <div class="coin-selector">
-                                    <div class="selected-coin">
-                                        <div class="coin-icon bitcoin">
-                                            <i class="fab fa-bitcoin"></i>
+                                <div class="row text-center">
+                                    <div class="col-4">
+                                        <div class="stats-circle">
+                                            <canvas id="accuracyDonut"></canvas>
+                                            <div class="stats-label">78%</div>
                                         </div>
-                                        <span>Bitcoin (BTC)</span>
-                                        <i class="fas fa-chevron-down"></i>
+                                        <p class="stats-title">Accuracy</p>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="stats-circle">
+                                            <canvas id="completionDonut"></canvas>
+                                            <div class="stats-label">42</div>
+                                        </div>
+                                        <p class="stats-title">Quizzes</p>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="stats-circle">
+                                            <canvas id="streakDonut"></canvas>
+                                            <div class="stats-label">7</div>
+                                        </div>
+                                        <p class="stats-title">Day Streak</p>
                                     </div>
                                 </div>
                                 
-                                <div class="chart-container">
-                                    <canvas id="cryptoChart"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Watchlist Card -->
-                    <div class="col-lg-4">
-                        <div class="card mb-4">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5>Watchlist</h5>
-                                <div class="dropdown">
-                                    <span>Today</span>
-                                    <i class="fas fa-chevron-down"></i>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="watchlist-item">
-                                    <div class="coin-info">
-                                        <div class="coin-icon bitcoin">
-                                            <i class="fab fa-bitcoin"></i>
-                                        </div>
-                                        <div class="coin-detail">
-                                            <span class="coin-name">BTC</span>
-                                            <span class="coin-change negative">-1.09%</span>
-                                        </div>
-                                    </div>
-                                    <div class="price-info">
-                                        <div class="price-detail">
-                                            <span class="price-value">$40,090</span>
-                                            <span class="price-amount">0.07447 BTC</span>
-                                        </div>
-                                        <div class="mini-chart">
-                                            <canvas class="mini-chart-canvas" data-type="btc"></canvas>
-                                        </div>
-                                    </div>
-                                </div>
+                                <hr>
                                 
-                                <div class="watchlist-item">
-                                    <div class="coin-info">
-                                        <div class="coin-icon ripple">
-                                            <i class="fas fa-water"></i>
+                                <div class="strength-weakness">
+                                    <h6>Your Strongest Categories</h6>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Science</span>
+                                            <span>92%</span>
                                         </div>
-                                        <div class="coin-detail">
-                                            <span class="coin-name">XRP</span>
-                                            <span class="coin-change negative">-1.09%</span>
-                                        </div>
-                                    </div>
-                                    <div class="price-info">
-                                        <div class="price-detail">
-                                            <span class="price-value">$40,090</span>
-                                            <span class="price-amount">0.07447 XRP</span>
-                                        </div>
-                                        <div class="mini-chart">
-                                            <canvas class="mini-chart-canvas" data-type="xrp"></canvas>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: 92%" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100"></div>
                                         </div>
                                     </div>
-                                </div>
-                                
-                                <div class="watchlist-item">
-                                    <div class="coin-info">
-                                        <div class="coin-icon dogecoin">
-                                            <i class="fas fa-dog"></i>
+                                    
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Geography</span>
+                                            <span>85%</span>
                                         </div>
-                                        <div class="coin-detail">
-                                            <span class="coin-name">DGE</span>
-                                            <span class="coin-change negative">-1.09%</span>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: 85%" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
                                         </div>
                                     </div>
-                                    <div class="price-info">
-                                        <div class="price-detail">
-                                            <span class="price-value">$40,090</span>
-                                            <span class="price-amount">0.07447 DGE</span>
+                                    
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>History</span>
+                                            <span>78%</span>
                                         </div>
-                                        <div class="mini-chart">
-                                            <canvas class="mini-chart-canvas" data-type="dge"></canvas>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="watchlist-item">
-                                    <div class="coin-info">
-                                        <div class="coin-icon icon">
-                                            <i class="fas fa-dot-circle"></i>
-                                        </div>
-                                        <div class="coin-detail">
-                                            <span class="coin-name">ICX</span>
-                                            <span class="coin-change negative">-1.09%</span>
-                                        </div>
-                                    </div>
-                                    <div class="price-info">
-                                        <div class="price-detail">
-                                            <span class="price-value">$40,090</span>
-                                            <span class="price-amount">0.07447 ICX</span>
-                                        </div>
-                                        <div class="mini-chart">
-                                            <canvas class="mini-chart-canvas" data-type="icx"></canvas>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="watchlist-item">
-                                    <div class="coin-info">
-                                        <div class="coin-icon binance">
-                                            <i class="fas fa-coins"></i>
-                                        </div>
-                                        <div class="coin-detail">
-                                            <span class="coin-name">BNC</span>
-                                            <span class="coin-change negative">-1.09%</span>
-                                        </div>
-                                    </div>
-                                    <div class="price-info">
-                                        <div class="price-detail">
-                                            <span class="price-value">$40,090</span>
-                                            <span class="price-amount">0.07447 BNC</span>
-                                        </div>
-                                        <div class="mini-chart">
-                                            <canvas class="mini-chart-canvas" data-type="bnc"></canvas>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: 78%" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                
-                <div class="row">
-                    <!-- Market Info Card -->
-                    <div class="col-lg-8">
+                        
                         <div class="card mb-4">
                             <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5>Market Info</h5>
-                                <div class="dropdown">
-                                    <span>Today</span>
-                                    <i class="fas fa-chevron-down"></i>
-                                </div>
+                                <h5>Global Leaderboard</h5>
+                                <a href="#" class="see-more">Monthly Rankings</a>
                             </div>
                             <div class="card-body">
-                                <table class="market-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Last Price</th>
-                                            <th>Change(24h)</th>
-                                            <th>Chart</th>
-                                            <th>Market Cap</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <div class="coin-cell">
-                                                    <div class="coin-icon bitcoin">
-                                                        <i class="fab fa-bitcoin"></i>
-                                                    </div>
-                                                    <span>Bitcoin</span>
-                                                </div>
-                                            </td>
-                                            <td>$12,000</td>
-                                            <td class="positive">+1.24%</td>
-                                            <td>
-                                                <div class="mini-chart-table">
-                                                    <canvas class="table-chart-canvas" data-type="btc-positive"></canvas>
-                                                </div>
-                                            </td>
-                                            <td>$120,000</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="coin-cell">
-                                                    <div class="coin-icon icon">
-                                                        <i class="fas fa-dot-circle"></i>
-                                                    </div>
-                                                    <span>Icon</span>
-                                                </div>
-                                            </td>
-                                            <td>$12,000</td>
-                                            <td class="negative">-0.24%</td>
-                                            <td>
-                                                <div class="mini-chart-table">
-                                                    <canvas class="table-chart-canvas" data-type="icx-negative"></canvas>
-                                                </div>
-                                            </td>
-                                            <td>$120,000</td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div class="coin-cell">
-                                                    <div class="coin-icon bytecoin">
-                                                        <i class="fas fa-coins"></i>
-                                                    </div>
-                                                    <span>Bytecoin</span>
-                                                </div>
-                                            </td>
-                                            <td>$12,000</td>
-                                            <td class="positive">+1.24%</td>
-                                            <td>
-                                                <div class="mini-chart-table">
-                                                    <canvas class="table-chart-canvas" data-type="bcn-positive"></canvas>
-                                                </div>
-                                            </td>
-                                            <td>$120,000</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Latest News Card -->
-                    <div class="col-lg-4">
-                        <div class="card mb-4">
-                            <div class="card-header d-flex justify-content-between align-items-center">
-                                <h5>Latest news</h5>
-                                <a href="#" class="see-more">See more</a>
-                            </div>
-                            <div class="card-body">
-                                <div class="news-item">
-                                    <div class="news-img">
-                                        <img src="/api/placeholder/100/70" alt="Crypto news">
+                                <div class="leaderboard-item">
+                                    <div class="user-info">
+                                        <span class="user-rank">1</span>
+                                        <div class="user-avatar">JD</div>
+                                        <div class="user-detail">
+                                            <span class="user-name">John Doe</span>
+                                            <span class="user-points">3,450 pts</span>
+                                        </div>
                                     </div>
-                                    <div class="news-content">
-                                        <h6>Crypto Panic Ease</h6>
-                                        <p>Lorem ipsum dolor sit amet, conr adipi. Accumsan, enim quis netus...</p>
+                                    <div class="user-score-chart">
+                                        <canvas class="mini-chart" id="user1Chart"></canvas>
                                     </div>
                                 </div>
                                 
-                                <div class="news-item">
-                                    <div class="news-img">
-                                        <img src="/api/placeholder/100/70" alt="Crypto news">
+                                <div class="leaderboard-item">
+                                    <div class="user-info">
+                                        <span class="user-rank">2</span>
+                                        <div class="user-avatar">AS</div>
+                                        <div class="user-detail">
+                                            <span class="user-name">Alice Smith</span>
+                                            <span class="user-points">3,280 pts</span>
+                                        </div>
                                     </div>
-                                    <div class="news-content">
-                                        <h6>Crypto Panic Ease</h6>
-                                        <p>Lorem ipsum dolor sit amet, conr adipi. Accumsan, enim quis netus...</p>
+                                    <div class="user-score-chart">
+                                        <canvas class="mini-chart" id="user2Chart"></canvas>
+                                    </div>
+                                </div>
+                                
+                                <div class="leaderboard-item">
+                                    <div class="user-info">
+                                        <span class="user-rank">3</span>
+                                        <div class="user-avatar">RJ</div>
+                                        <div class="user-detail">
+                                            <span class="user-name">Robert Johnson</span>
+                                            <span class="user-points">3,150 pts</span>
+                                        </div>
+                                    </div>
+                                    <div class="user-score-chart">
+                                        <canvas class="mini-chart" id="user3Chart"></canvas>
+                                    </div>
+                                </div>
+                                
+                                <div class="leaderboard-item current-user">
+                                    <div class="user-info">
+                                        <span class="user-rank">8</span>
+                                        <div class="user-avatar">YU</div>
+                                        <div class="user-detail">
+                                            <span class="user-name">You</span>
+                                            <span class="user-points">2,420 pts</span>
+                                        </div>
+                                    </div>
+                                    <div class="user-score-chart">
+                                        <canvas class="mini-chart" id="userYouChart"></canvas>
+                                    </div>
+                                </div>
+                                
+                                <div class="leaderboard-stats">
+                                    <div class="stats-item">
+                                        <span class="stats-value">+3</span>
+                                        <span class="stats-label">Weekly Rank Change</span>
+                                    </div>
+                                    <div class="stats-item">
+                                        <span class="stats-value">Top 5%</span>
+                                        <span class="stats-label">Global Position</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5>Recent Achievement</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="achievement">
+                                    <div class="achievement-icon">
+                                        <i class="fas fa-trophy"></i>
+                                    </div>
+                                    <div class="achievement-info">
+                                        <h6>Science Master</h6>
+                                        <p>Completed 10 science quizzes with 90%+ accuracy</p>
+                                        <div class="achievement-date">Earned yesterday</div>
                                     </div>
                                 </div>
                             </div>
@@ -275,129 +239,25 @@
             </div>
         </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-<script>
-    // Initialize main chart
-    document.addEventListener('DOMContentLoaded', function() {
-        initMainChart();
-        initMiniCharts();
-        initTableCharts();
-        setupEventListeners();
-    });
-
-    function initMainChart() {
-        const ctx = document.getElementById('cryptoChart').getContext('2d');
-        
-        // Generate some random data for the chart
-        const labels = generateTimeLabels(24);
-        const data = generateChartData(24, 40000, 42000, true);
-        
-        const mainChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Bitcoin Price (USD)',
-                    data: data,
-                    backgroundColor: 'rgba(25, 118, 210, 0.1)',
-                    borderColor: '#1976d2',
-                    borderWidth: 2,
-                    pointRadius: 0,
-                    pointHoverRadius: 4,
-                    pointHoverBackgroundColor: '#1976d2',
-                    pointHoverBorderColor: '#fff',
-                    tension: 0.4,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        mode: 'index',
-                        intersect: false,
-                        backgroundColor: '#212529',
-                        titleColor: '#e0e0e0',
-                        bodyColor: '#e0e0e0',
-                        borderColor: '#333333',
-                        borderWidth: 1,
-                        padding: 10,
-                        displayColors: false,
-                        callbacks: {
-                            label: function(context) {
-                                return `$${context.parsed.y.toLocaleString()}`;
-                            }
-                        }
-                    }
-                },
-                interaction: {
-                    mode: 'nearest',
-                    axis: 'x',
-                    intersect: false
-                },
-                scales: {
-                    x: {
-                        display: true,
-                        grid: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        ticks: {
-                            color: '#a0a0a0',
-                            maxRotation: 0,
-                            autoSkip: true,
-                            maxTicksLimit: 6
-                        }
-                    },
-                    y: {
-                        display: true,
-                        position: 'right',
-                        grid: {
-                            color: 'rgba(160, 160, 160, 0.1)',
-                            drawBorder: false
-                        },
-                        ticks: {
-                            color: '#a0a0a0',
-                            callback: function(value) {
-                                return '$' + value.toLocaleString();
-                            }
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    function initMiniCharts() {
-        // Initialize mini charts in watchlist
-        const miniChartCanvases = document.querySelectorAll('.mini-chart-canvas');
-        
-        miniChartCanvases.forEach(canvas => {
-            const type = canvas.getAttribute('data-type');
-            const isPositive = !type.includes('negative');
-            const color = getCoinColor(type.split('-')[0]);
-            
-            const ctx = canvas.getContext('2d');
-            const data = generateChartData(10, 100, 200, isPositive);
-            
-            new Chart(ctx, {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Performance Chart
+            const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+            const performanceChart = new Chart(performanceCtx, {
                 type: 'line',
                 data: {
-                    labels: Array(10).fill(''),
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
                     datasets: [{
-                        data: data,
-                        borderColor: color,
-                        backgroundColor: 'transparent',
-                        borderWidth: 1.5,
-                        pointRadius: 0,
-                        tension: 0.4
+                        label: 'Score (%)',
+                        data: [65, 72, 68, 75, 82, 78, 85, 89, 86, 92],
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        tension: 0.3,
+                        fill: true
                     }]
                 },
                 options: {
@@ -406,53 +266,59 @@
                     plugins: {
                         legend: {
                             display: false
-                        },
-                        tooltip: {
-                            enabled: false
                         }
                     },
                     scales: {
-                        x: {
-                            display: false
-                        },
                         y: {
-                            display: false
-                        }
-                    },
-                    elements: {
-                        line: {
-                            tension: 0.4
+                            beginAtZero: false,
+                            min: 50,
+                            max: 100
                         }
                     }
                 }
             });
-        });
-    }
-
-    function initTableCharts() {
-        // Initialize mini charts in table
-        const tableChartCanvases = document.querySelectorAll('.table-chart-canvas');
-        
-        tableChartCanvases.forEach(canvas => {
-            const type = canvas.getAttribute('data-type');
-            const isPositive = type.includes('positive');
-            const coinType = type.split('-')[0];
-            const color = isPositive ? '#4caf50' : '#ff5252';
             
-            const ctx = canvas.getContext('2d');
-            const data = generateChartData(10, 100, 200, isPositive);
-            
-            new Chart(ctx, {
-                type: 'line',
+            // Category Pie Chart
+            const categoryPieCtx = document.getElementById('categoryPieChart').getContext('2d');
+            const categoryPieChart = new Chart(categoryPieCtx, {
+                type: 'pie',
                 data: {
-                    labels: Array(10).fill(''),
+                    labels: ['Science', 'History', 'Geography', 'Literature', 'Math'],
                     datasets: [{
-                        data: data,
-                        borderColor: color,
-                        backgroundColor: 'transparent',
-                        borderWidth: 1.5,
-                        pointRadius: 0,
-                        tension: 0.4
+                        data: [35, 25, 20, 15, 5],
+                        backgroundColor: [
+                            '#3b82f6',
+                            '#f97316',
+                            '#10b981',
+                            '#8b5cf6',
+                            '#f59e0b'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+            
+            // Weekly Completion Chart
+            const weeklyCompletionCtx = document.getElementById('weeklyCompletionChart').getContext('2d');
+            const weeklyCompletionChart = new Chart(weeklyCompletionCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Quizzes Completed',
+                        data: [3, 5, 2, 4, 6, 8, 4],
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 5
                     }]
                 },
                 options: {
@@ -461,295 +327,140 @@
                     plugins: {
                         legend: {
                             display: false
-                        },
-                        tooltip: {
-                            enabled: false
                         }
                     },
                     scales: {
-                        x: {
-                            display: false
-                        },
                         y: {
-                            display: false
-                        }
-                    },
-                    elements: {
-                        line: {
-                            tension: 0.4
+                            beginAtZero: true,
+                            max: 10
                         }
                     }
                 }
             });
-        });
-    }
-
-    // Helper Functions
-    function generateTimeLabels(count) {
-        const labels = [];
-        const now = new Date();
-        
-        for (let i = count - 1; i >= 0; i--) {
-            const time = new Date(now);
-            time.setHours(time.getHours() - i);
-            labels.push(time.getHours() + ':00');
-        }
-        
-        return labels;
-    }
-
-    function generateChartData(count, min, max, uptrend = true) {
-        const data = [];
-        let value = min + Math.random() * (max - min) / 2;
-        
-        for (let i = 0; i < count; i++) {
-            const change = (Math.random() - (uptrend ? 0.4 : 0.6)) * (max - min) / 20;
-            value += change;
-            value = Math.max(min, Math.min(max, value));
-            data.push(value);
-        }
-        
-        return data;
-    }
-
-    function getCoinColor(coinType) {
-        const colors = {
-            'btc': '#f7931a',
-            'xrp': '#0f72e5',
-            'dge': '#ba9f33',
-            'icx': '#31b5ab',
-            'bnc': '#f3ba2f',
-            'bcn': '#f04086'
-        };
-        
-        return colors[coinType] || '#1976d2';
-    }
-
-    function setupEventListeners() {
-        // Time filter buttons
-        const timeButtons = document.querySelectorAll('.time-btn');
-        timeButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                // Remove active class from all buttons
-                timeButtons.forEach(btn => btn.classList.remove('active'));
-                
-                // Add active class to clicked button
-                this.classList.add('active');
-                
-                // Update chart based on selected time range
-                updateChartTimeRange(this.textContent);
-            });
-        });
-        
-        // Coin selector
-        const coinSelector = document.querySelector('.selected-coin');
-        if (coinSelector) {
-            coinSelector.addEventListener('click', function() {
-                // This would normally open a dropdown menu
-                console.log('Coin selector clicked');
-                // For demo purposes, we'll just cycle through a few coins
-                const coinNames = ['Bitcoin (BTC)', 'Ethereum (ETH)', 'Ripple (XRP)', 'Dogecoin (DOGE)'];
-                const coinIcons = ['bitcoin', 'ethereum', 'ripple', 'dogecoin'];
-                
-                const currentCoin = this.querySelector('span').textContent;
-                const currentIndex = coinNames.indexOf(currentCoin);
-                const nextIndex = (currentIndex + 1) % coinNames.length;
-                
-                // Update coin icon and name
-                this.querySelector('.coin-icon').className = `coin-icon ${coinIcons[nextIndex]}`;
-                this.querySelector('span').textContent = coinNames[nextIndex];
-                
-                // Update main chart
-                updateChartForCoin(coinNames[nextIndex]);
-            });
-        }
-        
-        // Notification click
-        const notification = document.querySelector('.notification');
-        if (notification) {
-            notification.addEventListener('click', function() {
-                alert('You have 3 new notifications');
-            });
-        }
-        
-        // Profile click
-        const profile = document.querySelector('.profile');
-        if (profile) {
-            profile.addEventListener('click', function() {
-                console.log('Profile clicked');
-                // This would normally open a profile menu
-            });
-        }
-        
-        // Watchlist items hover effect
-        const watchlistItems = document.querySelectorAll('.watchlist-item');
-        watchlistItems.forEach(item => {
-            item.addEventListener('click', function() {
-                const coinName = this.querySelector('.coin-name').textContent;
-                // Update main chart with selected coin
-                console.log(`Selected ${coinName} from watchlist`);
-                
-                // Highlight selected item
-                watchlistItems.forEach(itm => itm.classList.remove('selected'));
-                this.classList.add('selected');
-            });
-        });
-    }
-
-    function updateChartTimeRange(timeRange) {
-        // This function would update the main chart based on selected time range
-        console.log(`Updating chart for time range: ${timeRange}`);
-        
-        // For demo, we'll generate new random data with different point counts
-        let count;
-        switch(timeRange) {
-            case '1H':
-                count = 60; // 60 minutes
-                break;
-            case '24H':
-                count = 24; // 24 hours
-                break;
-            case '1W':
-                count = 7; // 7 days
-                break;
-            case '1M':
-                count = 30; // 30 days
-                break;
-            case '3M':
-                count = 90; // 90 days
-                break;
-            case '6M':
-                count = 180; // 180 days
-                break;
-            default:
-                count = 24;
-        }
-        
-        // Get the chart instance
-        const chartInstance = Chart.getChart('cryptoChart');
-        if (chartInstance) {
-            // Generate new data
-            const labels = generateTimeLabels(count);
-            const data = generateChartData(count, 38000, 45000, true);
             
-            // Update chart data
-            chartInstance.data.labels = labels;
-            chartInstance.data.datasets[0].data = data;
+            // Category Performance Chart
+            const categoryPerformanceCtx = document.getElementById('categoryPerformanceChart').getContext('2d');
+            const categoryPerformanceChart = new Chart(categoryPerformanceCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Science', 'History', 'Geography', 'Literature', 'Math'],
+                    datasets: [{
+                        label: 'Correct Answers',
+                        data: [85, 65, 78, 55, 45],
+                        backgroundColor: '#4ade80'
+                    }, {
+                        label: 'Incorrect Answers',
+                        data: [15, 35, 22, 45, 55],
+                        backgroundColor: '#f87171'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: true
+                        },
+                        y: {
+                            stacked: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
             
-            // Update x-axis tick settings based on time range
-            if (count > 24) {
-                chartInstance.options.scales.x.ticks.maxTicksLimit = 7;
-            } else {
-                chartInstance.options.scales.x.ticks.maxTicksLimit = 6;
+            // Donut Charts
+            function createDonutChart(id, value, color) {
+                const ctx = document.getElementById(id).getContext('2d');
+                return new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        datasets: [{
+                            data: [value, 100 - value],
+                            backgroundColor: [color, '#e2e8f0'],
+                            borderWidth: 0,
+                            cutout: '80%'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                enabled: false
+                            }
+                        }
+                    }
+                });
             }
             
-            // Update chart
-            chartInstance.update();
-        }
-    }
-
-    function updateChartForCoin(coinName) {
-        console.log(`Updating chart for coin: ${coinName}`);
-        
-        // Extract coin symbol from name
-        const coinSymbol = coinName.split('(')[1].replace(')', '');
-        
-        // Get price range based on coin
-        let min, max;
-        switch(coinSymbol) {
-            case 'BTC':
-                min = 38000;
-                max = 45000;
-                break;
-            case 'ETH':
-                min = 2000;
-                max = 2800;
-                break;
-            case 'XRP':
-                min = 0.4;
-                max = 0.6;
-                break;
-            case 'DOGE':
-                min = 0.05;
-                max = 0.12;
-                break;
-            default:
-                min = 100;
-                max = 1000;
-        }
-        
-        // Get the chart instance
-        const chartInstance = Chart.getChart('cryptoChart');
-        if (chartInstance) {
-            // Update chart title
-            chartInstance.data.datasets[0].label = `${coinName} Price (USD)`;
+            createDonutChart('accuracyDonut', 78, '#3b82f6');
+            createDonutChart('completionDonut', 65, '#10b981');
+            createDonutChart('streakDonut', 70, '#f59e0b');
             
-            // Generate new data
-            const data = generateChartData(24, min, max, Math.random() > 0.3);
-            
-            // Update chart data
-            chartInstance.data.datasets[0].data = data;
-            
-            // Update y-axis to appropriate scale
-            chartInstance.options.scales.y.min = Math.floor(Math.min(...data) * 0.995);
-            chartInstance.options.scales.y.max = Math.ceil(Math.max(...data) * 1.005);
-            
-            // Update tooltip format if necessary
-            if (min < 1) {
-                chartInstance.options.plugins.tooltip.callbacks.label = function(context) {
-                    return `$${context.parsed.y.toFixed(4)}`;
-                };
-            } else {
-                chartInstance.options.plugins.tooltip.callbacks.label = function(context) {
-                    return `$${context.parsed.y.toLocaleString()}`;
-                };
+            // Mini charts for leaderboard
+            function createMiniLineChart(id, data, color) {
+                const ctx = document.getElementById(id).getContext('2d');
+                return new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['', '', '', '', '', '', ''],
+                        datasets: [{
+                            data: data,
+                            borderColor: color,
+                            tension: 0.4,
+                            pointRadius: 0,
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                enabled: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                display: false
+                            },
+                            y: {
+                                display: false,
+                                min: 0
+                            }
+                        }
+                    }
+                });
             }
             
-            // Update chart
-            chartInstance.update();
+            createMiniLineChart('user1Chart', [75, 82, 78, 85, 89, 86, 92], '#3b82f6');
+            createMiniLineChart('user2Chart', [72, 75, 80, 78, 82, 84, 86], '#3b82f6');
+            createMiniLineChart('user3Chart', [68, 72, 76, 82, 78, 75, 82], '#3b82f6');
+            createMiniLineChart('userYouChart', [65, 68, 72, 74, 76, 78, 80], '#f59e0b');
             
-            // Update balance display
-            const lastValue = data[data.length - 1];
-            document.querySelector('.balance').textContent = lastValue < 1 
-                ? `$${lastValue.toFixed(4)}` 
-                : `$${lastValue.toLocaleString()}`;
-        }
-    }
-
-    // Add window resize handler for responsiveness
-    window.addEventListener('resize', function() {
-        // Refresh all charts on window resize
-        Chart.getChart('cryptoChart')?.resize();
-        
-        // Get all mini charts and resize them
-        document.querySelectorAll('.mini-chart-canvas, .table-chart-canvas').forEach(canvas => {
-            const chart = Chart.getChart(canvas);
-            if (chart) {
-                chart.resize();
-            }
-        });
-    });
-
-    // Add some animations for interactivity
-    function addCardPulseEffect() {
-        const cards = document.querySelectorAll('.card');
-        cards.forEach(card => {
-            card.addEventListener('click', function() {
-                this.classList.add('pulse');
-                setTimeout(() => {
-                    this.classList.remove('pulse');
-                }, 300);
+            // Card pulse effect
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('click', function() {
+                    this.classList.add('pulse');
+                    setTimeout(() => {
+                        this.classList.remove('pulse');
+                    }, 300);
+                });
             });
         });
-    }
-
-    // Add dark mode toggle functionality
-    function initDarkModeToggle() {
-        // This could be implemented if a dark mode toggle button is added to the UI
-        console.log('Dark mode is enabled by default');
-    }
-
-    // Call additional setup functions
-    addCardPulseEffect();
-    initDarkModeToggle();
-</script>
+    </script>
+</body>
+</html>

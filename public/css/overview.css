@@ -1,329 +1,378 @@
-/* Main color variables */
 :root {
-    --primary-color: #1976d2;
-    --secondary-color: #0d47a1;
-    --positive-color: #4caf50;
-    --negative-color: #ff5252;
-    --bg-dark: #121212;
-    --card-bg: #1e1e1e;
-    --card-header-bg: #252525;
-    --border-color: #333;
-    --text-primary: #e0e0e0;
-    --text-secondary: #a0a0a0;
-  }
-  
-  /* Basic styling */
-  body {
-    background-color: var(--bg-dark);
-    color: var(--text-primary);
-    font-family: 'Segoe UI', Arial, sans-serif;
-  }
-  
-  .container-fluid {
-    padding: 20px;
-  }
-  
-  /* Dashboard content area */
-  .dashboard-content {
-    width: 100%;
-    padding: 15px;
-  }
-  
-  /* Card styling */
-  .card {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .card-header {
-    background-color: var(--card-header-bg);
-    border-bottom: 1px solid var(--border-color);
-    padding: 15px;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-  }
-  
-  .card-header h5 {
-    margin: 0;
-    color: var(--text-primary);
-    font-weight: 500;
-  }
-  
-  .card-body {
-    padding: 20px;
-  }
-  
-  /* Statistics card */
-  .balance {
-    font-size: 2.5rem;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 20px;
-  }
-  
-  .time-filter {
-    display: flex;
-    gap: 10px;
-    margin: 15px 0;
-    flex-wrap: wrap;
-  }
-  
-  .time-btn {
-    background-color: #2d2d2d;
-    border: 1px solid #444;
-    color: var(--text-secondary);
-    padding: 6px 15px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  
-  .time-btn.active {
-    background-color: var(--primary-color);
-    color: #fff;
-    border-color: var(--primary-color);
-  }
-  
-  .time-btn:hover:not(.active) {
-    background-color: #3d3d3d;
-  }
-  
-  /* Coin selector */
-  .coin-selector {
-    margin: 20px 0;
-  }
-  
-  .selected-coin {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background-color: #2d2d2d;
-    padding: 10px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-    width: fit-content;
-  }
-  
-  .coin-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-  }
-  
-  .bitcoin { background-color: #f7931a; }
-  .ripple { background-color: #0f72e5; }
-  .dogecoin { background-color: #ba9f33; }
-  .icon { background-color: #31b5ab; }
-  .binance { background-color: #f3ba2f; }
-  .bytecoin { background-color: #f04086; }
-  
+  --primary-color: #2563eb;
+  --secondary-color: #1e40af;
+  --accent-color: #3b82f6;
+  --success-color: #4ade80;
+  --danger-color: #f87171;
+  --warning-color: #f59e0b;
+  --purple-color: #8b5cf6;
+  --orange-color: #f97316;
+  --teal-color: #10b981;
+  --bg-dark: #f8fafc;
+  --card-bg: #ffffff;
+  --card-header-bg: #f1f5f9;
+  --border-color: #e2e8f0;
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-primary);
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.container-fluid {
+  padding: 20px;
+}
+
+.dashboard-content {
+  width: 100%;
+  padding: 15px;
+}
+
+/* Card styling */
+.card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.card:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+.card-header {
+  background-color: var(--card-header-bg);
+  border-bottom: 1px solid var(--border-color);
+  padding: 15px 20px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.card-header h5 {
+  margin: 0;
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+/* Chart containers */
+.chart-container {
+  position: relative;
+  height: 300px;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.chart-container.small {
+  height: 200px;
+}
+
+/* Chart legend */
+.chart-legend {
+  display: flex;
+  gap: 15px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.color-box {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 5px;
+  border-radius: 2px;
+}
+
+.color-box.correct {
+  background-color: var(--success-color);
+}
+
+.color-box.incorrect {
+  background-color: var(--danger-color);
+}
+
+/* Stats circles */
+.stats-circle {
+  position: relative;
+  height: 80px;
+  width: 80px;
+  margin: 0 auto 10px;
+}
+
+.stats-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+
+.stats-title {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: 5px;
+}
+
+/* Progress bars */
+.strength-weakness {
+  padding-top: 10px;
+}
+
+.strength-weakness h6 {
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.progress-container {
+  margin-bottom: 15px;
+}
+
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+}
+
+.progress {
+  height: 8px;
+  background-color: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  background-color: var(--primary-color);
+  border-radius: 4px;
+}
+
+/* Leaderboard styling */
+.leaderboard-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.2s ease;
+}
+
+.leaderboard-item:hover {
+  background-color: #f8fafc;
+}
+
+.leaderboard-item:last-child {
+  border-bottom: none;
+}
+
+.leaderboard-item.current-user {
+  background-color: #eff6ff;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-rank {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  width: 24px;
+  text-align: center;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 500;
+}
+
+.current-user .user-avatar {
+  background-color: var(--warning-color);
+}
+
+.user-detail {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.user-points {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.user-score-chart {
+  width: 60px;
+  height: 30px;
+}
+
+.mini-chart {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Leaderboard stats */
+.leaderboard-stats {
+  display: flex;
+  justify-content: space-around;
+  padding: 15px 0 0;
+  border-top: 1px solid var(--border-color);
+  margin-top: 10px;
+}
+
+.stats-item {
+  text-align: center;
+}
+
+.stats-value {
+  display: block;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--primary-color);
+}
+
+.stats-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* Achievement */
+.achievement {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.achievement-icon {
+  width: 50px;
+  height: 50px;
+  background-color: #fef3c7;
+  color: #f59e0b;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+
+.achievement-info h6 {
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.achievement-info p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 5px;
+}
+
+.achievement-date {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* Dropdown styling */
+.dropdown {
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.dropdown i {
+  margin-left: 5px;
+  font-size: 0.8rem;
+}
+
+.see-more {
+  font-size: 0.9rem;
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.see-more:hover {
+  text-decoration: underline;
+}
+
+/* Animation for card click effect */
+.pulse {
+  animation: pulse-animation 0.3s;
+}
+
+@keyframes pulse-animation {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
   .chart-container {
-    height: 300px;
-    margin-top: 20px;
+    height: 250px;
+  }
+}
+
+@media (max-width: 768px) {
+  .chart-container {
+    height: 220px;
   }
   
-  /* Watchlist styling */
-  .watchlist-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 15px 0;
-    border-bottom: 1px solid #333;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
+  .stats-circle {
+    height: 70px;
+    width: 70px;
   }
   
-  .watchlist-item:hover {
-    background-color: #252525;
+  .user-score-chart {
+    display: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .chart-container {
+    height: 200px;
   }
   
-  .watchlist-item:last-child {
-    border-bottom: none;
-  }
-  
-  .coin-info, .price-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  
-  .coin-detail, .price-detail {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .coin-name {
-    font-weight: 500;
-  }
-  
-  .coin-change {
-    font-size: 0.9rem;
-  }
-  
-  .price-value {
-    font-weight: 500;
-  }
-  
-  .price-amount {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-  }
-  
-  .positive { color: var(--positive-color); }
-  .negative { color: var(--negative-color); }
-  
-  .mini-chart {
+  .stats-circle {
+    height: 60px;
     width: 60px;
-    height: 30px;
   }
   
-  /* Dropdown styling */
-  .dropdown {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    color: var(--text-secondary);
+  .stats-label {
+    font-size: 1rem;
   }
   
-  .dropdown span {
-    font-size: 0.9rem;
+  .achievement-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
   }
-  
-  /* Market table styling */
-  .market-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    color: var(--text-primary);
-  }
-  
-  .market-table th, .market-table td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #333;
-  }
-  
-  .market-table th {
-    color: var(--text-secondary);
-    font-weight: 500;
-    font-size: 0.9rem;
-  }
-  
-  .market-table tr:last-child td {
-    border-bottom: none;
-  }
-  
-  .coin-cell {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  
-  .mini-chart-table {
-    width: 80px;
-    height: 30px;
-  }
-  
-  /* News items styling */
-  .news-item {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #333;
-  }
-  
-  .news-item:last-child {
-    margin-bottom: 0;
-    padding-bottom: 0;
-    border-bottom: none;
-  }
-  
-  .news-img img {
-    border-radius: 6px;
-    object-fit: cover;
-  }
-  
-  .news-content h6 {
-    margin-bottom: 5px;
-    font-weight: 500;
-  }
-  
-  .news-content p {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    margin-bottom: 0;
-  }
-  
-  .see-more {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-size: 0.9rem;
-  }
-  
-  .see-more:hover {
-    text-decoration: underline;
-  }
-  
-  /* Animation for card click effect */
-  .pulse {
-    animation: pulse-animation 0.3s;
-  }
-  
-  @keyframes pulse-animation {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.02); }
-    100% { transform: scale(1); }
-  }
-  
-  /* Responsive adjustments */
-  @media (max-width: 992px) {
-    .time-filter {
-      justify-content: space-between;
-    }
-    
-    .time-btn {
-      padding: 6px 10px;
-    }
-    
-    .chart-container {
-      height: 250px;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .balance {
-      font-size: 2rem;
-    }
-    
-    .watchlist-item {
-      padding: 12px 0;
-    }
-    
-    .mini-chart {
-      display: none;
-    }
-    
-    .market-table th:nth-child(4), 
-    .market-table td:nth-child(4) {
-      display: none;
-    }
-  }
-  
-  @media (max-width: 576px) {
-    .market-table th:nth-child(5), 
-    .market-table td:nth-child(5) {
-      display: none;
-    }
-    
-    .news-img {
-      display: none;
-    }
-  }
+}
