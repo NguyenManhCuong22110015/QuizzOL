@@ -41,10 +41,7 @@
         <!-- Account Information -->
         <div>
             <h2 class="account-title mb-3">Account information</h2>
-            <div class="row mb-2">
-                <div class="col-4">Account number</div>
-                <div class="col-8 value">{{this.user.id}}</div>
-            </div>
+            
              <div class="row mb-2">
                 <div class="col-4">User name </div>
                 <div class="col-6 value" id="username">{{this.user.username}}</div>
@@ -68,7 +65,7 @@
             </div>
             <div class="row mb-2">
                 <div class="col-4">Password</div>
-                {{#if (isUndefined this.user.password)}}
+                {{#if (isUndefined this.account.password)}}
                     <div class="col-6 value">None</div>
                    
                 {{else}}
@@ -79,11 +76,7 @@
                 {{/if}}
                 
             </div>
-            <div class="row mb-2">
-              <div class="col-4">BirthDay</div>
-              <div class="col-6 value" id="dob">{{formatLongDate this.user.birthday}}</div> 
-              <div class="col-2"><button onclick="openModal('Date of birth', 'dob')" class="btn btn-outline-dark">Update</button></div>
-          </div>
+           
           <div class="row mb-2">
             <div class="col-4">Connected accounts</div>
             {{#if (eq this.user.provider "email")}} 
@@ -403,7 +396,7 @@
             }
 
             try {
-                const response = await fetch('/account/update-password', {
+                const response = await fetch('/auth/update-password', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -435,6 +428,25 @@
                 });
             }
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const sweetAlertData = `{{sweetAlert}}`;
+            if (sweetAlertData && sweetAlertData !== '') {
+                try {
+                    const alertConfig = JSON.parse(sweetAlertData.replace(/&quot;/g, '"'));
+                    Swal.fire({
+                        icon: alertConfig.type,
+                        title: alertConfig.title,
+                        text: alertConfig.text,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                } catch (e) {
+                    console.error('Error parsing SweetAlert data:', e);
+                }
+            }
+            
+        });
 
     </script>
 

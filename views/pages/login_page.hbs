@@ -9,241 +9,278 @@
     <link rel="stylesheet" href="/css/login.css"/>
     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   
 </head>
 <body>
+    <!-- Top Right Button -->
     
-<div class="form-login">
-    <form class="" method="post">
-        <div class="content">
-            <div class="data">
-                <h4 class="text-center">Logo</h4>
-                <h4 class="text-center"><b>Sign in to your CNN account</b></h4>
-                <h5 class="text-center">Don't have an account? <span class="redr" onclick="showFormSignUp()">Sign up</span></h5>
-                <div class="mt-4">
-                    <input type="text" required name="login_email" />
-                    <label placeholder="Adaptive Placeholder" alt="Email address"></label>
-                </div>
-                <div>
-                    <div class="password-container">
-                        <input type="password" id="password" name="login_password" placeholder="" required />
-                        <label placeholder="Adaptive Placeholder" alt="Enter password"></label>
-                        <span id="toggle-password" onclick="togglePassword()">👁️</span>  
-                    </div>
-                </div>
-                {{#if errorMessage}}
-                    <span style="" class="btn btn-danger w-100">{{errorMessage}}</span>
-                {{/if}}
-                {{#if successMessage}}
-                    <span style="" class="btn btn-success w-100">{{successMessage}}</span>
-                {{/if}}
-                <a class="redr" href="/reset-password">Forgot password?</a><br/>
-                <button type="submit" class="submit mt-3" formaction="/auth/login">Sign in</button>
-                <div class="divider mt-3">
-                    <span>or</span>
-                </div>
-                <p>By creating an account or signing in, I agree to the Terms of Use and have read our Privacy Policy.</p>
-                <div class="login-buttons">
-                    <button type="button" class="btn btn-social btn-google" onclick="window.location.href='/auth/google'">
-                        <i class="fab fa-google"></i> Continue with Google
-                    </button>
-                    <button type="button" class="btn btn-social btn-facebook" onclick="window.location.href='/auth/facebook'">
-                        <i class="fab fa-facebook-f"></i> Continue with Facebook
-                    </button>
-                    <button type="button" class="btn btn-social btn-apple" onclick="window.location.href='/auth/github'">
-                        <i class="fab fa-github"></i> Continue with Github
-                    </button>
-                </div>
-            </div>
-        </div>
-    </form>
-</div> 
-
-       <div class="modal fade" id="captchaModal">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Please verify you're human</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                 <form id="captcha-form" action="/verify-captcha" method="POST">
-                     <div class="h-captcha" 
-                     data-sitekey="f2aacc22-14fa-4572-bc96-0028525e7082"
-                     data-callback="onCaptchaVerified">
-                </div>
-                </form>
-               
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-       
-        
-
-       <form id="signupForm" class="form-signup" method="post" onsubmit="return validateCaptcha(event)">
-
+    
+    <!-- Login Form -->
+    <div class="form-login">
+        <form method="post" action="/auth/login">
             <div class="content">
                 <div class="data">
-                    <h4 class="text-center" > Logo </h4>
-                    <h4 class="text-center"><b>Sign up for your CNN account</b></h4>
-                    <h5 class="text-center" >Already have an account? <span class="redr" onclick="showFormLogIn()" > Sign in</span>  </h5>
-                    
+                    <h4 class="text-center">Logo</h4>
+                    <h4 class="text-center"><b>Sign in to your CNN account</b></h4>
+                    <h5 class="text-center">Don't have an account? <span class="redr" onclick="showFormSignUp()">Sign up</span></h5>
                     <div class="mt-4">
-                        <input type="text" name="reg_email" required />
+                        <input type="text" required name="login_email" />
                         <label placeholder="Adaptive Placeholder" alt="Email address"></label>
                     </div>
                     <div>
                         <div class="password-container">
-                            <input type="password" id="password2"  name="reg_password" placeholder=""required />
-                            <label placeholder="Adaptive Placeholder" alt="Enter password" ></label>
-                            <span id="toggle-password2" onclick="togglePassword2()">👁️</span>  
+                            <input type="password" id="password" name="login_password" autocomplete="current-password" placeholder="" required />
+                            <label placeholder="Adaptive Placeholder" alt="Enter password"></label>
+                            <span id="toggle-password" onclick="togglePassword()">👁️</span>  
                         </div>
                     </div>
-                    <p class="sm-txt">By creating an account, I agree to the Terms of Use and have read our Privacy Policy.</p>
-                    <label>
-                     {{#if errorMessage}}
-                         <span style="" class="btn btn-danger w-100">{{errorMessage}}</span>
-                     {{/if}}
-                    </label>
-                    <button type="submit"  class="submit" formaction="/auth/signup" >Create Account</button>
+                    <a class="redr" href="/auth/reset-password">Forgot password?</a><br/>
+                    <button type="submit" class="submit mt-3">Sign in</button>
                     <div class="divider mt-3">
                         <span>or</span>
                     </div>
-                    
+                    <p>By creating an account or signing in, I agree to the Terms of Use and have read our Privacy Policy.</p>
                     <div class="login-buttons">
                         <button type="button" class="btn btn-social btn-google" onclick="window.location.href='/auth/google'">
-                        <i class="fab fa-google"></i> Continue with Google
+                            <i class="fab fa-google"></i> Continue with Google
                         </button>
-                        <button type="button" class="btn btn-social btn-facebook" onclick="window.location.href='/auth/facebook'" > 
-                        <i class="fab fa-facebook-f"></i> Continue with Facebook
+                        <button type="button" class="btn btn-social btn-facebook" onclick="window.location.href='/auth/facebook'">
+                            <i class="fab fa-facebook-f"></i> Continue with Facebook
                         </button>
-                        <button  type="button" class="btn btn-social btn-apple" onclick="window.location.href='/auth/github'" >
-                        <i class="fab fa-github"></i> Continue with Github 
-                        </button>
+                       
                     </div>
                 </div>
             </div>
         </form>
-    
-   
+    </div> 
 
+    <!-- Signup Form -->
+    <div class="form-signup" style="display: none;">
+        <form id="signupForm" method="post" action="/auth/signup">
+            <div class="content">
+                <div class="data">
+                    <h4 class="text-center">Logo</h4>
+                    <h4 class="text-center"><b>Create a CNN Account</b></h4>
+                    <h5 class="text-center">Already have an account? <span class="redr" onclick="showFormLogIn()">Sign in</span></h5>
+                    <div class="mt-4">
+                        <input type="text" required name="reg_email" />
+                        <label placeholder="Adaptive Placeholder" alt="Email address"></label>
+                    </div>
+                    <div>
+                        <div class="password-container">
+                            <input type="password" id="password2" name="reg_password" autocomplete="new-password" placeholder="" required />
+                            <label placeholder="Adaptive Placeholder" alt="Create password"></label>
+                            <span id="toggle-password2" onclick="togglePassword2()">👁️</span>  
+                        </div>
+                    </div>
+                    <button type="submit" class="submit mt-3">Create Account</button>
+                    <div class="divider mt-3">
+                        <span>or</span>
+                    </div>
+                    <p>By creating an account, I agree to the Terms of Use and have read the Privacy Policy.</p>
+                    <div class="login-buttons">
+                        <button type="button" class="btn btn-social btn-google" onclick="window.location.href='/auth/google'">
+                            <i class="fab fa-google"></i> Continue with Google
+                        </button>
+                        <button type="button" class="btn btn-social btn-facebook" onclick="window.location.href='/auth/facebook'">
+                            <i class="fab fa-facebook-f"></i> Continue with Facebook
+                        </button>
+                       
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+       
+    <!-- Captcha Modal -->
+    <div class="modal fade" id="captchaModal">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Please Verify You're Human</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="captcha-container" class="text-center"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-   <script>
+    <!-- Resend Verification Modal -->
+    <div class="modal fade" id="resendVerificationModal" tabindex="-1" aria-labelledby="resendVerificationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="resendVerificationModalLabel">Resend Verification Email</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Please enter your email address to receive a new verification link:</p>
+                    <form id="resendVerificationForm" method="post" action="/auth/resend-verification">
+                        <div class="mb-3">
+                            <input type="email" class="form-control" id="resend_email" name="email" placeholder="Email address" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Resend Verification Email</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
     document.addEventListener('DOMContentLoaded', function() {
-    const signupForm = document.getElementById('signupForm');
-    const captchaModal = new bootstrap.Modal(document.getElementById('captchaModal'));
-
-    if (signupForm) {
-        signupForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            captchaModal.show();
-        });
+        // Sweet Alert handling
+        const sweetAlertData = `{{sweetAlert}}`;
+        if (sweetAlertData && sweetAlertData !== '') {
+            try {
+                const alertConfig = JSON.parse(sweetAlertData.replace(/&quot;/g, '"'));
+                if (alertConfig.text && alertConfig.text.includes('Account not verified')) {
+                    Swal.fire({
+                        icon: alertConfig.type,
+                        title: alertConfig.title,
+                        text: alertConfig.text,
+                        showConfirmButton: true,
+                        confirmButtonText: 'Resend Verification Email',
+                        showCancelButton: true,
+                        cancelButtonText: 'Close'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            showResendVerificationModal();
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: alertConfig.type,
+                        title: alertConfig.title,
+                        text: alertConfig.text,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                }
+            } catch (e) {
+                console.error('Error parsing SweetAlert data:', e);
+            }
+        }
+        
+        // COMPLETELY NEW CAPTCHA IMPLEMENTATION
+        const signupForm = document.getElementById('signupForm');
+        
+        if (signupForm) {
+            signupForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                
+                // Create captcha container
+                const captchaContainer = document.getElementById('captcha-container');
+                captchaContainer.innerHTML = '';
+                
+                // Create a new div for hCaptcha to render into
+                const hcaptchaDiv = document.createElement('div');
+                hcaptchaDiv.className = 'h-captcha';
+                captchaContainer.appendChild(hcaptchaDiv);
+                
+                // Show modal
+                const captchaModal = new bootstrap.Modal(document.getElementById('captchaModal'));
+                captchaModal.show();
+                
+                // Render hCaptcha
+                try {
+                    const hcaptchaId = hcaptcha.render(hcaptchaDiv, {
+                        sitekey: 'f2aacc22-14fa-4572-bc96-0028525e7082',
+                        callback: function(token) {
+                            // Add token to form
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = 'h-captcha-response';
+                            input.value = token;
+                            signupForm.appendChild(input);
+                            
+                            // Hide modal and submit the form
+                            captchaModal.hide();
+                            setTimeout(() => {
+                                signupForm.removeEventListener('submit', arguments.callee);
+                                signupForm.submit();
+                            }, 500);
+                        },
+                        'error-callback': function() {
+                            console.log('hCaptcha error');
+                            // Show error message
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Verification Failed',
+                                text: 'Please try again',
+                            });
+                        }
+                    });
+                    
+                    // Add reset handler for modal close
+                    document.querySelector('#captchaModal .btn-close').addEventListener('click', function() {
+                        hcaptcha.reset(hcaptchaId);
+                    });
+                    document.querySelector('#captchaModal .btn-secondary').addEventListener('click', function() {
+                        hcaptcha.reset(hcaptchaId);
+                    });
+                    
+                } catch (e) {
+                    console.error('Error initializing hCaptcha:', e);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Could not initialize verification. Please try again later.'
+                    });
+                }
+            });
+        }
+    });
+    
+    // Add this function to show the resend modal
+    window.showResendVerificationModal = function() {
+        const modal = new bootstrap.Modal(document.getElementById('resendVerificationModal'));
+        modal.show();
     }
-
-    window.onCaptchaSuccess = function(token) {
-        const form = document.getElementById('signupForm');
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'h-captcha-response';
-        input.value = token;
-        form.appendChild(input);
-        form.submit();
-    };
-});
+    
+    // Password toggle functions
     function togglePassword() {
-      const passwordField = document.getElementById("password");
-      const toggleIcon = document.getElementById("toggle-password");
-      
-      if (passwordField.type === "password") {
-        passwordField.type = "text";
-        toggleIcon.textContent = "🙈";  
-      } else {
-        passwordField.type = "password";
-        toggleIcon.textContent = "👁️";  // Trở lại icon mắt khi ẩn mật khẩu
-      }
+        const passwordField = document.getElementById("password");
+        const toggleIcon = document.getElementById("toggle-password");
+        
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            toggleIcon.textContent = "🙈";  
+        } else {
+            passwordField.type = "password";
+            toggleIcon.textContent = "👁️";
+        }
     }
+    
     function togglePassword2() {
         const passwordField = document.getElementById("password2");
         const toggleIcon = document.getElementById("toggle-password2");
         
         if (passwordField.type === "password") {
-          passwordField.type = "text";
-          toggleIcon.textContent = "🙈";  
+            passwordField.type = "text";
+            toggleIcon.textContent = "🙈";  
         } else {
-          passwordField.type = "password";
-          toggleIcon.textContent = "👁️";  // Trở lại icon mắt khi ẩn mật khẩu
+            passwordField.type = "password";
+            toggleIcon.textContent = "👁️";
         }
-      }
-   
-      function showFormLogIn() {
-        document.querySelector(".form-login").style.display = "block";
-        
-        document.querySelector(".form-signup").style.display = "none";
-      }
+    }
     
-      function showFormSignUp() {
+    function showFormLogIn() {
+        document.querySelector(".form-login").style.display = "block";
+        document.querySelector(".form-signup").style.display = "none";
+    }
+    
+    function showFormSignUp() {
         document.querySelector(".form-login").style.display = "none";
-        
         document.querySelector(".form-signup").style.display = "block";
-      }
-window.onCaptchaVerified = function(token) {
-    const form = document.getElementById('signupForm');
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = 'h-captcha-response';
-    input.value = token;
-    form.appendChild(input);
-     form.action = '/auth/signup';
-    form.submit();
-}
-
-function validateCaptcha(event) {
-    event.preventDefault();
-    const modal = new bootstrap.Modal(document.getElementById('captchaModal'));
-    hcaptcha.render('h-captcha', {
-        sitekey: 'f2aacc22-14fa-4572-bc96-0028525e7082'
-    });
-    modal.show();
-    return false;
-}
-
-        document.getElementById("getCodeButton").addEventListener("click", function () {
-        const emailInput = document.getElementById("emailInput");
-        const email = emailInput.value.trim();
-
-        // Kiểm tra email hợp lệ
-        if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            // Hiển thị container nhập mã xác thực
-            document.getElementById("twoFactorContainer").classList.remove("hidden");
-
-            // Tự động focus vào ô đầu tiên
-            const inputs = document.querySelectorAll(".code-input");
-            inputs[0].focus();
-
-            // Chuyển qua ô tiếp theo khi nhập
-            inputs.forEach((input, index) => {
-            input.addEventListener("input", () => {
-                if (input.value.length === 1 && index < inputs.length - 1) {
-                inputs[index + 1].focus();
-                }
-            });
-            });
-
-            // Xóa ô trước khi backspace
-            inputs.forEach((input, index) => {
-            input.addEventListener("keydown", (e) => {
-                if (e.key === "Backspace" && input.value === "" && index > 0) {
-                inputs[index - 1].focus();
-                }
-            });
-            });
-        } else {
-            alert("Please enter a valid email address!");
-        }
-        });
-  </script>
+    }
+</script>
 </body>
 </html>

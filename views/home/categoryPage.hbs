@@ -11,13 +11,34 @@
 </head>
 <body>
     <div class="container">
-
+            {{#if triggerLoading}}
+            <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                showLoading();
+                
+               
+              //  fetch('/api/data')
+              //  .then(response => response.json())
+               // .then(data => {
+                    
+               //     hideLoading();
+              //  })
+               // .catch(error => {
+               //     console.error('Error:', error);
+               //     hideLoading();
+               // });
+                  setTimeout(() => {
+                    hideLoading();
+                }, 2000); 
+            });
+            </script>
+            {{/if}}
         {{#each this.quizzesOfCategory}}
             <section class="category">
                     <h2 class="category-title"><i class="fas fa-calculator"></i>{{name}}</h2>
                      <div class="category-carousel">
                         {{#each quizzes}}
-                                <a href="/quiz/do-test/{{id}}" class="text-decoration-none">
+                                <a href="/quiz/quizzes/{{id}}" class="text-decoration-none">
                                     <div class="card">
                                     <img src={{image}} alt="Math Equation">
                                     <div class="card-content">

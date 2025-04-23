@@ -8,7 +8,7 @@
     font-family: "Poppins", sans-serif;
     margin: 0;
     padding: 0;
-    background-color: var(--primary-color);
+    background-color: var(--bs-dark) !important;
     min-height: 100vh;
     display: flex;
     justify-content: center;

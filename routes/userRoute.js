@@ -5,18 +5,32 @@ import moment from 'moment-timezone';
 
 
 const router = new Router()
-router.get('/profile', async (req, res) => {
+router.get('/profile',check, async (req, res) => {
      
+    const user = await userService.getUserByAccountId(req.session.authUser.id)
+    
+
       res.render('profilePage', {
-        user: req.session.authUser,
+        user: user,
+        account: req.session.authUser,
         layout:false
       })
   })
-  
+ 
+router.get("/overview", check, async (req, res) => {
+    const user = await userService.getUserByAccountId(req.session.authUser.id)
+    res.render('userOverviewPage', {
+        user: user,
+        account: req.session.authUser,
+        layout:false
+      })
+}
+)
+
 router.post('/update-field', check, async (req, res) => {
     try {
         const { field, value } = req.body;
-        console.log(req.session.authUser.id, field, value)
+        
         const ret = await userService.updateFields(req.session.authUser.id, field, value);
         if (ret) {
             req.session.authUser[field] = value;
@@ -70,5 +84,26 @@ router.post('/update-birthday', check, async (req, res) => {
       res.status(500).json({ success: false, message: error.message });
   }
 });
+
+
+router.post("/update-avatar", check, async (req, res) => {
+    try {
+        const { avatar } = req.body;
+        console.log('Received avatar:', avatar);
+        
+        const ret = await userService.updateAvatar(req.session.authUser.id, avatar);
+        if (ret) {
+            req.session.authUser.avatar = avatar;
+            res.status(200).json({ success: true, message: 'Avatar updated successfully' });
+        } else {
+            res.status(400).json({ success: false, message: 'Failed to update avatar' });
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        res.status(500).json({ success: false, message: error.message });
+    }
+})
+
+
 
 export default router

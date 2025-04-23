@@ -105,6 +105,7 @@ router.get('/quizzes/:id', async (req, res) => {
 
         // Render the quizDetail view with the fetched data
         res.render('quiz/quizDetail_dataFilled', {
+            layout: false,
             quiz: quizPageDetails.quiz,
             stats: quizPageDetails.stats,
             rating : quizPageDetails.rating,
@@ -215,7 +216,7 @@ router.get('/do-test/:id',check, async (req, res) => {
 
 router.get('/check-result/:id', quizController.checkResult)
 
-router.get('/all', async (req, res) => {
+router.get('/all-quiz-by-category', async (req, res) => {
 
     try {
         const categories = await categoryService.getAllCategories() || []
@@ -226,6 +227,7 @@ router.get('/all', async (req, res) => {
                 return {
                     ...category,
                     quizzes: quizzes.map(quiz => ({
+                        triggerLoading: true,
                         id: quiz.id,
                         name: quiz.name,
                         title: quiz.title,
@@ -242,7 +244,7 @@ router.get('/all', async (req, res) => {
             }
         
         })).then(results => results.filter(result => result !== null && result.quizzes.length > 0)); 
-        res.render('home/homePage', {
+        res.render('home/categoryPage', {
             layout: 'main',
             quizzesOfCategory
         })

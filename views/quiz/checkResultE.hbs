@@ -1,23 +1,21 @@
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Colorful Quiz Page</title>
+
+  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/checkRes.css" />
-</head>
+
 <body>
   
   <div class="container">
+    <button id="backButton" class="back-button"><i class="fas fa-arrow-left"></i> Quay lại</button>
     <button class="mobile-menu-button">☰</button>
     <div class="main-content">
       <div class="header">
-        <p><b>Trạng thái:</b> {{result.status}}</p>
-        <p><b>Bắt đầu vào lúc:</b> {{formatDate result.start_time}}</p>
-        <p><b>Kết thúc lúc:</b> {{formatDate result.end_time}}</p>
+        <p><b>Trạng thái:</b> {{this.result.status}}</p>
+        <p><b>Bắt đầu vào lúc:</b> {{formatDate this.result.start_time}}</p>
+        <p><b>Kết thúc lúc:</b> {{formatDate this.result.end_time}}</p>
         <p><b>Thời gian thực</b> {{duration}}</p>
-        <p><b>Điểm:</b> {{result.score}}</p>
+        <p><b>Điểm:</b> {{this.result.score}}</p>
       </div>
 
       <div id="question1" class="question-container active">
@@ -230,7 +228,10 @@
     const questionNavigationButtons = document.querySelectorAll('.question-navigation button');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
-
+// Add this to your existing script section
+document.getElementById('backButton').addEventListener('click', () => {
+  window.history.back();
+});
     let currentQuestion = 1;
 
     function showQuestion(questionNumber) {
@@ -270,8 +271,7 @@
     showQuestion(currentQuestion);
 
     
-    const duration = result.start_time - result.end_time;
+    const duration = this.duration;
   </script>
 
 </body>
-</html>

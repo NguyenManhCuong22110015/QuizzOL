@@ -1,6 +1,7 @@
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
+    
 }
 .section-divider {
     border-top: 2px solid black;
@@ -92,3 +93,170 @@ a {
 right: 0;
 left: auto;
 }
+
+/* Responsive dropdown positioning */
+.user-profile {
+  position: relative;
+}
+
+.profile-button {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0; /* Align to right by default */
+  min-width: 180px;
+  background-color: white;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 4px;
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+  z-index: 1000;
+  display: none;
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+/* Mobile specific styles */
+@media (max-width: 767px) {
+  .dropdown-menu {
+    width: 180px;
+    max-width: 100%;
+  }
+  
+  /* Ensure the dropdown doesn't get cut off at screen edges */
+  .user-profile {
+    position: static; /* This allows dropdown to use the navbar as positioning context */
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    right: 15px; /* Default right alignment with padding */
+    left: auto;
+    top: auto;
+    margin-top: 5px;
+  }
+}
+
+.avatar-placeholder {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #0d6efd;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+  }
+  
+  .profile-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+  }
+  
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+  }
+  
+  .nav-tabs .nav-link.active {
+    border-bottom: 2px solid #0d6efd;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    font-weight: 500;
+  }
+  
+  .nav-tabs .nav-link {
+    border: none;
+    color: #6c757d;
+  }
+  
+  .nav-tabs .nav-link:hover {
+    border-bottom: 2px solid #dee2e6;
+  }
+  
+  .achievement-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: white;
+  }
+  
+  .leaderboard-rank {
+    font-weight: bold;
+    font-size: 1.25rem;
+    width: 30px;
+    text-align: center;
+  }
+  
+  .top-1 {
+    color: #ffc107;
+  }
+  /* Add these styles to your CSS file */
+.position-relative {
+  position: relative;
+}
+
+.profile-image {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  transition: opacity 0.3s ease;
+}
+
+.avatar-overlay {
+  opacity: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.position-relative:hover .profile-image {
+  opacity: 0.8;
+}
+
+.position-relative:hover .avatar-overlay {
+  opacity: 1;
+}
+
+.avatar-preview-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+#avatarPreview {
+  border: 3px solid #dee2e6;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+  .top-2 {
+    color: #adb5bd;
+  }
+  
+  .top-3 {
+    color: #cd7f32;
+  }
+  
+  .current-user {
+    border: 2px solid #0d6efd;
+    background-color: rgba(13, 110, 253, 0.05);
+  }

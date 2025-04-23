@@ -1,0 +1,78 @@
+<link rel="stylesheet" href="/css/loading.css">
+
+<div class="loading-overlay" id="loadingOverlay" style="display:none;">
+  <div class="loading-container">
+    <div class="loading-content">
+      <div class="loading-spinner">
+        <!-- Simple spinner (will be replaced by LDRS spinner if JS loads) -->
+        <div class="spinner-border text-light" role="status" style="width: 3rem; height: 3rem;">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      <p class="loading-text mt-3">Please wait...</p>
+      
+      <div class="loading-video-container mt-3">
+        <video 
+          width="280" 
+          autoplay 
+          loop 
+          muted 
+          playsinline
+          class="loading-video"
+          id="loadingVideo"
+        >
+          <source src="https://res.cloudinary.com/dj9r2qksh/video/upload/v1742444295/Recording_2025-03-20_111752_ynsddt.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Simple loading overlay functionality without external dependencies
+function showLoading(customVideoUrl = null) {
+  // Save current scroll position
+  const scrollY = window.scrollY;
+  
+  // Update video source if provided
+  if (customVideoUrl) {
+    const videoElement = document.getElementById('loadingVideo');
+    if (videoElement && videoElement.querySelector('source')) {
+      videoElement.querySelector('source').src = customVideoUrl;
+      videoElement.load(); // Reload the video
+    }
+  }
+  
+  // Show overlay
+  const overlay = document.getElementById('loadingOverlay');
+  if (overlay) {
+    overlay.style.display = 'flex';
+  }
+  
+  // Disable page scrolling
+  document.body.style.position = 'fixed';
+  document.body.style.top = `-${scrollY}px`;
+  document.body.style.width = '100%';
+  
+  // Save scroll position for later restoration
+  document.body.dataset.scrollY = scrollY;
+}
+
+function hideLoading() {
+  // Get saved scroll position
+  const scrollY = parseInt(document.body.dataset.scrollY || '0');
+  
+  // Hide overlay
+  const overlay = document.getElementById('loadingOverlay');
+  if (overlay) {
+    overlay.style.display = 'none';
+  }
+  
+  // Restore page scrolling
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.width = '';
+  window.scrollTo(0, scrollY);
+}
+</script>

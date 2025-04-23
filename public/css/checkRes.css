@@ -20,7 +20,27 @@ body {
     background-position: 0% 50%;
   }
 }
+/* Add this to your CSS file */
+.back-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 8px 15px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: bold;
+  z-index: 100;
+}
 
+.back-button:hover {
+  background-color: #d32f2f;
+}
 .container {
   display: flex;
   min-height: 100vh;

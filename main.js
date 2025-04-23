@@ -22,9 +22,14 @@ import dotenv from 'dotenv';
 import mediaRoute from './routes/mediaRoute.js';
 import userAnswerRoute from './routes/userAnswerRoute.js';
 import resultRoute from './routes/resultRoute.js';
+import flash from 'connect-flash'; 
+import questionRoute from './routes/questionRoute.js';
+
+
 dotenv.config();
 const app = express();
 app.set("trust proxy", 1);
+app.use(flash());
 
    app.engine('hbs', engine({
     extname : 'hbs',
@@ -71,6 +76,15 @@ app.set("trust proxy", 1);
       isUndefined: function (value) {
         return value === null || value === undefined;
        },
+       json: function(context) {
+        return JSON.stringify(context);
+      },
+       firstLetter: function(text) {
+        if (!text || typeof text !== 'string' || text.length === 0) {
+          return '';
+        }
+        return text.charAt(0).toUpperCase();
+      },
        toUpperCase: function(text) {
         return text ? text.toUpperCase() : '';
     },
@@ -92,6 +106,31 @@ app.set("trust proxy", 1);
       array.push(i);
     }
     return array;
+  },
+  add: function (a, b) {
+    return a + b;
+  },
+  stars: function (rating) {
+    const fullStars = Math.floor(rating); // Number of full stars
+    const halfStar = rating % 1 >= 0.5 ? 1 : 0; // Add a half star if the remainder is >= 0.5
+    const emptyStars = 5 - fullStars - halfStar; // Remaining empty stars
+
+    // Generate HTML for stars
+    let html = "";
+    for (let i = 0; i < fullStars; i++) {
+      html += '<i class="fas fa-star"></i>'; // Full star
+    }
+    if (halfStar) {
+      html += '<i class="fas fa-star-half-alt"></i>'; // Half star
+    }
+    for (let i = 0; i < emptyStars; i++) {
+      html += '<i class="far fa-star"></i>'; // Empty star
+    }
+    html +=
+      '<span class="rating-text" style="color: Gray; font-weight: bold;"> (' + rating.toFixed(1) + ')</span>'; // Add vibrant yellow rating text
+    // Return the HTML string for stars and rating text
+
+    return html;
   },
   getRemainingDays: function(expiryDate) {
     if (!expiryDate) return 'No subscription';
@@ -154,6 +193,11 @@ app.use(async function (req, res, next) {
 
   next();
 });
+app.use((req, res, next) => {
+  // Trước khi render, thêm biến loading
+  res.locals.showLoading = true;
+  next();
+});
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -177,7 +221,7 @@ app.use("/admin", adminRoute);
 app.use("/student", studentRoute);
 app.use("/user-answer", userAnswerRoute);  
 app.use("/result", resultRoute);
-
+app.use("/question", questionRoute);
 
 app.get("/", (req, res) => {
   res.send("Hello word");

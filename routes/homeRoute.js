@@ -7,7 +7,9 @@ router.get('/', async (req, res) => {
     
      res.render("index", {
       layout: "main",
+      
          title: "QuizMaster - Learn Through Quizzes",
+         pageId: 'home',
          features: [
            {
              icon: "bolt",

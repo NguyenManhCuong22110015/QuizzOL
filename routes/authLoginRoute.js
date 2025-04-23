@@ -1,13 +1,25 @@
 import { Router } from 'express';
-import { renderLoginPage,loginToFacebook ,handleLogin, handleSignup, loginToGoogle, loginToGithub} from '../controllers/authController.js';
+import check from '../middlewares/auth.mdw.js';
+import { renderLoginPage,
+  loginToFacebook ,
+  handleLogin, 
+  handleSignup, 
+  loginToGoogle,
+  resendVerification, 
+  loginToGithub,
+  handleUpdatePassword
+
+}
+   from '../controllers/authController.js';
 
 import facebookPassport from '../authentication/facebook.js';
 import googlePassport from '../authentication/google.js';
 import githubPassport from '../authentication/github.js';
-
+import {verifyEmail} from '../controllers/authController.js';
 
 const router = Router();
-
+router.get('/verify/:token', verifyEmail);
+router.post('/resend-verification', resendVerification);
 router.get('/login', renderLoginPage);
 
 router.get('/facebook', facebookPassport.authenticate('facebook',{auth_type: 'reauthenticate'} ));
@@ -35,6 +47,8 @@ router.get( '/github',(req, res, next) => {req.logout((err) => {
 );
 
 router.get( '/github', githubPassport.authenticate('github', { failureRedirect: '/login' }), loginToGithub );
+
+router.post('/update-password',check, handleUpdatePassword);
 
 router.get('/logout', (req, res, next) => {
   

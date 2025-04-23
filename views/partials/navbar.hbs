@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top" style="background-color:  var(--bs-dark);" >
   <div class="container">
     <a class="navbar-brand fw-bold" href="/">
       <i class="fas fa-brain me-2"></i>QuizMaster
@@ -16,6 +16,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto">
+       {{#if (eq pageId 'home')}}
         <li class="nav-item">
           <a class="nav-link active" href="#features">Features</a>
         </li>
@@ -27,6 +28,10 @@
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#testimonials">Testimonials</a>
+        </li>
+        {{/if}}
+        <li class="nav-item">
+          <a class="nav-link" href="/quiz/all-quiz-by-category">Categories</a>
         </li>
       </ul>
       <form class="d-flex me-2" action="/search" method="GET">
@@ -42,38 +47,71 @@
         </button>
       </form>
       <div class="d-flex">
-        {{#if auth}}
-          <!-- User is logged in -->
-          <div class="user-profile">
-            <button id="profileDropdownBtn" class="profile-button">
-              {{#if auth.avatar}}
-                <img src="{{auth.avatar}}" alt="Profile" class="avatar">
-              {{else}}
-                <div class="avatar-placeholder">{{firstLetter auth.name}}</div>
-              {{/if}}
-              <span class="username">{{auth.name}}</span>
-              <i class="dropdown-icon">▼</i>
-            </button>
-            
-            <!-- Dropdown Menu -->
-            <div id="profileDropdown" class="dropdown-menu">
-              <a href="/user/profile">Profile</a>
-              <a href="/my-quizzes">My Quizzes</a>
-              <a href="/settings">Settings</a>
-              <div class="divider"></div>
-              <a href="/auth/logout" class="logout">Logout</a>
-            </div>
-          </div>
-        {{else}}
-          <!-- User is not logged in -->
-          <div class="auth-buttons">
-           
-            <a href="/auth/login" class="btn btn-outline-light me-2">Log In</a>
-            <a href="/register" class="btn btn-primary">Sign Up</a>
-          </div>
-        {{/if}}
+          {{#if authUser}}
+              <div class="user-profile">
+                <button id="profileDropdownBtn" class="profile-button">
+                  {{#if authUser.avatar}}
+                    <img src="{{authUser.avatar}}" alt="Profile" class="avatar">
+                  {{else}}
+                    <div class="avatar-placeholder">
+                      {{firstLetter authUser.name}}
+                      {{#unless authUser.name}}
+                        {{firstLetter authUser.username}}
+                      {{/unless}}
+                    </div>
+                  {{/if}}
+                  <span class="username">
+                    {{authUser.name}}
+                    {{#unless authUser.name}}
+                      {{authUser.username}}
+                    {{/unless}}
+                  </span>
+                  <i class="fas fa-chevron-down dropdown-icon"></i>
+                </button>
+                
+                <!-- Dropdown Menu - Updated for mobile responsiveness -->
+                <div id="profileDropdown" class="dropdown-menu">
+                  <a href="/user/overview"><i class="fas fa-user-circle mr-2"></i> Profile</a>
+                  <a href="/my-quizzes"><i class="fas fa-list mr-2"></i> My Quizzes</a>
+                  <a href="/settings"><i class="fas fa-cog mr-2"></i> Settings</a>
+                  <div class="divider"></div>
+                  <a href="/auth/logout" class="logout"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
+                </div>
+              </div>
+            {{else}}
+              <!-- User is not logged in -->
+              <div class="auth-buttons">
+                <a href="/auth/login" class="btn btn-outline-light me-2">Log In</a>
+                <a href="/auth/login" class="btn btn-primary">Sign Up</a>
+              </div>
+            {{/if}}
         
       </div>
     </div>
   </div>
 </nav>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Simple toggle for the dropdown
+  const profileDropdownBtn = document.getElementById('profileDropdownBtn');
+  const profileDropdown = document.getElementById('profileDropdown');
+  
+  if (profileDropdownBtn && profileDropdown) {
+    // Toggle dropdown visibility on button click
+    profileDropdownBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation(); // Prevent event from bubbling up
+      profileDropdown.classList.toggle('show');
+      console.log('Dropdown toggled');
+    });
+    
+    // Close dropdown when clicking elsewhere
+    document.addEventListener('click', function(e) {
+      if (!profileDropdownBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+        profileDropdown.classList.remove('show');
+      }
+    });
+  }
+});
+</script>

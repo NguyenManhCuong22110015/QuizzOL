@@ -1,8 +1,6 @@
-/* Custom Styles for QuizMaster Learning Platform */
-
-/* General Styles */
 body {
   font-family: "Poppins", sans-serif;
+   background-color: var(--bs-dark) !important;
 }
 
 /* Hero Section */
@@ -79,6 +77,7 @@ body {
   color: var(--bs-primary);
   transition: color 0.3s ease;
 }
+
 
 .category-card:hover .category-icon {
   color: white;
@@ -296,7 +295,45 @@ ul {
   border: none;
   color: white;
   cursor: pointer;
-  padding: 5px;
+  padding: 5px 10px;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0; /* Always right-aligned */
+  min-width: 180px;
+  background-color: white;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 4px;
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+  z-index: 1000;
+  display: none;
+}
+
+.dropdown-menu.show {
+  display: block !important; /* Force display with !important */
+}
+
+/* Mobile specific styles */
+@media (max-width: 767px) {
+  .dropdown-menu {
+    right: 0; /* Ensure right alignment on mobile */
+    left: auto;
+    width: auto;
+    min-width: 200px;
+    max-width: 90vw; /* Prevent overflow */
+  }
+  
+  /* If in collapsed navbar, adjust positioning */
+  .navbar-collapse.show .dropdown-menu {
+    position: static;
+    float: none;
+    width: auto;
+    margin-top: 0;
+    box-shadow: none;
+    border: 0;
+  }
 }
 
 .avatar, .avatar-placeholder {
@@ -431,4 +468,82 @@ ul {
   .user-profile .username {
     display: none;
   }
+}
+/* Avatar styles */
+.avatar-placeholder {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #4a6cf7;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+/* User profile dropdown */
+.user-profile {
+  position: relative;
+}
+
+.profile-button {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 20px;
+  transition: background-color 0.2s;
+}
+
+.profile-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  min-width: 180px;
+  padding: 10px 0;
+  display: none;
+  z-index: 1000;
+}
+
+.dropdown-menu.show {
+  display: block;
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 8px 15px;
+  color: #333;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.dropdown-menu a:hover {
+  background-color: #f8f9fa;
+}
+
+.dropdown-menu .divider {
+  height: 1px;
+  margin: 8px 0;
+  background-color: #e9ecef;
+}
+
+.dropdown-icon {
+  margin-left: 5px;
+  font-size: 12px;
+}
+
+.username {
+  margin: 0 10px;
 }

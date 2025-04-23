@@ -209,12 +209,16 @@ export default {
     }
 },
 
-  async updateFields(userId, field, value) {
+  async updateFields(accountId, field, value) {
     try {
       const allowedFields = ['username', 'avata', 'gender', 'password', 'dob'];
       if (!allowedFields.includes(field)) {
         throw new Error(`Field not allowed: ${field}`);
       }
+      const { user: userId } = await db('account')
+        .where('id', accountId)
+        .select('user')
+        .first();
 
       // Special handling for avatar field
       if (field === 'avata') {
@@ -230,15 +234,15 @@ export default {
             
           // Then update the user with the media ID
           await trx('user')
-            .where({ id: userId })
+            .where({ id: accountId })
             .update({ avatar: mediaId });
             
           const user = await trx('user')
-            .where({ id: userId })
+            .where({ id: accountId })
             .first();
             
           const account = await trx('account')
-            .where({ user: userId })
+            .where({ user: accountId })
             .first();
     
           return {
@@ -249,11 +253,12 @@ export default {
       // Password handling
       else if (field === 'password') {
         await db('account')
-          .where({ user: userId })
+          .where({ user: accountId })
           .update({ [field]: value });
       } 
       // Other fields
       else {
+        
         await db('user')
           .where({ id: userId })
           .update({ [field]: value });
@@ -264,7 +269,7 @@ export default {
         .first();
         
       const account = await db('account')
-        .where({ user: userId })
+        .where({ user: accountId })
         .first();
 
       return {
@@ -396,5 +401,25 @@ export default {
       console.error('Error in getUserById:', error);
       throw error;
     }
-  }
+  },
+  async getUserByAccountId(accountId) {
+    try {
+      const account = await db('account')
+        .where({ id: accountId })
+        .first();
+        
+      if (!account) {
+        return null;
+      }
+      
+      const user = await db('user')
+        .where({ id: account.user })
+        .first();
+        
+      return user;
+    } catch (error) {
+      console.error('Error in getUserByAccountId:', error);
+      throw error;
+    }
+  } 
 };

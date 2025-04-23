@@ -18,14 +18,18 @@ export default{
           const duration = moment.duration(endTime.diff(startTime));
           const formattedDuration = `${duration.hours()} giờ ${duration.minutes()} phút ${duration.seconds()} giây`;
 
-          // Prepare the data object
+          
           const data = {
+              
               result: result,
               user: user,
-              duration: formattedDuration // Add the calculated duration
+              duration: formattedDuration 
           };
         
-    res.render('quiz/checkResultE', data)
-    //res.json(data)
+    res.render('quiz/checkResultE', {
+      data,
+      layout: false,
+    })
+          
     }
 }
