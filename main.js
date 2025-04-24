@@ -8,6 +8,7 @@ import { engine } from "express-handlebars";
 import path from "path";
 import { fileURLToPath } from "url";
 import halenTestRoute from "./routes/halenTestRoute.js";
+import halenTestRoute from "./routes/halenTestRoute.js";
 import quizRoute from "./routes/quizRoute.js";
 import authLoginRoute from "./routes/authLoginRoute.js";
 import flashCardRoute from "./routes/flashCardRoute.js";
