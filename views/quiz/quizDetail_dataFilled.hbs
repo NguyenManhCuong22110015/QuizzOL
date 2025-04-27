@@ -1,5 +1,6 @@
-
-  <link rel="stylesheet" href="/css/quizDetail.css"/> {{!-- Ensure this CSS path is correct --}}
+<link rel="stylesheet" href="/css/quizDetail.css"/> {{!-- Ensure this CSS path is correct --}}
+<!-- Add SweetAlert2 library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <body>
   <div class="main-content">
@@ -157,93 +158,117 @@
 
    {{!-- Keep existing client-side script, but note it needs backend integration --}}
    <script>
-     // You might need to modify this JS to:
-     // 1. Get the quizId (maybe from a data attribute or the URL).
-     // 2. Send the comment via fetch() to a server endpoint (e.g., POST /quiz/{quizId}/comments).
-     // 3. Optionally update the UI optimistically OR wait for server confirmation.
+     // Wait for DOM to be fully loaded
+     document.addEventListener('DOMContentLoaded', function() {
+       // Get references to the input and button elements
+       const commentInput = document.getElementById('commentInput');
+       const commentSubmit = document.getElementById('commentSubmit');
+       
+       if (commentInput && commentSubmit) {
+         // Add input event listener to enable/disable button based on content
+         commentInput.addEventListener('input', function() {
+           // Enable button if input has text, otherwise disable it
+           commentSubmit.disabled = this.value.trim() === '';
+           
+           // Visual feedback - change button appearance
+           if (this.value.trim() === '') {
+             commentSubmit.classList.add('disabled');
+           } else {
+             commentSubmit.classList.remove('disabled');
+           }
+         });
+         
+         // Check initial state
+         commentSubmit.disabled = commentInput.value.trim() === '';
+       } else {
+         console.error('Comment form elements not found');
+       }
+     });
 
-     function handleCommentSubmit(event, quizId) { // Pass quizId if needed
+     function handleCommentSubmit(event, quizId) {
        event.preventDefault();
 
        const input = document.getElementById('commentInput');
        const commentText = input.value.trim();
 
-       if (!commentText || !quizId) return; // Ensure quizId is available
+       if (!commentText || !quizId) return;
 
-       // --- TODO: Send data to server ---
-       // Example using fetch:
-       /*
-       fetch(`/api/quiz/${quizId}/comments`, { // Adjust URL as needed
-           method: 'POST',
-           headers: { 'Content-Type': 'application/json' },
-           body: JSON.stringify({ message: commentText })
+       // Get userId from session or data attribute
+       // This assumes you're storing the user ID somewhere accessible
+       const userId = {{authUser.id}}; 
+       
+       // Send comment to server
+       fetch('/comment/add-comment', {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({
+           quizId: quizId,
+           userId: userId,
+           content: commentText
+         })
        })
        .then(response => {
-           if (!response.ok) { throw new Error('Network response was not ok'); }
-           return response.json();
+         if (!response.ok) {
+           throw new Error('Network response was not ok');
+         }
+         return response.json();
        })
-       .then(newCommentData => {
-           // --- Update UI with data from server ---
-           // (Or update optimistically before fetch)
-           const commentsList = document.querySelector('.comments-list');
-           const newComment = document.createElement('div');
-           newComment.className = 'comment-item';
+       .then(data => {
+         // Show success message
+         Swal.fire({
+           icon: 'success',
+           title: 'Thành công!',
+           text: 'Bình luận của bạn đã được thêm.',
+           timer: 2000,
+           showConfirmButton: false
+         });
 
-           // Use actual user data if available, otherwise placeholders
-           const userInitials = newCommentData.authorInitials || 'U';
-           const authorName = newCommentData.authorUsername || 'User';
-           const avatarUrl = newCommentData.authorAvatarUrl; // Assuming server returns this
+         // Update UI
+         const commentsList = document.querySelector('.comments-list');
+         const newComment = document.createElement('div');
+         newComment.className = 'comment-item';
 
-           newComment.innerHTML = `
-             <div class="comment-avatar">${avatarUrl ? `<img src="${avatarUrl}" alt="${authorName} avatar" style="width: 100%; height: 100%; border-radius: 50%;">` : userInitials}</div>
-             <div class="comment-content">
-               <div class="comment-header">
-                 <span class="comment-author">${authorName}</span>
-                 <span class="comment-time">Vừa xong</span> {{!-- Static time until refresh --}}
-               </div>
-               <p class="comment-text">${newCommentData.message}</p>
+         // Get user initials (first character of username)
+         const userInitials = '{{user.username}}'.charAt(0) || 'U';
+         const authorName = '{{user.username}}' || 'User';
+         const avatarUrl = '{{user.avatarUrl}}'; // If you have user avatar URL
+
+         newComment.innerHTML = `
+           <div class="comment-avatar">${avatarUrl ? `<img src="${avatarUrl}" alt="${authorName} avatar" style="width: 100%; height: 100%; border-radius: 50%;">` : userInitials}</div>
+           <div class="comment-content">
+             <div class="comment-header">
+               <span class="comment-author">${authorName}</span>
+               <span class="comment-time">Vừa xong</span>
              </div>
-           `;
-           commentsList.insertBefore(newComment, commentsList.firstChild);
+             <p class="comment-text">${commentText}</p>
+           </div>
+         `;
+         
+         // Insert at top of list
+         if (commentsList.querySelector('p') && commentsList.querySelectorAll('.comment-item').length === 0) {
+           // If there's only a "No comments" message, remove it
+           commentsList.innerHTML = '';
+         }
+         
+         commentsList.insertBefore(newComment, commentsList.firstChild);
 
-           // Update count
-           const commentCountElement = document.querySelector('.comments-title');
-           const currentCount = commentsList.children.length;
-           commentCountElement.innerHTML = `<i class="far fa-comment-dots"></i> Bình luận (${currentCount})`;
+         // Update count
+         const commentCountElement = document.querySelector('.comments-title');
+         const currentCount = commentsList.querySelectorAll('.comment-item').length;
+         commentCountElement.innerHTML = `<i class="far fa-comment-dots"></i> Bình luận (${currentCount})`;
 
-           input.value = ''; // Reset input
-           document.getElementById('commentSubmit').disabled = true; // Disable button
+         // Reset input and button
+         input.value = '';
+         document.getElementById('commentSubmit').disabled = true;
        })
        .catch(error => {
-           console.error('Error submitting comment:', error);
-           alert('Không thể gửi bình luận. Vui lòng thử lại.');
+         console.error('Error submitting comment:', error);
+         Swal.fire({
+           icon: 'error',
+           title: 'Lỗi!',
+           text: 'Không thể gửi bình luận. Vui lòng thử lại.',
+         });
        });
-       */
-
-       // --- OPTIMISTIC UI Update (Example - do this OR the fetch().then() update) ---
-        const commentsList = document.querySelector('.comments-list');
-        const newComment = document.createElement('div');
-        newComment.className = 'comment-item';
-        const userInitials = 'U'; // Placeholder - get real user if logged in
-        newComment.innerHTML = `
-          <div class="comment-avatar">${userInitials}</div>
-          <div class="comment-content">
-            <div class="comment-header">
-              <span class="comment-author">User</span> {{!-- Placeholder --}}
-              <span class="comment-time">Vừa xong</span>
-            </div>
-            <p class="comment-text">${commentText}</p>
-          </div>
-        `;
-        commentsList.insertBefore(newComment, commentsList.firstChild);
-        const commentCount = document.querySelector('.comments-title');
-        const currentCount = commentsList.children.length; // Re-count after adding
-        commentCount.innerHTML = `<i class="far fa-comment-dots"></i> Bình luận (${currentCount})`;
-        input.value = '';
-        document.getElementById('commentSubmit').disabled = true; // Disable button after submit
-        // Remember to also send the data to the server!
-        // The optimistic update should ideally be replaced/synced with server response.
-        console.log("TODO: Send comment to server:", { quizId, commentText });
      }
 
      // Disable submit button logic
@@ -251,11 +276,12 @@
        const submitButton = document.getElementById('commentSubmit');
        submitButton.disabled = !e.target.value.trim();
      });
+     
      // Initial check in case input has value on load
      document.addEventListener('DOMContentLoaded', () => {
-        const input = document.getElementById('commentInput');
-        const submitButton = document.getElementById('commentSubmit');
-        submitButton.disabled = !input.value.trim();
+       const input = document.getElementById('commentInput');
+       const submitButton = document.getElementById('commentSubmit');
+       submitButton.disabled = !input.value.trim();
      });
 
      // Handlebars helper for adding numbers (needed for rank)
@@ -286,3 +312,4 @@
      // Then in HBS: {{{stars stats.averageRating}}}
      */
    </script>
+</body>

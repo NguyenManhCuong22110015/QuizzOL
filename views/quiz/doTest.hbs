@@ -373,8 +373,8 @@
                 
                 // Redirect after a short delay
                 setTimeout(() => {
-                   // {{!-- window.location.href = `/result/${currentResultId}`; --}}
-                     window.location.href = `/`;
+                    window.location.href = `/quiz/check-result/${currentResultId}`;
+                    
                 }, 3000);
                 
                 return;
@@ -405,7 +405,7 @@
                         }
                         
                         // Redirect to results page
-                        window.location.href = `/result/${currentResultId}`;
+                        window.location.href = `/quiz/check-result/${currentResultId}`;
                         
                     } catch (error) {
                         console.error('Error submitting quiz:', error);

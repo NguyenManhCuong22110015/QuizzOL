@@ -24,7 +24,7 @@ import userAnswerRoute from './routes/userAnswerRoute.js';
 import resultRoute from './routes/resultRoute.js';
 import flash from 'connect-flash'; 
 import questionRoute from './routes/questionRoute.js';
-
+import commentRoute from './routes/commentRoute.js';
 
 dotenv.config();
 const app = express();
@@ -88,19 +88,19 @@ app.use(flash());
        toUpperCase: function(text) {
         return text ? text.toUpperCase() : '';
     },
-    or: function() {
+      or: function() {
       // Remove the last argument (Handlebars options)
       const args = Array.prototype.slice.call(arguments, 0, -1);
       return args.some(Boolean);
   },
-    isSubscriptionActive : function(expiryDate) {
+     isSubscriptionActive : function(expiryDate) {
       if (!expiryDate) return false;
       const today = new Date();
       const expiry = new Date(expiryDate);
       
       return expiry > today;
   },
-  range: function(start, end) {
+      range: function(start, end) {
     const array = [];
     for (let i = start; i <= end; i++) {
       array.push(i);
@@ -149,7 +149,43 @@ app.use(flash());
     if (diffDays === 0) return 'Expires today';
     if (diffDays === 1) return '1 day remaining';
     return `${diffDays} days remaining`;
-}
+},
+    gt :function(a, b) {
+      return a > b;
+    },
+    lt : function(a, b) {
+      return a < b;
+    },
+    subtract : function(a, b) {
+      return a - b;
+    },
+    each_page: function(from, to, current, options) {
+      let result = '';
+      
+      // Show max 5 page numbers to avoid cluttering
+      let start = Math.max(1, current - 2);
+      let end = Math.min(to, start + 4);
+      
+      // Adjust start if we're near the end
+      if (end - start < 4) {
+        start = Math.max(1, end - 4);
+      }
+      
+      for (let i = start; i <= end; i++) {
+        result += options.fn({
+          number: i,
+          active: i === current
+        });
+      }
+      
+      return result;
+    },
+    and:  function() {
+      return Array.prototype.slice.call(arguments, 0, -1).every(Boolean);
+    },
+    not: function(value) {
+      return !value;
+    }
     
     }
   }));
@@ -222,6 +258,8 @@ app.use("/student", studentRoute);
 app.use("/user-answer", userAnswerRoute);  
 app.use("/result", resultRoute);
 app.use("/question", questionRoute);
+app.use("/comment", commentRoute);
+
 
 app.get("/", (req, res) => {
   res.send("Hello word");

@@ -260,3 +260,117 @@ left: auto;
     border: 2px solid #0d6efd;
     background-color: rgba(13, 110, 253, 0.05);
   }
+  body {
+    background-color: #f8f9fa;
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
+  }
+  
+  .card {
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  
+  .quiz-item:hover {
+    background-color: rgba(var(--bs-primary-rgb), 0.02);
+  }
+  
+  .avatar-overlay {
+    opacity: 0;
+  }
+  
+  .profile-image:hover + .avatar-overlay,
+  .avatar-overlay:hover {
+    opacity: 1;
+  }
+  
+  .nav-pills .nav-link {
+    transition: all 0.3s;
+  }
+  
+  .nav-pills .nav-link.active {
+    background-color: var(--bs-primary);
+    box-shadow: 0 5px 15px rgba(var(--bs-primary-rgb), 0.3);
+    transform: translateY(-1px);
+  }
+  
+  .badge {
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    border-radius: 6px;
+  }
+  
+  .page-link {
+    border-radius: 0;
+    transition: all 0.2s;
+  }
+  
+  .leaderboard-rank.top-1 {
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    color: white;
+    box-shadow: 0 3px 10px rgba(255, 215, 0, 0.3);
+  }
+  
+  .leaderboard-rank.top-2 {
+    background: linear-gradient(45deg, #C0C0C0, #A9A9A9);
+    color: white;
+    box-shadow: 0 3px 10px rgba(192, 192, 192, 0.3);
+  }
+  
+  .leaderboard-rank.top-3 {
+    background: linear-gradient(45deg, #CD7F32, #A05129);
+    color: white;
+    box-shadow: 0 3px 10px rgba(205, 127, 50, 0.3);
+  }
+  
+  .tab-pane {
+    animation: fadeIn 0.5s;
+  }
+  
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .page-link {
+    color: var(--bs-primary);
+    transition: all 0.2s ease-in-out;
+    font-weight: 500;
+    background-color: white;
+  }
+  
+  .page-link:hover {
+    background-color: rgba(var(--bs-primary-rgb), 0.05);
+    transform: translateY(-2px);
+    color: var(--bs-primary);
+  }
+  
+  .page-item.active .page-link {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(var(--bs-primary-rgb), 0.3) !important;
+  }
+  
+  .page-item.disabled .page-link {
+    color: #ccc;
+    background-color: #f8f9fa;
+    pointer-events: none;
+  }
+  
+  .pagination .page-item .page-link {
+    box-shadow: 0 3px 5px rgba(0,0,0,0.05) !important;
+  }
+  
+  @media (max-width: 767.98px) {
+    .pagination {
+      gap: 0.25rem;
+    }
+  }
+  
+  /* Enhanced hover effects */
+  .page-link:active {
+    transform: translateY(0px);
+  }

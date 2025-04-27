@@ -1,630 +1,466 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quiz Online - Profile</title>
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Font Awesome for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="/css/profile.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Analytics Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/overview.css">
 </head>
-<body class="bg-light">
-  <!-- Navigation Bar -->
-  
-
-  <!-- Main Content -->
-  <main class="container py-4">
-    <!-- Profile Header -->
-    <div class="card mb-4">
-      <div class="card-body">
-        <div class="row align-items-center">
-          <div class="col-md-8 d-flex align-items-center">
-            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
-                 alt="User profile" 
-                 class="rounded-circle profile-image me-3">
-            <div>
-              <h2 class="h4 mb-1">Nguyễn Văn A</h2>
-              <p class="text-secondary mb-1">nguyenvana@example.com</p>
-              <div>
-                <span class="badge bg-primary me-2">Level 7</span>
-                <span class="badge bg-light text-dark">Quiz Master</span>
-              </div>
+<body>
+    <div class="container-fluid p-0">
+        <div class="d-flex">
+            <!-- Dashboard Content -->
+            <div class="dashboard-content">
+                <div class="row">
+                    <!-- Analytics & Charts Area -->
+                    <div class="col-lg-8">
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5>Quiz Performance Analytics</h5>
+                                <div class="dropdown">
+                                    <span>Last 30 Days</span>
+                                    <i class="fas fa-chevron-down"></i>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="performanceChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h5>Quiz Category Distribution</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart-container">
+                                            <canvas id="categoryPieChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">
+                                        <h5>Weekly Quiz Completion</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart-container">
+                                            <canvas id="weeklyCompletionChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5>Performance by Quiz Category</h5>
+                                <div class="chart-legend">
+                                    <span class="legend-item"><span class="color-box correct"></span>Correct</span>
+                                    <span class="legend-item"><span class="color-box incorrect"></span>Incorrect</span>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-container">
+                                    <canvas id="categoryPerformanceChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sidebar - User Stats & Leaderboard -->
+                    <div class="col-lg-4">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5>Your Quiz Stats</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row text-center">
+                                    <div class="col-4">
+                                        <div class="stats-circle">
+                                            <canvas id="accuracyDonut"></canvas>
+                                            <div class="stats-label">78%</div>
+                                        </div>
+                                        <p class="stats-title">Accuracy</p>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="stats-circle">
+                                            <canvas id="completionDonut"></canvas>
+                                            <div class="stats-label">42</div>
+                                        </div>
+                                        <p class="stats-title">Quizzes</p>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="stats-circle">
+                                            <canvas id="streakDonut"></canvas>
+                                            <div class="stats-label">7</div>
+                                        </div>
+                                        <p class="stats-title">Day Streak</p>
+                                    </div>
+                                </div>
+                                
+                                <hr>
+                                
+                                <div class="strength-weakness">
+                                    <h6>Your Strongest Categories</h6>
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Science</span>
+                                            <span>92%</span>
+                                        </div>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: 92%" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>Geography</span>
+                                            <span>85%</span>
+                                        </div>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: 85%" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="progress-container">
+                                        <div class="progress-label">
+                                            <span>History</span>
+                                            <span>78%</span>
+                                        </div>
+                                        <div class="progress">
+                                            <div class="progress-bar" role="progressbar" style="width: 78%" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5>Global Leaderboard</h5>
+                                <a href="#" class="see-more">Monthly Rankings</a>
+                            </div>
+                            <div class="card-body">
+                                <div class="leaderboard-item">
+                                    <div class="user-info">
+                                        <span class="user-rank">1</span>
+                                        <div class="user-avatar">JD</div>
+                                        <div class="user-detail">
+                                            <span class="user-name">John Doe</span>
+                                            <span class="user-points">3,450 pts</span>
+                                        </div>
+                                    </div>
+                                    <div class="user-score-chart">
+                                        <canvas class="mini-chart" id="user1Chart"></canvas>
+                                    </div>
+                                </div>
+                                
+                                <div class="leaderboard-item">
+                                    <div class="user-info">
+                                        <span class="user-rank">2</span>
+                                        <div class="user-avatar">AS</div>
+                                        <div class="user-detail">
+                                            <span class="user-name">Alice Smith</span>
+                                            <span class="user-points">3,280 pts</span>
+                                        </div>
+                                    </div>
+                                    <div class="user-score-chart">
+                                        <canvas class="mini-chart" id="user2Chart"></canvas>
+                                    </div>
+                                </div>
+                                
+                                <div class="leaderboard-item">
+                                    <div class="user-info">
+                                        <span class="user-rank">3</span>
+                                        <div class="user-avatar">RJ</div>
+                                        <div class="user-detail">
+                                            <span class="user-name">Robert Johnson</span>
+                                            <span class="user-points">3,150 pts</span>
+                                        </div>
+                                    </div>
+                                    <div class="user-score-chart">
+                                        <canvas class="mini-chart" id="user3Chart"></canvas>
+                                    </div>
+                                </div>
+                                
+                                <div class="leaderboard-item current-user">
+                                    <div class="user-info">
+                                        <span class="user-rank">8</span>
+                                        <div class="user-avatar">YU</div>
+                                        <div class="user-detail">
+                                            <span class="user-name">You</span>
+                                            <span class="user-points">2,420 pts</span>
+                                        </div>
+                                    </div>
+                                    <div class="user-score-chart">
+                                        <canvas class="mini-chart" id="userYouChart"></canvas>
+                                    </div>
+                                </div>
+                                
+                                <div class="leaderboard-stats">
+                                    <div class="stats-item">
+                                        <span class="stats-value">+3</span>
+                                        <span class="stats-label">Weekly Rank Change</span>
+                                    </div>
+                                    <div class="stats-item">
+                                        <span class="stats-value">Top 5%</span>
+                                        <span class="stats-label">Global Position</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5>Recent Achievement</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="achievement">
+                                    <div class="achievement-icon">
+                                        <i class="fas fa-trophy"></i>
+                                    </div>
+                                    <div class="achievement-info">
+                                        <h6>Science Master</h6>
+                                        <p>Completed 10 science quizzes with 90%+ accuracy</p>
+                                        <div class="achievement-date">Earned yesterday</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="col-md-4 text-md-end mt-3 mt-md-0">
-            <button class="btn btn-outline-secondary">
-              <i class="fas fa-pencil-alt me-1"></i>
-              Chỉnh sửa hồ sơ
-            </button>
-          </div>
         </div>
-      </div>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="row mb-4">
-      <!-- Quiz Completed Card -->
-      <div class="col-md-6 col-lg-3 mb-3 mb-lg-0">
-        <div class="card h-100">
-          <div class="card-body">
-            <div class="d-flex">
-              <div class="stat-icon bg-primary text-white me-3">
-                <i class="fas fa-check-square"></i>
-              </div>
-              <div>
-                <h6 class="card-subtitle mb-1 text-secondary">Quiz hoàn thành</h6>
-                <h3 class="card-title mb-0 fw-bold">47</h3>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Average Score Card -->
-      <div class="col-md-6 col-lg-3 mb-3 mb-lg-0">
-        <div class="card h-100">
-          <div class="card-body">
-            <div class="d-flex">
-              <div class="stat-icon bg-success text-white me-3">
-                <i class="fas fa-chart-bar"></i>
-              </div>
-              <div>
-                <h6 class="card-subtitle mb-1 text-secondary">Điểm trung bình</h6>
-                <h3 class="card-title mb-0 fw-bold">84.5%</h3>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Rank Card -->
-      <div class="col-md-6 col-lg-3 mb-3 mb-lg-0">
-        <div class="card h-100">
-          <div class="card-body">
-            <div class="d-flex">
-              <div class="stat-icon bg-purple text-white me-3" style="background-color: #8b5cf6;">
-                <i class="fas fa-arrow-trend-up"></i>
-              </div>
-              <div>
-                <h6 class="card-subtitle mb-1 text-secondary">Thứ hạng hiện tại</h6>
-                <h3 class="card-title mb-0 fw-bold">87 / 1208</h3>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Achievements Card -->
-      <div class="col-md-6 col-lg-3">
-        <div class="card h-100">
-          <div class="card-body">
-            <div class="d-flex">
-              <div class="stat-icon bg-danger text-white me-3">
-                <i class="fas fa-gift"></i>
-              </div>
-              <div>
-                <h6 class="card-subtitle mb-1 text-secondary">Thành tựu đạt được</h6>
-                <h3 class="card-title mb-0 fw-bold">12 / 25</h3>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Tab Navigation -->
-    <ul class="nav nav-tabs mb-4" id="profileTabs" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active px-3 py-3" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="true">
-          Lịch sử Quiz
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link px-3 py-3" id="achievements-tab" data-bs-toggle="tab" data-bs-target="#achievements" type="button" role="tab" aria-controls="achievements" aria-selected="false">
-          Thành tựu
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link px-3 py-3" id="leaderboard-tab" data-bs-toggle="tab" data-bs-target="#leaderboard" type="button" role="tab" aria-controls="leaderboard" aria-selected="false">
-          Bảng xếp hạng
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link px-3 py-3" id="statistics-tab" data-bs-toggle="tab" data-bs-target="#statistics" type="button" role="tab" aria-controls="statistics" aria-selected="false">
-          Thống kê
-        </button>
-      </li>
-    </ul>
-
-    <!-- Tab Content -->
-    <div class="tab-content" id="profileTabContent">
-      <!-- Quiz History Tab -->
-      <div class="tab-pane fade show active" id="history" role="tabpanel" aria-labelledby="history-tab">
-        <h4 class="mb-3">Lịch sử Quiz gần đây</h4>
-        <div class="card">
-          <ul class="list-group list-group-flush">
-            <!-- Quiz History Item 1 -->
-            <li class="list-group-item py-3">
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                  <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-2 me-3">
-                    <i class="fas fa-file-alt"></i>
-                  </div>
-                  <div>
-                    <h5 class="mb-1 h6 text-primary">Quiz Toán học cơ bản</h5>
-                    <div class="d-flex align-items-center">
-                      <small class="text-secondary me-2">Toán học</small>
-                      <span class="badge bg-success bg-opacity-10 text-success">Trung bình</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center">
-                  <div class="me-4 d-none d-md-block text-end">
-                    <p class="mb-0 small"><span class="fw-medium">8/10</span> câu đúng</p>
-                    <small class="text-secondary">13/02/2023</small>
-                  </div>
-                  <a href="#" class="text-primary text-decoration-none">
-                    Xem chi tiết
-                    <i class="fas fa-chevron-right ms-1 small"></i>
-                  </a>
-                </div>
-              </div>
-            </li>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Performance Chart
+            const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+            const performanceChart = new Chart(performanceCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+                    datasets: [{
+                        label: 'Score (%)',
+                        data: [65, 72, 68, 75, 82, 78, 85, 89, 86, 92],
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 50,
+                            max: 100
+                        }
+                    }
+                }
+            });
             
-            <!-- Quiz History Item 2 -->
-            <li class="list-group-item py-3">
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                  <div class="bg-info bg-opacity-10 text-info rounded-circle p-2 me-3">
-                    <i class="fas fa-flask"></i>
-                  </div>
-                  <div>
-                    <h5 class="mb-1 h6 text-primary">Quiz Khoa học thường thức</h5>
-                    <div class="d-flex align-items-center">
-                      <small class="text-secondary me-2">Khoa học</small>
-                      <span class="badge bg-success bg-opacity-10 text-success">Dễ</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center">
-                  <div class="me-4 d-none d-md-block text-end">
-                    <p class="mb-0 small"><span class="fw-medium">10/10</span> câu đúng</p>
-                    <small class="text-secondary">10/02/2023</small>
-                  </div>
-                  <a href="#" class="text-primary text-decoration-none">
-                    Xem chi tiết
-                    <i class="fas fa-chevron-right ms-1 small"></i>
-                  </a>
-                </div>
-              </div>
-            </li>
+            // Category Pie Chart
+            const categoryPieCtx = document.getElementById('categoryPieChart').getContext('2d');
+            const categoryPieChart = new Chart(categoryPieCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Science', 'History', 'Geography', 'Literature', 'Math'],
+                    datasets: [{
+                        data: [35, 25, 20, 15, 5],
+                        backgroundColor: [
+                            '#3b82f6',
+                            '#f97316',
+                            '#10b981',
+                            '#8b5cf6',
+                            '#f59e0b'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
             
-            <!-- Quiz History Item 3 -->
-            <li class="list-group-item py-3">
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                  <div class="bg-danger bg-opacity-10 text-danger rounded-circle p-2 me-3">
-                    <i class="fas fa-book"></i>
-                  </div>
-                  <div>
-                    <h5 class="mb-1 h6 text-primary">Quiz Văn học Việt Nam</h5>
-                    <div class="d-flex align-items-center">
-                      <small class="text-secondary me-2">Văn học</small>
-                      <span class="badge bg-warning bg-opacity-10 text-warning">Khó</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center">
-                  <div class="me-4 d-none d-md-block text-end">
-                    <p class="mb-0 small"><span class="fw-medium">7/10</span> câu đúng</p>
-                    <small class="text-secondary">05/02/2023</small>
-                  </div>
-                  <a href="#" class="text-primary text-decoration-none">
-                    Xem chi tiết
-                    <i class="fas fa-chevron-right ms-1 small"></i>
-                  </a>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Achievements Tab -->
-      <div class="tab-pane fade" id="achievements" role="tabpanel" aria-labelledby="achievements-tab">
-        <h4 class="mb-3">Thành tựu đã đạt được</h4>
-        <div class="row g-3 mb-4">
-          <!-- Achievement Item 1 -->
-          <div class="col-md-6 col-lg-4">
-            <div class="card h-100">
-              <div class="card-body d-flex align-items-center">
-                <div class="achievement-icon bg-purple me-3" style="background-color: #8b5cf6;">
-                  <i class="fas fa-star"></i>
-                </div>
-                <div>
-                  <h5 class="card-title h6 mb-1">Người chinh phục toán học</h5>
-                  <p class="card-text small mb-0 text-secondary">Hoàn thành 10 quiz toán học với điểm số trên 80%</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Achievement Item 2 -->
-          <div class="col-md-6 col-lg-4">
-            <div class="card h-100">
-              <div class="card-body d-flex align-items-center">
-                <div class="achievement-icon bg-success me-3">
-                  <i class="fas fa-bolt"></i>
-                </div>
-                <div>
-                  <h5 class="card-title h6 mb-1">Tốc độ ánh sáng</h5>
-                  <p class="card-text small mb-0 text-secondary">Hoàn thành 5 quiz trong thời gian dưới 3 phút mỗi quiz</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Achievement Item 3 -->
-          <div class="col-md-6 col-lg-4">
-            <div class="card h-100">
-              <div class="card-body d-flex align-items-center">
-                <div class="achievement-icon bg-primary me-3">
-                  <i class="fas fa-shield-alt"></i>
-                </div>
-                <div>
-                  <h5 class="card-title h6 mb-1">Hoàn hảo</h5>
-                  <p class="card-text small mb-0 text-secondary">Hoàn thành 3 quiz liên tiếp với điểm số 100%</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Achievement Item 4 -->
-          <div class="col-md-6 col-lg-4">
-            <div class="card h-100">
-              <div class="card-body d-flex align-items-center">
-                <div class="achievement-icon bg-danger me-3">
-                  <i class="fas fa-clock"></i>
-                </div>
-                <div>
-                  <h5 class="card-title h6 mb-1">Người kiên trì</h5>
-                  <p class="card-text small mb-0 text-secondary">Hoàn thành ít nhất 1 quiz mỗi ngày trong 7 ngày liên tiếp</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <h4 class="mb-3">Thành tựu sắp đạt được</h4>
-        <div class="row">
-          <!-- Upcoming Achievement Item -->
-          <div class="col-md-6 col-lg-4">
-            <div class="card h-100 opacity-75">
-              <div class="card-body d-flex align-items-center">
-                <div class="achievement-icon bg-secondary me-3">
-                  <i class="fas fa-database"></i>
-                </div>
-                <div>
-                  <h5 class="card-title h6 mb-1">Quiz Master</h5>
-                  <p class="card-text small mb-0 text-secondary">Hoàn thành 100 quiz với điểm số trung bình trên 80%</p>
-                  <div class="progress mt-2" style="height: 6px;">
-                    <div class="progress-bar bg-secondary" role="progressbar" style="width: 45%;" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                  <p class="small text-secondary mt-1 mb-0">45/100 quiz đã hoàn thành</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Leaderboard Tab -->
-      <div class="tab-pane fade" id="leaderboard" role="tabpanel" aria-labelledby="leaderboard-tab">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-          <h4 class="mb-0">Bảng xếp hạng</h4>
-          <select class="form-select form-select-sm" style="width: auto;">
-            <option>Tuần này</option>
-            <option>Tháng này</option>
-            <option>Quý này</option>
-            <option>Tất cả thời gian</option>
-          </select>
-        </div>
-        
-        <div class="card">
-          <ul class="list-group list-group-flush">
-            <!-- Top 1 User -->
-            <li class="list-group-item py-3" style="background-color: rgba(255, 193, 7, 0.05);">
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                  <div class="leaderboard-rank top-1 me-3">1</div>
-                  <img class="rounded-circle me-3" width="40" height="40" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80" alt="Trần Quốc Bảo">
-                  <div>
-                    <h5 class="mb-0 h6">Trần Quốc Bảo</h5>
-                    <small class="text-secondary">Hoàn thành: 248 quiz</small>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center text-warning fw-bold">
-                  <i class="fas fa-star me-1"></i>
-                  9852 điểm
-                </div>
-              </div>
-            </li>
+            // Weekly Completion Chart
+            const weeklyCompletionCtx = document.getElementById('weeklyCompletionChart').getContext('2d');
+            const weeklyCompletionChart = new Chart(weeklyCompletionCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Quizzes Completed',
+                        data: [3, 5, 2, 4, 6, 8, 4],
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10
+                        }
+                    }
+                }
+            });
             
-            <!-- Top 2 User -->
-            <li class="list-group-item py-3" style="background-color: rgba(108, 117, 125, 0.05);">
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                  <div class="leaderboard-rank top-2 me-3">2</div>
-                  <img class="rounded-circle me-3" width="40" height="40" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80" alt="Nguyễn Thị Mai">
-                  <div>
-                    <h5 class="mb-0 h6">Nguyễn Thị Mai</h5>
-                    <small class="text-secondary">Hoàn thành: 232 quiz</small>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center text-secondary fw-bold">
-                  <i class="fas fa-star me-1"></i>
-                  9603 điểm
-                </div>
-              </div>
-            </li>
+            // Category Performance Chart
+            const categoryPerformanceCtx = document.getElementById('categoryPerformanceChart').getContext('2d');
+            const categoryPerformanceChart = new Chart(categoryPerformanceCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Science', 'History', 'Geography', 'Literature', 'Math'],
+                    datasets: [{
+                        label: 'Correct Answers',
+                        data: [85, 65, 78, 55, 45],
+                        backgroundColor: '#4ade80'
+                    }, {
+                        label: 'Incorrect Answers',
+                        data: [15, 35, 22, 45, 55],
+                        backgroundColor: '#f87171'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        x: {
+                            stacked: true
+                        },
+                        y: {
+                            stacked: true,
+                            max: 100
+                        }
+                    }
+                }
+            });
             
-            <!-- Top 3 User -->
-            <li class="list-group-item py-3" style="background-color: rgba(205, 127, 50, 0.05);">
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                  <div class="leaderboard-rank top-3 me-3">3</div>
-                  <img class="rounded-circle me-3" width="40" height="40" src="https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2.25&w=256&h=256&q=80" alt="Lê Văn Hùng">
-                  <div>
-                    <h5 class="mb-0 h6">Lê Văn Hùng</h5>
-                    <small class="text-secondary">Hoàn thành: 215 quiz</small>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center fw-bold" style="color: #cd7f32;">
-                  <i class="fas fa-star me-1"></i>
-                  9247 điểm
-                </div>
-              </div>
-            </li>
-
-            <!-- Current User (87) -->
-            <li class="list-group-item py-3 current-user">
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                  <div class="leaderboard-rank text-primary me-3">87</div>
-                  <img class="rounded-circle me-3 border border-2 border-primary" width="40" height="40" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Nguyễn Văn A">
-                  <div>
-                    <h5 class="mb-0 h6">Nguyễn Văn A <span class="text-primary">(Bạn)</span></h5>
-                    <small class="text-secondary">Hoàn thành: 47 quiz</small>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center text-primary fw-bold">
-                  <i class="fas fa-star me-1"></i>
-                  3486 điểm
-                </div>
-              </div>
-            </li>
-
-            <!-- User 88 -->
-            <li class="list-group-item py-3">
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                  <div class="leaderboard-rank text-secondary me-3">88</div>
-                  <img class="rounded-circle me-3" width="40" height="40" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Trần Thị Bình">
-                  <div>
-                    <h5 class="mb-0 h6">Trần Thị Bình</h5>
-                    <small class="text-secondary">Hoàn thành: 46 quiz</small>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center text-secondary">
-                  3470 điểm
-                </div>
-              </div>
-            </li>
+            // Donut Charts
+            function createDonutChart(id, value, color) {
+                const ctx = document.getElementById(id).getContext('2d');
+                return new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        datasets: [{
+                            data: [value, 100 - value],
+                            backgroundColor: [color, '#e2e8f0'],
+                            borderWidth: 0,
+                            cutout: '80%'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                enabled: false
+                            }
+                        }
+                    }
+                });
+            }
             
-            <!-- User 89 -->
-            <li class="list-group-item py-3">
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                  <div class="leaderboard-rank text-secondary me-3">89</div>
-                  <img class="rounded-circle me-3" width="40" height="40" src="https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="Lê Minh Tuấn">
-                  <div>
-                    <h5 class="mb-0 h6">Lê Minh Tuấn</h5>
-                    <small class="text-secondary">Hoàn thành: 45 quiz</small>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center text-secondary">
-                  3465 điểm
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Statistics Tab -->
-      <div class="tab-pane fade" id="statistics" role="tabpanel" aria-labelledby="statistics-tab">
-        <h4 class="mb-3">Thống kê chi tiết</h4>
-        
-        <div class="row mb-4">
-          <div class="col-md-6 mb-4">
-            <div class="card h-100">
-              <div class="card-body">
-                <h5 class="card-title mb-3">Phân bố theo loại quiz</h5>
-                <div class="d-flex align-items-center justify-content-center" style="height: 260px;">
-                  <div class="text-center text-secondary">
-                    <i class="fas fa-chart-pie fa-3x mb-3"></i>
-                    <p class="mb-1">Biểu đồ phân bố theo loại quiz sẽ hiển thị ở đây</p>
-                    <small>(Toán học: 45%, Khoa học: 30%, Văn học: 15%, Khác: 10%)</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-6 mb-4">
-            <div class="card h-100">
-              <div class="card-body">
-                <h5 class="card-title mb-3">Tiến độ theo thời gian</h5>
-                <div class="d-flex align-items-center justify-content-center" style="height: 260px;">
-                  <div class="text-center text-secondary">
-                    <i class="fas fa-chart-line fa-3x mb-3"></i>
-                    <p class="mb-1">Biểu đồ tiến độ theo thời gian sẽ hiển thị ở đây</p>
-                    <small>(Hiển thị số lượng quiz hoàn thành theo tuần/tháng)</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-6 mb-4">
-            <div class="card h-100">
-              <div class="card-body">
-                <h5 class="card-title mb-3">Điểm số trung bình theo chủ đề</h5>
-                <div class="mb-3">
-                  <div class="d-flex justify-content-between mb-1">
-                    <span class="text-secondary">Toán học</span>
-                    <span>92%</span>
-                  </div>
-                  <div class="progress" style="height: 8px;">
-                    <div class="progress-bar bg-primary" role="progressbar" style="width: 92%" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                </div>
-                
-                <div class="mb-3">
-                  <div class="d-flex justify-content-between mb-1">
-                    <span class="text-secondary">Khoa học</span>
-                    <span>88%</span>
-                  </div>
-                  <div class="progress" style="height: 8px;">
-                    <div class="progress-bar bg-primary" role="progressbar" style="width: 88%" aria-valuenow="88" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                </div>
-                
-                <div class="mb-3">
-                  <div class="d-flex justify-content-between mb-1">
-                    <span class="text-secondary">Văn học</span>
-                    <span>76%</span>
-                  </div>
-                  <div class="progress" style="height: 8px;">
-                    <div class="progress-bar bg-primary" role="progressbar" style="width: 76%" aria-valuenow="76" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                </div>
-                
-                <div class="mb-3">
-                  <div class="d-flex justify-content-between mb-1">
-                    <span class="text-secondary">Ngoại ngữ</span>
-                    <span>82%</span>
-                  </div>
-                  <div class="progress" style="height: 8px;">
-                    <div class="progress-bar bg-primary" role="progressbar" style="width: 82%" aria-valuenow="82" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                </div>
-                
-                <div>
-                  <div class="d-flex justify-content-between mb-1">
-                    <span class="text-secondary">Lịch sử</span>
-                    <span>65%</span>
-                  </div>
-                  <div class="progress" style="height: 8px;">
-                    <div class="progress-bar bg-primary" role="progressbar" style="width: 65%" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-6 mb-4">
-            <div class="card h-100">
-              <div class="card-body">
-                <h5 class="card-title mb-3">Thời gian hoàn thành trung bình</h5>
-                <ul class="list-unstyled">
-                  <li class="mb-3">
-                    <div class="d-flex">
-                      <div class="me-3 text-secondary">
-                        <i class="fas fa-clock"></i>
-                      </div>
-                      <div>
-                        <h6 class="mb-0">Thời gian trung bình mỗi quiz</h6>
-                        <span class="text-secondary">4 phút 32 giây</span>
-                      </div>
-                    </div>
-                  </li>
-                  <li class="mb-3">
-                    <div class="d-flex">
-                      <div class="me-3 text-secondary">
-                        <i class="fas fa-bolt"></i>
-                      </div>
-                      <div>
-                        <h6 class="mb-0">Quiz nhanh nhất</h6>
-                        <span class="text-secondary">1 phút 47 giây (Quiz Toán học cơ bản)</span>
-                      </div>
-                    </div>
-                  </li>
-                  <li class="mb-3">
-                    <div class="d-flex">
-                      <div class="me-3 text-secondary">
-                        <i class="fas fa-exclamation-circle"></i>
-                      </div>
-                      <div>
-                        <h6 class="mb-0">Quiz lâu nhất</h6>
-                        <span class="text-secondary">9 phút 21 giây (Quiz Văn học Việt Nam)</span>
-                      </div>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="d-flex">
-                      <div class="me-3 text-secondary">
-                        <i class="fas fa-shield-alt"></i>
-                      </div>
-                      <div>
-                        <h6 class="mb-0">Tỷ lệ đúng câu hỏi đầu tiên</h6>
-                        <span class="text-secondary">78%</span>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- Bootstrap JS and Popper.js -->
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-  
-  <script>
-    // Enable Bootstrap tooltips
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-      return new bootstrap.Tooltip(tooltipTriggerEl)
-    })
-    
-    // If you want to enable tab switching by JavaScript instead of Bootstrap's built-in functionality
-    
-    document.querySelectorAll('#profileTabs button').forEach(button => {
-      button.addEventListener('click', event => {
-        event.preventDefault();
-        
-        // Remove active class from all tabs and panes
-        document.querySelectorAll('#profileTabs button').forEach(btn => {
-          btn.classList.remove('active');
+            createDonutChart('accuracyDonut', 78, '#3b82f6');
+            createDonutChart('completionDonut', 65, '#10b981');
+            createDonutChart('streakDonut', 70, '#f59e0b');
+            
+            // Mini charts for leaderboard
+            function createMiniLineChart(id, data, color) {
+                const ctx = document.getElementById(id).getContext('2d');
+                return new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['', '', '', '', '', '', ''],
+                        datasets: [{
+                            data: data,
+                            borderColor: color,
+                            tension: 0.4,
+                            pointRadius: 0,
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                enabled: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                display: false
+                            },
+                            y: {
+                                display: false,
+                                min: 0
+                            }
+                        }
+                    }
+                });
+            }
+            
+            createMiniLineChart('user1Chart', [75, 82, 78, 85, 89, 86, 92], '#3b82f6');
+            createMiniLineChart('user2Chart', [72, 75, 80, 78, 82, 84, 86], '#3b82f6');
+            createMiniLineChart('user3Chart', [68, 72, 76, 82, 78, 75, 82], '#3b82f6');
+            createMiniLineChart('userYouChart', [65, 68, 72, 74, 76, 78, 80], '#f59e0b');
+            
+            // Card pulse effect
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('click', function() {
+                    this.classList.add('pulse');
+                    setTimeout(() => {
+                        this.classList.remove('pulse');
+                    }, 300);
+                });
+            });
         });
-        document.querySelectorAll('.tab-pane').forEach(pane => {
-          pane.classList.remove('show', 'active');
-        });
-        
-        // Add active class to clicked tab and corresponding pane
-        button.classList.add('active');
-        const tabId = button.getAttribute('data-bs-target').substring(1);
-        document.getElementById(tabId).classList.add('show', 'active');
-      });
-    });
-    
-  </script>
+    </script>
 </body>
 </html>

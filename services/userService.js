@@ -421,5 +421,23 @@ export default {
       console.error('Error in getUserByAccountId:', error);
       throw error;
     }
-  } 
+  } ,
+
+  async getUserIdByAccountId(accountId) {
+    try {
+      const account = await db('account')
+        .where({ id: accountId })
+        .first();
+        
+      if (!account) {
+        return null;
+      }
+      
+      return account.user;
+    } catch (error) {
+      console.error('Error in getUserIdByAccountId:', error);
+      throw error;
+    }
+  }
+
 };
