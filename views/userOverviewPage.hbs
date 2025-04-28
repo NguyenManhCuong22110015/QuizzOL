@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/css/profile.css" />
 </head>
-<body class="bg-light">
+<body class="">
 
   <main class="container py-4">
     <!-- Profile Header - Modern Design -->
@@ -20,7 +20,7 @@
           <div class="col-md-8 d-flex align-items-center">
             <!-- Enhanced Avatar Section -->
             <div class="position-relative me-4">
-              <img src="{{#if this.user.avatar}}{{this.user.avatar}}{{else}}https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80{{/if}}" 
+              <img src="{{#if this.avatar}}{{this.avatar}}{{else}}https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80{{/if}}" 
                    alt="User profile" 
                    class="rounded-circle profile-image shadow-sm" 
                    id="profileAvatar"
@@ -38,7 +38,6 @@
               <p class="text-secondary mb-2"><i class="fas fa-envelope-open me-2 opacity-50"></i>{{this.account.email}}</p>
               <div class="d-flex align-items-center">
                 <span class="badge bg-primary bg-gradient me-2 py-2 px-3"><i class="fas fa-star-half-alt me-1"></i> Level 7</span>
-                <span class="badge bg-light text-dark border py-2 px-3"><i class="fas fa-award me-1"></i> Quiz Master</span>
               </div>
             </div>
           </div>
@@ -124,7 +123,7 @@
     </div>
 
     <!-- Tab Navigation -->
-    <ul class="nav nav-pills nav-fill bg-white shadow-sm rounded-4 p-2 mb-4" id="profileTabs" role="tablist">
+    <ul class="nav nav-pills nav-fill shadow-sm rounded-4 p-2 mb-4" id="profileTabs" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link active px-3 py-3 rounded-3" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab">
           <i class="fas fa-history me-2"></i>Lịch sử Quiz
@@ -213,7 +212,7 @@
                       <div>
                         <h5 class="mb-1 h6 text-primary fw-bold">{{this.quiz.title}}</h5>
                         <div class="d-flex align-items-center flex-wrap">
-                          <span class="badge bg-light text-secondary border me-2 px-3 py-2">
+                          <span class="badge  text-secondary border me-2 px-3 py-2">
                             <i class="fas fa-folder me-1"></i>{{this.quiz.category_name}}
                           </span>
                           <span class="badge {{#if (eq this.status 'COMPLETED')}}bg-success{{else}}bg-warning{{/if}} bg-opacity-10 text-{{#if (eq this.status 'COMPLETED')}}success{{else}}warning{{/if}} px-3 py-2">
@@ -714,7 +713,8 @@
   <!-- Bootstrap JS and Popper.js -->
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-  
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <script>
     // Enable Bootstrap tooltips
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -750,6 +750,129 @@
           }, 300);
         }, 500);
       }
+    });
+
+    // Enhanced Avatar Upload Functionality with Cloudinary
+    document.addEventListener('DOMContentLoaded', function() {
+      // File input change event to preview selected image
+      document.getElementById('avatarFile').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            document.getElementById('avatarPreview').src = e.target.result;
+          }
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // Avatar hover effect - keep existing code if any
+      const profileAvatar = document.getElementById('profileAvatar');
+      const avatarOverlay = document.querySelector('.avatar-overlay');
+      
+      if (profileAvatar && avatarOverlay) {
+        profileAvatar.addEventListener('mouseenter', function() {
+          avatarOverlay.style.opacity = '1';
+        });
+        
+        profileAvatar.addEventListener('mouseleave', function() {
+          avatarOverlay.style.opacity = '0';
+        });
+      }
+      
+      // Handle avatar form submission with Cloudinary upload
+      document.getElementById('avatarUploadForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const fileInput = document.getElementById('avatarFile');
+        if (!fileInput.files || !fileInput.files[0]) {
+          Swal.fire({
+            icon: 'error',
+            title: 'No image selected',
+            text: 'Please select an image to upload',
+          });
+          return;
+        }
+        
+        const formData = new FormData();
+        formData.append('image', fileInput.files[0]);
+        
+        // Show loading indicator
+        Swal.fire({
+          title: 'Uploading image...',
+          html: 'Please wait while we process your image',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+        
+        // Step 1: Upload to Cloudinary via media router
+        fetch('/media/upload-image', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(cloudinaryData => {
+         
+          // Update loading message
+          Swal.update({
+            title: 'Updating profile...',
+            html: 'Your image has been uploaded, updating your profile'
+          });
+          
+          // Step 2: Update user profile with the Cloudinary URL
+          return fetch('/user/update-avatar', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ avatar: cloudinaryData.imageUrl, public_id:cloudinaryData.publicId  })
+          });
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to update profile');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.success) {
+            // Close the modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('avatarUploadModal'));
+            modal.hide();
+            
+            // Update the profile avatar on the page without reload
+            document.querySelectorAll('.profile-image, #profileAvatar').forEach(img => {
+              img.src = document.getElementById('avatarPreview').src;
+            });
+            
+            // Show success message
+            Swal.fire({
+              icon: 'success',
+              title: 'Profile Updated!',
+              text: 'Your avatar has been successfully updated',
+              timer: 2000,
+              showConfirmButton: false
+            });
+          } else {
+            throw new Error(data.message || 'Failed to update profile');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Upload Failed',
+            text: error.message || 'There was an error uploading your image'
+          });
+        });
+      });
     });
   </script>
 </body>

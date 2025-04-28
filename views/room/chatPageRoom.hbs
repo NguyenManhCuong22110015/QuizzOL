@@ -108,27 +108,8 @@
 <body>
   <div class="chat-page-container min-vh-100 d-flex flex-column">
     <!-- Navbar placeholder -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-      <div class="container">
-        <a class="navbar-brand" href="#">Quiz Room</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="#">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Rooms</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Profile</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
+   
+    
     
     <div class="container-fluid flex-grow-1 py-4 px-lg-5">
       <div class="row h-100 g-4">
@@ -530,17 +511,63 @@
         const memberCountBadge = document.querySelector('.member-count');
         
         // Modals
-        const choiceNameModal = new bootstrap.Modal(document.getElementById('choiceNameModal'));
-        const addQuizModal = new bootstrap.Modal(document.getElementById('addQuizModal'));
-        const viewMembersModal = new bootstrap.Modal(document.getElementById('viewMembersModal'));
-        const changeRoomNameModal = new bootstrap.Modal(document.getElementById('changeRoomNameModal'));
-        const inviteUserModal = new bootstrap.Modal(document.getElementById('inviteUserModal'));
-        const playGameModal = new bootstrap.Modal(document.getElementById('playGameModal'));
+        const choiceNameModalElement = document.getElementById('choiceNameModal');
+        const choiceNameModal = new bootstrap.Modal(choiceNameModalElement);
         
-        // Mock data
-        let currentUsername = localStorage.getItem('username') || '';
-        let currentUserAvatar = localStorage.getItem('userAvatar') || '';
+        // Mock data for messages
+        let messages = [];
+        
+        // Get username from server if user is logged in (passed from router)
+        let currentUsername = '{{username}}' || '';
+        let currentUserAvatar = '';
         const roomId = window.location.pathname.split('/').pop() || 'demo-room';
+        
+        // Check if we have a username from server (user is logged in)
+        const isUserLoggedIn = !!currentUsername;
+        
+        if (isUserLoggedIn) {
+          console.log("Using logged in username:", currentUsername);
+          
+          // Add user to members list immediately
+          if (!members.some(m => m.username === currentUsername)) {
+            members.push({ username: currentUsername });
+            // These functions will be called after the DOM is fully loaded
+            setTimeout(() => {
+              renderMembers();
+              updateMemberCounts();
+              
+              // Add welcome message
+              addMessage({
+                username: 'System',
+                message: `Welcome to the room, ${currentUsername}!`,
+                userAvatar: '',
+                timestamp: new Date().toISOString()
+              });
+            }, 100);
+          }
+        } else {
+          // Not logged in - MUST select a username to continue
+          
+          // Configure modal to be non-dismissible
+          choiceNameModalElement.setAttribute('data-bs-backdrop', 'static');
+          choiceNameModalElement.setAttribute('data-bs-keyboard', 'false');
+          
+          // Remove the close button's dismiss functionality
+          const modalCloseBtn = choiceNameModalElement.querySelector('.btn-close');
+          if (modalCloseBtn) {
+            modalCloseBtn.setAttribute('data-bs-dismiss', '');
+            modalCloseBtn.addEventListener('click', function(e) {
+              e.preventDefault();
+              // Show alert about needing to select a username
+              alert('You must enter a username to join this chat room.');
+            });
+          }
+          
+          // Always show the modal for non-logged in users
+          setTimeout(() => {
+            choiceNameModal.show();
+          }, 500);
+        }
         
         // Mock room data
         const room = {
@@ -555,11 +582,6 @@
           { username: 'Charlie' }
         ];
         
-        // Check if username exists
-        if (!currentUsername) {
-          choiceNameModal.show();
-        }
-        
         // Set room info
         roomName.textContent = room.name;
         roomName.title = room.name;
@@ -571,19 +593,18 @@
         // Render members list
         renderMembers();
         
-        // Handle username form submission
+        // Handle username form submission (for non-logged in users)
         document.getElementById('usernameForm').addEventListener('submit', function(e) {
           e.preventDefault();
           const username = document.getElementById('username').value.trim();
+          
           if (username) {
             currentUsername = username;
-            localStorage.setItem('username', username);
             
             // Get selected avatar
             const selectedAvatar = document.querySelector('input[name="avatar"]:checked');
             if (selectedAvatar) {
               currentUserAvatar = selectedAvatar.value;
-              localStorage.setItem('userAvatar', currentUserAvatar);
             }
             
             // Add user to members
@@ -602,6 +623,9 @@
               userAvatar: '',
               timestamp: new Date().toISOString()
             });
+          } else {
+            // Username field is empty
+            alert('Please enter a valid username');
           }
         });
         

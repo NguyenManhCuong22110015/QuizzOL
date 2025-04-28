@@ -1,6 +1,7 @@
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
+   
     
 }
 .section-divider {
@@ -175,7 +176,7 @@ left: auto;
   }
   
   .nav-tabs .nav-link.active {
-    border-bottom: 2px solid #0d6efd;
+    border-bottom: 2px solid #1de90b;
     border-top: none;
     border-left: none;
     border-right: none;

@@ -30,12 +30,16 @@ router.get('/profile',check, async (req, res) => {
         // Get paginated quiz history
         const historyData = await resultService.getResultsByUserId(userId, page, limit);
         
+        const avatar =await userService.getAvatarByUserId(user.id)
+
+
         res.render('userOverviewPage', {
             user: user,
             account: req.session.authUser,
+            avatar: avatar,
             quizHistory: historyData.results,
             pagination: historyData.pagination,
-            layout: false
+           // layout: false
         });
     } catch (error) {
         console.error('Error fetching user overview:', error);
@@ -103,10 +107,10 @@ router.post('/update-birthday', check, async (req, res) => {
 
 router.post("/update-avatar", check, async (req, res) => {
     try {
-        const { avatar } = req.body;
+        const { avatar, public_id } = req.body;
         console.log('Received avatar:', avatar);
         
-        const ret = await userService.updateAvatar(req.session.authUser.id, avatar);
+        const ret = await userService.updateAvatar(req.session.authUser.id, avatar, public_id);
         if (ret) {
             req.session.authUser.avatar = avatar;
             res.status(200).json({ success: true, message: 'Avatar updated successfully' });

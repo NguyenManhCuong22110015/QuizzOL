@@ -25,6 +25,7 @@ import resultRoute from './routes/resultRoute.js';
 import flash from 'connect-flash'; 
 import questionRoute from './routes/questionRoute.js';
 import commentRoute from './routes/commentRoute.js';
+import roomRouter from './routes/roomRoute.js';
 
 dotenv.config();
 const app = express();
@@ -109,6 +110,24 @@ app.use(flash());
   },
   add: function (a, b) {
     return a + b;
+  },
+  pageRange: function (currentPage, totalPages) {
+    let start = Math.max(1, currentPage - 2);
+    let end = Math.min(totalPages, currentPage + 2);
+    
+    if (end - start < 4 && totalPages > 5) {
+      if (currentPage < totalPages / 2) {
+        end = Math.min(totalPages, start + 4);
+      } else {
+        start = Math.max(1, end - 4);
+      }
+    }
+    
+    const result = [];
+    for (let i = start; i <= end; i++) {
+      result.push(i);
+    }
+    return result;
   },
   stars: function (rating) {
     const fullStars = Math.floor(rating); // Number of full stars
@@ -259,7 +278,7 @@ app.use("/user-answer", userAnswerRoute);
 app.use("/result", resultRoute);
 app.use("/question", questionRoute);
 app.use("/comment", commentRoute);
-
+app.use("/room", roomRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello word");
