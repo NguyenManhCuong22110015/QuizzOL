@@ -21,7 +21,7 @@ router.get('/study', async (req, res) => {
             return res.render('flashcard/noFlashcards', { message: "No flashcards available." });
         }
         // Render the study template
-        res.render('flashCard/flashCard_dataFilled', viewData); // Verify template name
+        res.render('flashCard/flashCard', viewData); // Verify template name
     } catch (error) {
         console.error(`Error starting study session:`, error);
         res.status(500).render('error', { message: 'Failed to load study session.' });

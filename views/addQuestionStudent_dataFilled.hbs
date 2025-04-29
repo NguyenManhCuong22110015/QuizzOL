@@ -571,17 +571,6 @@
          });
      }
 </script>
-```
-
-**Explanation of the Fix:**
-
-1.  I added an `if/else` block specifically for selecting the explanation textarea.
-2.  **For `essay` type:** It correctly uses `form.querySelector('#essay-answer-guide')` as before.
-3.  **For all other types:** It now uses a selector based on the correct prefix (e.g., `mc`, `tf`, `fb`, `matching`) followed by `-explanation`. For example, when `type` is `fill-blank`, `typePrefix` becomes `fb`, and the selector correctly becomes `#fb-explanation`.
-
-With this change, the script should now correctly find the explanation textarea for all question types (assuming the IDs in your HTML match the pattern `#[prefix]-explanation`, except for essay which uses `#essay-answer-guide`) and include its value in the data sent to the backe
-
-
 
 </body>
 </html>
