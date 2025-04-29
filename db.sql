@@ -33,10 +33,13 @@ CREATE TABLE `account` (
   `provider` enum('GOOGLE','FACEBOOK','USER') DEFAULT 'USER',
   `user` bigint DEFAULT NULL,
   `isVerified` tinyint(1) DEFAULT '0',
+  `role` enum('USER','EDITER','ADMIN') DEFAULT 'USER',
+  `verification_token` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT '',
+  `token_expiry` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `user` (`user`),
   CONSTRAINT `account_ibfk_1` FOREIGN KEY (`user`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +48,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES (1,'john.doe@example.com','hashed_password_1','','2023-01-01 10:00:00','USER',1,1),(2,'jane.smith@example.com','hashed_password_2','','2023-01-02 11:30:00','USER',2,1),(3,'alex.nguyen@example.com','','google_123456','2023-01-03 09:15:00','GOOGLE',3,1),(4,'sarah.lee@example.com','hashed_password_4','','2023-01-04 14:20:00','USER',4,1),(5,'mike.tran@example.com','','facebook_789012','2023-01-05 16:45:00','FACEBOOK',5,1),(6,'emily.pham@example.com','hashed_password_6','','2023-01-06 08:30:00','USER',6,0),(7,'david.hoang@example.com','hashed_password_7','','2023-01-07 12:10:00','USER',7,1),(8,'sophie.vo@example.com','','google_345678','2023-01-08 17:25:00','GOOGLE',8,1),(9,'robert.le@example.com','hashed_password_9','','2023-01-09 13:40:00','USER',9,1),(10,'lisa.wong@example.com','','facebook_901234','2023-01-10 10:55:00','FACEBOOK',10,1);
+INSERT INTO `account` VALUES (1,'john.doe@example.com','hashed_password_1','','2023-01-01 10:00:00','USER',1,1,'USER','','2025-04-19 14:03:51'),(2,'jane.smith@example.com','hashed_password_2','','2023-01-02 11:30:00','USER',2,1,'USER','','2025-04-19 14:03:51'),(3,'alex.nguyen@example.com','','google_123456','2023-01-03 09:15:00','GOOGLE',3,1,'USER','','2025-04-19 14:03:51'),(4,'sarah.lee@example.com','hashed_password_4','','2023-01-04 14:20:00','USER',4,1,'USER','','2025-04-19 14:03:51'),(5,'mike.tran@example.com','','facebook_789012','2023-01-05 16:45:00','FACEBOOK',5,1,'USER','','2025-04-19 14:03:51'),(6,'emily.pham@example.com','hashed_password_6','','2023-01-06 08:30:00','USER',6,0,'USER','','2025-04-19 14:03:51'),(7,'david.hoang@example.com','hashed_password_7','','2023-01-07 12:10:00','USER',7,1,'USER','','2025-04-19 14:03:51'),(8,'sophie.vo@example.com','','google_345678','2023-01-08 17:25:00','GOOGLE',8,1,'USER','','2025-04-19 14:03:51'),(9,'robert.le@example.com','hashed_password_9','','2023-01-09 13:40:00','USER',9,1,'USER','','2025-04-19 14:03:51'),(10,'lisa.wong@example.com','','facebook_901234','2023-01-10 10:55:00','FACEBOOK',10,1,'USER','','2025-04-19 14:03:51'),(11,'nmcuongg2004@gmail.com','','','2025-04-12 23:25:38','GOOGLE',14,0,'USER','','2025-04-19 14:03:51'),(12,'ngcuong1112001@gmail.com','','','2025-04-14 09:17:55','GOOGLE',15,0,'USER','','2025-04-19 14:03:51'),(13,'22110015@student.hcmute.edu.vn','','','2025-04-17 09:16:10','GOOGLE',18,0,'USER','','2025-04-19 14:03:51'),(14,'1','$2b$10$UaymIU59kQ6D02j789UwP.aXZe14xW9G3owHSa9XOOY9qc3mFx.bC','','2025-04-18 21:18:18','USER',20,1,'USER','','2025-04-19 14:03:51'),(20,'ngcuong1182004@gmail.com','$2b$10$RJ6.qdzJItqcdnKNA7gCMul1V2OCMcD7HINsqo3A7dv58RFt3KEku','','2025-04-19 19:38:02','USER',28,1,'USER',NULL,NULL),(21,'ngcuong1182004@gmail.com','','','2025-04-22 21:39:32','GOOGLE',28,0,'USER','','2025-04-22 21:39:32'),(22,'568447859097620@facebook.auth','','','2025-04-28 21:26:18','FACEBOOK',29,0,'USER','','2025-04-28 21:26:18');
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -91,7 +94,7 @@ CREATE TABLE `comment` (
   KEY `quiz` (`quiz`),
   CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`user`) REFERENCES `user` (`id`),
   CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`quiz`) REFERENCES `quiz` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -100,7 +103,7 @@ CREATE TABLE `comment` (
 
 LOCK TABLES `comment` WRITE;
 /*!40000 ALTER TABLE `comment` DISABLE KEYS */;
-INSERT INTO `comment` VALUES (1,2,1,'I really enjoyed this quiz!'),(2,3,1,'Some questions were quite challenging.'),(3,4,1,'Looking forward to more quizzes like this.'),(4,5,2,'Great science questions.'),(5,6,3,'I learned a lot about history from this quiz.'),(6,7,4,'The geography questions were interesting.'),(7,8,5,'Would love to see more literature quizzes.'),(8,9,6,'The programming questions were spot on.'),(9,10,7,'Fun pop culture references!'),(10,1,8,'The math problems were well thought out.');
+INSERT INTO `comment` VALUES (1,2,1,'I really enjoyed this quiz!'),(2,3,1,'Some questions were quite challenging.'),(3,4,1,'Looking forward to more quizzes like this.'),(4,5,2,'Great science questions.'),(5,6,3,'I learned a lot about history from this quiz.'),(6,7,4,'The geography questions were interesting.'),(7,8,5,'Would love to see more literature quizzes.'),(8,9,6,'The programming questions were spot on.'),(9,10,7,'Fun pop culture references!'),(10,1,8,'The math problems were well thought out.'),(12,28,2,'aaa'),(13,28,2,'hi hi haha');
 /*!40000 ALTER TABLE `comment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -116,7 +119,11 @@ CREATE TABLE `flashcard` (
   `name` varchar(255) DEFAULT NULL,
   `question` bigint DEFAULT NULL,
   `method_type` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `tag` bigint DEFAULT NULL,
+  `progress` enum('1','2','3','4','5') DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `flashcard_ibfk_2` (`tag`),
+  CONSTRAINT `flashcard_ibfk_2` FOREIGN KEY (`tag`) REFERENCES `tag` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -126,7 +133,7 @@ CREATE TABLE `flashcard` (
 
 LOCK TABLES `flashcard` WRITE;
 /*!40000 ALTER TABLE `flashcard` DISABLE KEYS */;
-INSERT INTO `flashcard` VALUES (1,'Basic Math Flashcard',1,'STANDARD'),(2,'Geography Flashcard',2,'SPACED_REPETITION'),(3,'Science Fact',3,'STANDARD'),(4,'Literature Quiz',4,'LEITNER'),(5,'Chemistry Flashcard',5,'STANDARD'),(6,'Programming Concept',6,'SPACED_REPETITION'),(7,'History Date',7,'STANDARD'),(8,'Tech Leaders',8,'LEITNER'),(9,'Geography Facts',9,'STANDARD'),(10,'Nature Flashcard',10,'SPACED_REPETITION');
+INSERT INTO `flashcard` VALUES (1,'Basic Math Flashcard',1,'STANDARD',NULL,'1'),(2,'Geography Flashcard',2,'SPACED_REPETITION',NULL,'1'),(3,'Science Fact',3,'STANDARD',NULL,'1'),(4,'Literature Quiz',4,'LEITNER',NULL,'1'),(5,'Chemistry Flashcard',5,'STANDARD',NULL,'1'),(6,'Programming Concept',6,'SPACED_REPETITION',NULL,'1'),(7,'History Date',7,'STANDARD',NULL,'1'),(8,'Tech Leaders',8,'LEITNER',NULL,'1'),(9,'Geography Facts',9,'STANDARD',NULL,'1'),(10,'Nature Flashcard',10,'SPACED_REPETITION',NULL,'1');
 /*!40000 ALTER TABLE `flashcard` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -143,7 +150,7 @@ CREATE TABLE `media` (
   `url` varchar(255) DEFAULT NULL,
   `resource_type` enum('IMAGE','VIDEO','AUDIO') DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -152,7 +159,7 @@ CREATE TABLE `media` (
 
 LOCK TABLES `media` WRITE;
 /*!40000 ALTER TABLE `media` DISABLE KEYS */;
-INSERT INTO `media` VALUES (1,'avatar_1','https://example.com/images/avatar1.jpg','IMAGE'),(2,'avatar_2','https://example.com/images/avatar2.jpg','IMAGE'),(3,'quiz_cover_1','https://example.com/images/quiz1.jpg','IMAGE'),(4,'quiz_cover_2','https://example.com/images/quiz2.jpg','IMAGE'),(5,'question_image_1','https://res.cloudinary.com/dj9r2qksh/image/upload/v1743577885/Quizz_Online/images/cykza9mghdg7pinrujbr.jpg','IMAGE'),(6,'audio_1','https://example.com/audio/listening1.mp3','AUDIO'),(7,'video_1','https://example.com/videos/lesson1.mp4','VIDEO'),(8,'avatar_3','https://example.com/images/avatar3.jpg','IMAGE'),(9,'question_image_2','https://example.com/images/question2.jpg','IMAGE'),(10,'quiz_cover_3','https://example.com/images/quiz3.jpg','IMAGE'),(11,'Quizz_Online/images/cykza9mghdg7pinrujbr','https://res.cloudinary.com/dj9r2qksh/image/upload/v1743577885/Quizz_Online/images/cykza9mghdg7pinrujbr.jpg','IMAGE');
+INSERT INTO `media` VALUES (1,'avatar_1','https://example.com/images/avatar1.jpg','IMAGE'),(2,'avatar_2','https://example.com/images/avatar2.jpg','IMAGE'),(3,'quiz_cover_1','https://example.com/images/quiz1.jpg','IMAGE'),(4,'quiz_cover_2','https://example.com/images/quiz2.jpg','IMAGE'),(5,'question_image_1','https://res.cloudinary.com/dj9r2qksh/image/upload/v1743577885/Quizz_Online/images/cykza9mghdg7pinrujbr.jpg','IMAGE'),(6,'audio_1','https://example.com/audio/listening1.mp3','AUDIO'),(7,'video_1','https://example.com/videos/lesson1.mp4','VIDEO'),(8,'avatar_3','https://example.com/images/avatar3.jpg','IMAGE'),(9,'question_image_2','https://example.com/images/question2.jpg','IMAGE'),(10,'quiz_cover_3','https://example.com/images/quiz3.jpg','IMAGE'),(11,'Quizz_Online/images/cykza9mghdg7pinrujbr','https://res.cloudinary.com/dj9r2qksh/image/upload/v1743577885/Quizz_Online/images/cykza9mghdg7pinrujbr.jpg','IMAGE'),(15,NULL,'https://lh3.googleusercontent.com/a/ACg8ocIIFoJ9plM43W0IF54wYTOLf6jacLNoHvl6e-idXNs_3gYDBkc=s96-c','IMAGE'),(16,NULL,'https://lh3.googleusercontent.com/a/ACg8ocI70oHhSzmR-fK-dBuepMwbXACiSOdwzeU9o46gI7HASuC9lA=s96-c','IMAGE'),(17,NULL,'https://lh3.googleusercontent.com/a/ACg8ocLVMyNxVFNo1CKN-uB64kJ4RDNrvEe23IA6b1Hn7QJ06IAMh8Q=s96-c','IMAGE'),(18,NULL,'https://lh3.googleusercontent.com/a/ACg8ocLVMyNxVFNo1CKN-uB64kJ4RDNrvEe23IA6b1Hn7QJ06IAMh8Q=s96-c','IMAGE'),(19,NULL,'https://lh3.googleusercontent.com/a/ACg8ocJOBBZtim262EeATHnXL0hIlAv4rh60_cHd1QK7dfNCEaKNNwg=s96-c','IMAGE'),(20,NULL,NULL,'IMAGE'),(21,NULL,NULL,'IMAGE'),(22,NULL,NULL,'IMAGE'),(23,NULL,NULL,'IMAGE'),(24,NULL,'http://localhost:3000/media/upload-image','IMAGE'),(25,NULL,NULL,'IMAGE'),(26,'Quizz_Online/images/opcrnjxtm7gozm1roczu','https://res.cloudinary.com/dj9r2qksh/image/upload/v1745838574/Quizz_Online/images/opcrnjxtm7gozm1roczu.jpg','IMAGE'),(27,'Quizz_Online/images/f8zhlyam7k1os5arnbaz','https://res.cloudinary.com/dj9r2qksh/image/upload/v1745850707/Quizz_Online/images/f8zhlyam7k1os5arnbaz.jpg','IMAGE');
 /*!40000 ALTER TABLE `media` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -212,7 +219,7 @@ CREATE TABLE `option` (
 
 LOCK TABLES `option` WRITE;
 /*!40000 ALTER TABLE `option` DISABLE KEYS */;
-INSERT INTO `option` VALUES (1,'42',1,1),(2,'24',0,1),(3,'44',0,1),(4,'40',0,2),(5,'Paris',1,2),(6,'London',0,3),(7,'Berlin',0,3),(8,'Rome',0,3),(9,'True',1,4),(10,'False',0,4),(11,'William Shakespeare',1,4),(12,'Charles Dickens',0,5),(13,'Jane Austen',0,0),(14,'Mark Twain',0,0),(15,'H2O',1,0),(16,'CO2',0,0),(17,'H2SO4',0,0),(18,'NaCl',0,0),(19,'Python',1,0),(20,'Java',0,0),(21,'C++',0,0),(22,'JavaScript',0,0),(23,'1945',1,0),(24,'1944',0,0),(25,'1946',0,0),(26,'1943',0,0),(27,'Elon Musk',1,0),(28,'Jeff Bezos',0,0),(29,'Bill Gates',0,0),(30,'Mark Zuckerberg',0,0),(31,'Tokyo',1,0),(32,'Beijing',0,0),(33,'Seoul',0,0),(34,'Bangkok',0,0),(35,'All of the above',1,0),(36,'Only A and B',0,0),(37,'Only B and C',0,0),(38,'None of the above',0,0),(39,'Mount Everest',1,0),(40,'K2',0,0);
+INSERT INTO `option` VALUES (1,'42',1,1),(2,'24',0,1),(3,'44',0,1),(4,'40',0,2),(5,'Paris',1,2),(6,'London',0,3),(7,'Berlin',0,3),(8,'Rome',0,3),(9,'True',1,4),(10,'False',0,4),(11,'William Shakespeare',1,4),(12,'Charles Dickens',0,5),(13,'Jane Austen',0,0),(14,'Mark Twain',0,0),(15,'H2O',1,0),(16,'CO2',0,0),(17,'H2SO4',0,0),(18,'NaCl',0,0),(19,'Python',1,0),(20,'Java',0,0),(21,'C++',0,0),(22,'JavaScript',0,0),(23,'1945',1,0),(24,'1944',0,0),(25,'1946',0,0),(26,'1943',0,0),(27,'Elon Musk',1,0),(28,'Jeff Bezos',0,0),(29,'Bill Gates',0,0),(30,'Mark Zuckerberg',0,0),(31,'Tokyo',1,9),(32,'Beijing',0,9),(33,'Seoul',0,9),(34,'Bangkok',0,9),(35,'All of the above',1,0),(36,'Only A and B',0,0),(37,'Only B and C',0,0),(38,'None of the above',0,0),(39,'Mount Everest',1,10),(40,'K2',0,10);
 /*!40000 ALTER TABLE `option` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -230,8 +237,9 @@ CREATE TABLE `question` (
   `type` enum('SINGLE_ANSWER','MULTIPLE_ANSWER','TRUE_FALSE','FILL_IN_THE_BLANK') DEFAULT NULL,
   `img_url` varchar(255) DEFAULT NULL,
   `points` double DEFAULT NULL,
+  `explanation` text,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -240,7 +248,7 @@ CREATE TABLE `question` (
 
 LOCK TABLES `question` WRITE;
 /*!40000 ALTER TABLE `question` DISABLE KEYS */;
-INSERT INTO `question` VALUES (1,'What is the answer to the ultimate question of life, the universe, and everything?','2023-02-01 10:00:00','SINGLE_ANSWER',NULL,5),(2,'What is the capital of France?','2023-02-02 11:30:00','SINGLE_ANSWER','5',3),(3,'The Earth is the third planet from the Sun.','2023-02-03 09:15:00','TRUE_FALSE',NULL,2),(4,'Who wrote \"Romeo and Juliet\"?','2023-02-04 14:20:00','SINGLE_ANSWER',NULL,4),(5,'What is the chemical formula for water?','2023-02-05 16:45:00','SINGLE_ANSWER',NULL,3),(6,'Which programming language is known for its use in data science and AI?','2023-02-06 08:30:00','SINGLE_ANSWER','9',5),(7,'When did World War II end?','2023-02-07 12:10:00','SINGLE_ANSWER',NULL,4),(8,'Who is the founder of SpaceX?','2023-02-08 17:25:00','SINGLE_ANSWER',NULL,3),(9,'What is the largest city in Japan?','2023-02-09 13:40:00','SINGLE_ANSWER',NULL,3),(10,'Which is the highest mountain in the world?','2023-02-10 10:55:00','SINGLE_ANSWER',NULL,4);
+INSERT INTO `question` VALUES (1,'What is the answer to the ultimate question of life, the universe, and everything?','2023-02-01 10:00:00','SINGLE_ANSWER',NULL,5,NULL),(2,'What is the capital of France?','2023-02-02 11:30:00','SINGLE_ANSWER','5',3,NULL),(3,'The Earth is the third planet from the Sun.','2023-02-03 09:15:00','TRUE_FALSE',NULL,2,NULL),(4,'Who wrote \"Romeo and Juliet\"?','2023-02-04 14:20:00','SINGLE_ANSWER',NULL,4,NULL),(5,'What is the chemical formula for water?','2023-02-05 16:45:00','SINGLE_ANSWER',NULL,3,NULL),(6,'Which programming language is known for its use in data science and AI?','2023-02-06 08:30:00','SINGLE_ANSWER','9',5,NULL),(7,'When did World War II end?','2023-02-07 12:10:00','SINGLE_ANSWER',NULL,4,NULL),(8,'Who is the founder of SpaceX?','2023-02-08 17:25:00','SINGLE_ANSWER',NULL,3,NULL),(9,'What is the largest city in Japan?','2023-02-09 13:40:00','SINGLE_ANSWER',NULL,3,NULL),(10,'Which is the highest mountain in the world?','2023-02-10 10:55:00','SINGLE_ANSWER',NULL,4,NULL),(11,'Who?','2023-02-01 10:00:00','FILL_IN_THE_BLANK',NULL,5,NULL);
 /*!40000 ALTER TABLE `question` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -301,7 +309,7 @@ CREATE TABLE `quiz_question` (
 
 LOCK TABLES `quiz_question` WRITE;
 /*!40000 ALTER TABLE `quiz_question` DISABLE KEYS */;
-INSERT INTO `quiz_question` VALUES (1,1),(8,1),(1,2),(4,2),(1,3),(2,3),(5,4),(9,4),(2,5),(8,5),(6,6),(10,6),(3,7),(2,8),(3,8),(7,8),(10,8),(1,9),(4,9),(4,10);
+INSERT INTO `quiz_question` VALUES (1,1),(8,1),(1,2),(4,2),(1,3),(2,3),(5,4),(9,4),(2,5),(8,5),(6,6),(10,6),(3,7),(2,8),(3,8),(7,8),(10,8),(1,9),(4,9),(4,10),(2,11);
 /*!40000 ALTER TABLE `quiz_question` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -445,7 +453,7 @@ CREATE TABLE `result` (
   KEY `quiz` (`quiz`),
   CONSTRAINT `result_ibfk_1` FOREIGN KEY (`user`) REFERENCES `user` (`id`),
   CONSTRAINT `result_ibfk_2` FOREIGN KEY (`quiz`) REFERENCES `quiz` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -454,7 +462,7 @@ CREATE TABLE `result` (
 
 LOCK TABLES `result` WRITE;
 /*!40000 ALTER TABLE `result` DISABLE KEYS */;
-INSERT INTO `result` VALUES (1,2,1,85.5,'2023-05-01 19:15:00','2023-05-01 19:45:00','COMPLETED'),(2,3,1,92,'2023-05-02 20:00:00','2023-05-02 20:30:00','COMPLETED'),(3,4,1,78.5,'2023-05-03 18:30:00','2023-05-03 19:00:00','COMPLETED'),(4,5,2,88,'2023-05-04 21:15:00','2023-05-04 21:45:00','COMPLETED'),(5,6,3,95.5,'2023-05-05 17:30:00','2023-05-05 18:00:00','COMPLETED'),(6,7,4,75,'2023-05-06 19:45:00','2023-05-06 20:15:00','COMPLETED'),(7,8,5,82.5,'2023-05-07 20:30:00','2023-05-07 21:00:00','COMPLETED'),(8,9,6,90,'2023-05-08 18:45:00','2023-05-08 19:15:00','COMPLETED'),(9,10,7,68.5,'2023-05-09 19:30:00','2023-05-09 20:00:00','COMPLETED'),(10,1,8,96,'2023-05-10 21:45:00','2023-05-10 22:15:00','COMPLETED');
+INSERT INTO `result` VALUES (1,2,1,85.5,'2023-05-01 19:15:00','2023-05-01 19:45:00','COMPLETED'),(2,3,1,92,'2023-05-02 20:00:00','2023-05-02 20:30:00','COMPLETED'),(3,4,1,78.5,'2023-05-03 18:30:00','2023-05-03 19:00:00','COMPLETED'),(4,5,2,88,'2023-05-04 21:15:00','2023-05-04 21:45:00','COMPLETED'),(5,6,3,95.5,'2023-05-05 17:30:00','2023-05-05 18:00:00','COMPLETED'),(6,7,4,75,'2023-05-06 19:45:00','2023-05-06 20:15:00','COMPLETED'),(7,8,5,82.5,'2023-05-07 20:30:00','2023-05-07 21:00:00','COMPLETED'),(8,9,6,90,'2023-05-08 18:45:00','2023-05-08 19:15:00','COMPLETED'),(9,10,7,68.5,'2023-05-09 19:30:00','2023-05-09 20:00:00','COMPLETED'),(10,1,8,96,'2023-05-10 21:45:00','2023-05-10 22:15:00','COMPLETED'),(31,15,2,0,'2025-04-14 20:41:51','2025-04-14 22:17:33','COMPLETED'),(32,15,4,0,'2025-04-14 20:42:34','2025-04-27 17:57:25','COMPLETED'),(33,15,8,0,'2025-04-14 20:44:26','2025-04-27 18:50:32','COMPLETED'),(34,15,7,0,'2025-04-14 21:05:38','2025-04-28 18:31:01','COMPLETED'),(35,15,2,0,'2025-04-14 22:17:54','2025-04-27 17:30:41','COMPLETED'),(36,18,2,0,'2025-04-18 13:38:28','2025-04-18 14:38:28','IN_PROGRESS'),(37,20,4,0,'2025-04-18 22:04:38','2025-04-23 15:09:26','COMPLETED'),(38,20,2,0,'2025-04-18 22:05:38','2025-04-18 22:15:13','COMPLETED'),(39,20,6,0,'2025-04-18 22:08:29','2025-04-18 23:08:29','IN_PROGRESS'),(40,20,5,0,'2025-04-18 22:08:34','2025-04-18 23:08:34','IN_PROGRESS'),(41,20,2,0,'2025-04-18 22:15:30','2025-04-23 15:08:49','COMPLETED'),(42,28,2,0,'2025-04-19 19:53:09','2025-04-19 21:07:46','COMPLETED'),(43,28,8,0,'2025-04-19 21:07:32','2025-04-23 20:25:27','COMPLETED'),(44,28,2,0,'2025-04-19 21:07:53','2025-04-23 20:19:22','COMPLETED'),(45,14,7,0,'2025-04-23 13:57:28','2025-04-23 14:57:28','IN_PROGRESS'),(46,14,10,0,'2025-04-23 13:57:40','2025-04-23 14:57:40','IN_PROGRESS'),(47,14,4,0,'2025-04-23 13:58:28','2025-04-23 14:58:28','IN_PROGRESS'),(48,20,4,0,'2025-04-23 15:10:29','2025-04-29 20:39:59','COMPLETED'),(49,20,2,0,'2025-04-23 15:10:40','2025-04-29 20:39:27','COMPLETED'),(50,20,8,0,'2025-04-23 15:10:52','2025-04-23 16:10:52','IN_PROGRESS'),(51,20,7,0,'2025-04-23 15:10:57','2025-04-28 21:32:54','COMPLETED'),(52,15,2,0,'2025-04-27 17:30:46','2025-04-27 17:34:00','COMPLETED'),(53,15,2,0,'2025-04-27 17:34:08','2025-04-27 17:34:12','COMPLETED'),(54,15,2,0,'2025-04-27 17:34:49','2025-04-27 17:34:53','COMPLETED'),(55,15,2,0,'2025-04-27 17:34:56','2025-04-27 17:35:03','COMPLETED'),(56,15,2,0,'2025-04-27 17:56:52','2025-04-28 16:59:44','COMPLETED'),(57,15,4,0,'2025-04-27 17:57:31','2025-04-27 17:57:50','COMPLETED'),(58,15,8,0,'2025-04-27 18:51:20','2025-04-27 18:51:23','COMPLETED'),(59,15,4,0,'2025-04-27 18:52:09','2025-04-27 18:52:17','COMPLETED'),(60,15,4,7,'2025-04-27 18:52:45','2025-04-27 18:52:52','COMPLETED'),(61,15,4,10,'2025-04-27 19:16:45','2025-04-27 19:16:53','COMPLETED'),(62,15,4,4,'2025-04-27 19:17:30','2025-04-27 19:18:28','COMPLETED'),(63,15,4,7,'2025-04-27 19:23:30','2025-04-27 19:30:18','COMPLETED'),(64,15,4,0,'2025-04-27 20:53:43','2025-04-27 20:53:47','COMPLETED'),(65,15,4,4,'2025-04-27 20:53:56','2025-04-27 20:54:00','COMPLETED'),(66,15,4,0,'2025-04-27 20:58:45','2025-04-27 20:58:49','COMPLETED'),(67,15,4,4,'2025-04-27 22:12:50','2025-04-27 22:13:04','COMPLETED'),(68,15,4,4,'2025-04-28 17:00:07','2025-04-28 17:00:11','COMPLETED'),(69,15,4,10,'2025-04-28 17:34:47','2025-04-28 17:34:53','COMPLETED'),(70,15,2,0,'2025-04-28 18:31:08','2025-04-28 19:54:57','COMPLETED'),(71,20,2,0,'2025-04-29 20:39:38','2025-04-29 21:39:38','IN_PROGRESS');
 /*!40000 ALTER TABLE `result` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -539,8 +547,74 @@ CREATE TABLE `sessions` (
 
 LOCK TABLES `sessions` WRITE;
 /*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
-INSERT INTO `sessions` VALUES ('DJr2d0pLUPadmG3eUfoC15c3-g8a61Ry',1743734367,'{\"cookie\":{\"originalMaxAge\":86400000,\"expires\":\"2025-04-04T02:39:10.429Z\",\"secure\":false,\"httpOnly\":true,\"path\":\"/\",\"sameSite\":\"lax\"},\"auth\":false}'),('Lf1i_NHOcE3ZNxfo2MZa8rWCIi83oxve',1743671489,'{\"cookie\":{\"originalMaxAge\":86400000,\"expires\":\"2025-04-03T06:07:10.717Z\",\"secure\":false,\"httpOnly\":true,\"path\":\"/\",\"sameSite\":\"lax\"},\"auth\":false}'),('YVzUTcqrf1wWKW67bMmK-d7O52lmjsLN',1743673734,'{\"cookie\":{\"originalMaxAge\":86400000,\"expires\":\"2025-04-03T07:14:06.889Z\",\"secure\":false,\"httpOnly\":true,\"path\":\"/\",\"sameSite\":\"lax\"},\"auth\":false}');
+INSERT INTO `sessions` VALUES ('NoiDafwAQf0QQuMthY8EnLKBnNlsmeIc',1746021175,'{\"cookie\":{\"originalMaxAge\":86400000,\"expires\":\"2025-04-30T13:39:23.935Z\",\"secure\":false,\"httpOnly\":true,\"path\":\"/\",\"sameSite\":\"lax\"},\"auth\":true,\"authorizedQuizAccess\":\"2\",\"flash\":{},\"userId\":14,\"role\":\"USER\",\"authUser\":{\"id\":14,\"email\":\"1\",\"password\":\"$2b$10$UaymIU59kQ6D02j789UwP.aXZe14xW9G3owHSa9XOOY9qc3mFx.bC\",\"oauth_id\":\"\",\"created_at\":\"2025-04-18T14:18:18.000Z\",\"provider\":\"USER\",\"user\":20,\"isVerified\":1,\"role\":\"USER\",\"verification_token\":\"\",\"token_expiry\":\"2025-04-19T07:03:51.000Z\"},\"is_premium\":false}'),('VsMH_ouoyTWHYS7qPUK-5xUnhxuM6Okw',1745937579,'{\"cookie\":{\"originalMaxAge\":86400000,\"expires\":\"2025-04-29T14:32:38.051Z\",\"secure\":false,\"httpOnly\":true,\"path\":\"/\",\"sameSite\":\"lax\"},\"auth\":true,\"flash\":{},\"userId\":14,\"role\":\"USER\",\"authUser\":{\"id\":14,\"email\":\"1\",\"password\":\"$2b$10$UaymIU59kQ6D02j789UwP.aXZe14xW9G3owHSa9XOOY9qc3mFx.bC\",\"oauth_id\":\"\",\"created_at\":\"2025-04-18T14:18:18.000Z\",\"provider\":\"USER\",\"user\":20,\"isVerified\":1,\"role\":\"USER\",\"verification_token\":\"\",\"token_expiry\":\"2025-04-19T07:03:51.000Z\",\"avatar\":\"https://res.cloudinary.com/dj9r2qksh/image/upload/v1745850707/Quizz_Online/images/f8zhlyam7k1os5arnbaz.jpg\",\"username\":\"Tester\"},\"is_premium\":false}');
 /*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `set`
+--
+
+DROP TABLE IF EXISTS `set`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `set` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `description` text,
+  `created_by` bigint DEFAULT NULL,
+  `category` bigint DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `media` bigint DEFAULT NULL,
+  `tag` bigint DEFAULT NULL,
+  `note` text,
+  `level` enum('EASY','MEDIUM','HARD') DEFAULT 'EASY',
+  `progress` int DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `created_by` (`created_by`),
+  KEY `category` (`category`),
+  KEY `media` (`media`),
+  KEY `tag` (`tag`),
+  CONSTRAINT `set_ibfk_1` FOREIGN KEY (`created_by`) REFERENCES `user` (`id`),
+  CONSTRAINT `set_ibfk_2` FOREIGN KEY (`category`) REFERENCES `category` (`id`),
+  CONSTRAINT `set_ibfk_3` FOREIGN KEY (`media`) REFERENCES `media` (`id`),
+  CONSTRAINT `set_ibfk_4` FOREIGN KEY (`tag`) REFERENCES `tag` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `set`
+--
+
+LOCK TABLES `set` WRITE;
+/*!40000 ALTER TABLE `set` DISABLE KEYS */;
+/*!40000 ALTER TABLE `set` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `set_flashcard`
+--
+
+DROP TABLE IF EXISTS `set_flashcard`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `set_flashcard` (
+  `set_id` bigint NOT NULL,
+  `flashcard_id` bigint NOT NULL,
+  PRIMARY KEY (`set_id`,`flashcard_id`),
+  KEY `flashcard_id` (`flashcard_id`),
+  CONSTRAINT `set_flashcard_ibfk_1` FOREIGN KEY (`set_id`) REFERENCES `set` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `set_flashcard_ibfk_2` FOREIGN KEY (`flashcard_id`) REFERENCES `flashcard` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `set_flashcard`
+--
+
+LOCK TABLES `set_flashcard` WRITE;
+/*!40000 ALTER TABLE `set_flashcard` DISABLE KEYS */;
+/*!40000 ALTER TABLE `set_flashcard` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -584,7 +658,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   KEY `avata` (`avata`),
   CONSTRAINT `user_ibfk_1` FOREIGN KEY (`avata`) REFERENCES `media` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -593,8 +667,41 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'johndoe','john.doe@example.com','0901234567','MALE',1),(2,'janesmith','jane.smith@example.com','0912345678','FEMALE',2),(3,'alexnguyen','alex.nguyen@example.com','0923456789','MALE',8),(4,'sarahlee','sarah.lee@example.com','0934567890','FEMALE',NULL),(5,'miketran','mike.tran@example.com','0945678901','MALE',NULL),(6,'emilypham','emily.pham@example.com','0956789012','FEMALE',NULL),(7,'davidhoang','david.hoang@example.com','0967890123','MALE',NULL),(8,'sophievo','sophie.vo@example.com','0978901234','FEMALE',NULL),(9,'robertle','robert.le@example.com','0989012345','MALE',NULL),(10,'lisawong','lisa.wong@example.com','0990123456','FEMALE',NULL);
+INSERT INTO `user` VALUES (1,'johndoe','john.doe@example.com','0901234567','MALE',1),(2,'janesmith','jane.smith@example.com','0912345678','FEMALE',2),(3,'alexnguyen','alex.nguyen@example.com','0923456789','MALE',8),(4,'sarahlee','sarah.lee@example.com','0934567890','FEMALE',NULL),(5,'miketran','mike.tran@example.com','0945678901','MALE',NULL),(6,'emilypham','emily.pham@example.com','0956789012','FEMALE',NULL),(7,'davidhoang','david.hoang@example.com','0967890123','MALE',NULL),(8,'sophievo','sophie.vo@example.com','0978901234','FEMALE',NULL),(9,'robertle','robert.le@example.com','0989012345','MALE',NULL),(10,'lisawong','lisa.wong@example.com','0990123456','FEMALE',NULL),(14,'add',NULL,NULL,NULL,15),(15,'Meow',NULL,NULL,NULL,26),(16,'Nguyen Manh Cuong',NULL,NULL,NULL,17),(18,'Nguyen Manh Cuong',NULL,NULL,NULL,18),(20,'Tester',NULL,NULL,NULL,27),(28,'narrqqq',NULL,NULL,NULL,19),(29,'Nguyen Nguyen',NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `useranswer`
+--
+
+DROP TABLE IF EXISTS `useranswer`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `useranswer` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `question_id` bigint DEFAULT NULL,
+  `option_id` bigint DEFAULT NULL,
+  `result_id` bigint DEFAULT NULL,
+  `text_answer` varchar(250) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `question_id` (`question_id`),
+  KEY `option_id` (`option_id`),
+  KEY `result_id` (`result_id`),
+  CONSTRAINT `useranswer_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `question` (`id`),
+  CONSTRAINT `useranswer_ibfk_2` FOREIGN KEY (`option_id`) REFERENCES `option` (`id`),
+  CONSTRAINT `useranswer_ibfk_3` FOREIGN KEY (`result_id`) REFERENCES `result` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `useranswer`
+--
+
+LOCK TABLES `useranswer` WRITE;
+/*!40000 ALTER TABLE `useranswer` DISABLE KEYS */;
+INSERT INTO `useranswer` VALUES (1,1,1,1,''),(2,2,4,1,''),(3,1,2,2,''),(4,2,4,2,''),(5,3,5,3,''),(8,1,3,33,''),(9,5,12,33,''),(10,3,6,31,''),(11,9,34,32,''),(12,2,4,32,''),(13,11,NULL,31,'adasasa'),(14,5,12,31,''),(15,5,12,36,''),(16,3,6,38,''),(17,5,12,38,''),(18,11,NULL,38,'aaa'),(19,4,10,40,''),(20,9,33,37,''),(21,10,39,37,''),(22,3,7,42,''),(23,5,12,42,''),(24,11,NULL,42,'âsa'),(25,3,7,44,''),(26,5,12,44,''),(27,9,34,47,''),(28,3,7,55,''),(29,5,12,55,''),(30,11,NULL,55,'aa'),(31,9,31,57,''),(32,2,5,57,''),(33,10,39,57,''),(34,1,2,58,''),(35,5,12,58,''),(36,9,31,59,''),(37,2,4,59,''),(38,10,39,59,''),(39,9,31,60,''),(40,2,4,60,''),(41,10,39,60,''),(42,9,31,61,''),(43,2,5,61,''),(44,10,39,61,''),(45,2,4,62,''),(46,9,33,62,''),(47,10,39,62,''),(48,2,5,63,''),(49,9,34,63,''),(50,10,39,63,''),(51,9,34,64,''),(52,10,39,65,''),(53,9,33,66,''),(54,9,33,67,''),(55,10,39,67,''),(56,2,4,67,''),(57,10,39,68,''),(58,9,34,68,''),(59,9,31,69,''),(60,2,5,69,''),(61,10,39,69,''),(62,3,8,70,''),(63,5,12,70,''),(64,3,6,71,''),(65,5,12,71,'');
+/*!40000 ALTER TABLE `useranswer` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -606,4 +713,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-04-03  9:42:48
+-- Dump completed on 2025-04-29 21:13:02

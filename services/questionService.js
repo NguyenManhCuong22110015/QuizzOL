@@ -201,7 +201,7 @@ export default {
       console.error("Error in isQuestionUsedInMultipleQuizzes:", error);
       return false;
 
-    },
+    }},
     async getQuestionById(questionId) {
         try {
             const question = await db('question')
@@ -237,6 +237,5 @@ export default {
             console.error('Error in getQuestionById:', error);
             return null;
         }
-    }
-  },
+    },
 };

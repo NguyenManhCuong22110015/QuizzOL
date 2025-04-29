@@ -3,29 +3,7 @@ import passport from "passport";
 import session from "express-session";
 import mysqlSession from "express-mysql-session";
 import cloudinary from "cloudinary";
-import { engine } from "express-handlebars";
-import path from "path";
-import { fileURLToPath } from "url";
-import dotenv from "dotenv";
-import moment from "moment-timezone";
-import flash from "connect-flash";
 
-import halenTestRoute from "./routes/halenTestRoute.js";
-import quizRoute from "./routes/quizRoute.js";
-import authLoginRoute from "./routes/authLoginRoute.js";
-import flashCardRoute from "./routes/flashCardRoute.js";
-import rankingRoute from "./routes/rankingRoute.js";
-import homeRoute from "./routes/homeRoute.js";
-import userRoute from "./routes/userRoute.js";
-import adminRoute from "./routes/adminRoute.js";
-import studentRoute from "./routes/studentRoute.js";
-import mediaRoute from "./routes/mediaRoute.js";
-import userAnswerRoute from "./routes/userAnswerRoute.js";
-import resultRoute from "./routes/resultRoute.js";
-import questionRoute from "./routes/questionRoute.js";
-
-import "./authentication/passport-setup.js";
-import { options } from "./configs/db.js";
 
 
 import { engine } from 'express-handlebars'; 
@@ -205,10 +183,7 @@ math: function(lvalue, operator, rvalue) {
       '%': lvalue % rvalue
   }[operator];
 }
-
-    gt :function(a, b) {
-      return a > b;
-    },
+,
     lt : function(a, b) {
       return a < b;
     },
@@ -313,7 +288,6 @@ app.use("/media", mediaRoute);
 app.use("/admin", adminRoute);
 app.use("/student", studentRoute);
 
-app.use("/halenTest", halenTestRoute);
 app.use("/user-answer", userAnswerRoute);  
 app.use("/result", resultRoute);
 app.use("/question", questionRoute);
