@@ -12,6 +12,7 @@ const router = new Router()
 router.post("/upload-image", upload.single('image'), async (req, res) => {
     try {
       const result = await uploadImage(req.file);
+      console.log(result)
       res.json(result);
     } catch (error) {
       console.error("Error uploading image:", error);

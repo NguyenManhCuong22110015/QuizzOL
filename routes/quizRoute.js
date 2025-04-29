@@ -102,6 +102,7 @@ router.get('/quizzes/:id', async (req, res) => {
         if (!quizPageDetails) {
             return res.status(404).render('quiz/quizDetail', { message: 'Quiz not found' });
         }
+        req.session.authorizedQuizAccess = quizId;
 
         // Render the quizDetail view with the fetched data
         res.render('quiz/quizDetail_dataFilled', {
@@ -139,6 +140,9 @@ router.delete('/quizzes/:id', async (req, res) => {
 router.get('/do-test/:id',check, async (req, res) => {
     try {
         const quizId = req.params.id;
+
+
+        
         const test = await quizService.getFullQuizDetails(quizId);
         const userId = req.session.authUser.user || 1;
          

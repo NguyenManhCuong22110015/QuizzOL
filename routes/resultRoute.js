@@ -15,6 +15,8 @@ router.put('/complete/:currentResultId', async (req, res) => {
 
         // Assuming you have a service to complete the result
         const response = await resultService.completeResult(currentResultId); 
+        await resultService.calculateScore(currentResultId);
+
 
         if (response) {
             return res.status(200).json({ message: 'Result completed successfully' });

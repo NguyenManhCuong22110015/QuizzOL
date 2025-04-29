@@ -200,6 +200,43 @@ export default {
     } catch (error) {
       console.error("Error in isQuestionUsedInMultipleQuizzes:", error);
       return false;
+
+    },
+    async getQuestionById(questionId) {
+        try {
+            const question = await db('question')
+                .select('*')
+                .where('id', questionId)
+                .first();
+            
+            const options = await db('option')
+                .select('*')
+                .where('question_id', questionId);
+
+            if (!question) {
+                return null;
+            }
+            
+            // Get media URL if it exists
+            if (question.img_url) {
+                const media = await db('media')
+                    .select('url')
+                    .where('id', question.img_url)
+                    .first();
+                
+                if (media) {
+                    question.imageUrl = media.url;
+                }
+            }
+            
+            return {
+                question: question,
+                options : options
+            };
+        } catch (error) {
+            console.error('Error in getQuestionById:', error);
+            return null;
+        }
     }
   },
 };

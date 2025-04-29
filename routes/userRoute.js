@@ -2,6 +2,7 @@ import {Router} from 'express'
 import check from "../middlewares/auth.mdw.js"
 import userService from '../services/userService.js'
 import moment from 'moment-timezone';
+import resultService from '../services/resultService.js'
 
 
 const router = new Router()
@@ -17,16 +18,34 @@ router.get('/profile',check, async (req, res) => {
       })
   })
  
-router.get("/overview", check, async (req, res) => {
-    const user = await userService.getUserByAccountId(req.session.authUser.id)
-    res.render('userOverviewPage', {
-        user: user,
-        account: req.session.authUser,
-        layout:false
-      })
-}
-)
+  router.get("/overview", check, async (req, res) => {
+    try {
+        const user = await userService.getUserByAccountId(req.session.authUser.id);
+        const userId = user.id; // Get the user ID from the user object
+        
+        // Get page from query params, default to page 1
+        const page = parseInt(req.query.page) || 1;
+        const limit = 5; // 5 items per page
+        
+        // Get paginated quiz history
+        const historyData = await resultService.getResultsByUserId(userId, page, limit);
+        
+        const avatar =await userService.getAvatarByUserId(user.id)
 
+
+        res.render('userOverviewPage', {
+            user: user,
+            account: req.session.authUser,
+            avatar: avatar,
+            quizHistory: historyData.results,
+            pagination: historyData.pagination,
+           // layout: false
+        });
+    } catch (error) {
+        console.error('Error fetching user overview:', error);
+        res.status(500).render('error', { message: 'Failed to load user overview' });
+    }
+});
 router.post('/update-field', check, async (req, res) => {
     try {
         const { field, value } = req.body;
@@ -88,10 +107,10 @@ router.post('/update-birthday', check, async (req, res) => {
 
 router.post("/update-avatar", check, async (req, res) => {
     try {
-        const { avatar } = req.body;
+        const { avatar, public_id } = req.body;
         console.log('Received avatar:', avatar);
         
-        const ret = await userService.updateAvatar(req.session.authUser.id, avatar);
+        const ret = await userService.updateAvatar(req.session.authUser.id, avatar, public_id);
         if (ret) {
             req.session.authUser.avatar = avatar;
             res.status(200).json({ success: true, message: 'Avatar updated successfully' });
@@ -103,6 +122,8 @@ router.post("/update-avatar", check, async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 })
+
+
 
 
 

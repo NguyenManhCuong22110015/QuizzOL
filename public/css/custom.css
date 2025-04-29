@@ -235,10 +235,11 @@ ul {
 
 .main-nav li {
   margin-right: 25px;
+  color: white !important;
 }
 
 .main-nav a {
-  color: white;
+  color: white !important;
   font-weight: 500;
   transition: opacity 0.2s;
 }

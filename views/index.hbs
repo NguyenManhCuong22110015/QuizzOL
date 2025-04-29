@@ -44,7 +44,456 @@
         </div>
     </div>
 </section>
+<section class="leaderboard-section py-5">
+  <div class="container">
+    <div class="text-center mb-4">
+      <h2 class="fw-bold">This Week's Top Learners</h2>
+      <p class="lead text-muted">Compete with others and climb the ranks!</p>
+    </div>
+    
+    <!-- League selection tabs -->
+    <div class="league-tabs d-flex justify-content-center mb-4">
+      <button class="btn btn-outline-primary px-4 py-2 me-2 active">Bronze League</button>
+      <button class="btn btn-outline-primary px-4 py-2 me-2">Silver League</button>
+      <button class="btn btn-outline-primary px-4 py-2">Gold League</button>
+    </div>
+    
+    <div class="row">
+      <!-- Top 3 podium -->
+      <div class="col-lg-12 mb-4">
+        <div class="podium-container d-flex justify-content-center align-items-end">
+          <!-- Second place -->
+          <div class="podium-item position-relative">
+            <div class="podium-avatar silver-border">
+              <img src="https://i.pravatar.cc/150?img=32" alt="Second place" class="rounded-circle">
+              <div class="rank-badge silver">2</div>
+            </div>
+            <div class="podium-bar silver-bg" style="height: 120px;"></div>
+            <div class="podium-info">
+              <h5>Emma W.</h5>
+              <p class="points"><span class="badge bg-secondary"><i class="fas fa-bolt"></i> 8,240</span></p>
+            </div>
+          </div>
+          
+          <!-- First place (taller) -->
+          <div class="podium-item position-relative first-place">
+            <div class="podium-crown position-absolute"><i class="fas fa-crown"></i></div>
+            <div class="podium-avatar gold-border">
+              <img src="https://i.pravatar.cc/150?img=67" alt="First place" class="rounded-circle">
+              <div class="rank-badge gold">1</div>
+            </div>
+            <div class="podium-bar gold-bg" style="height: 160px;"></div>
+            <div class="podium-info">
+              <h5>David L.</h5>
+              <p class="points"><span class="badge bg-warning text-dark"><i class="fas fa-bolt"></i> 9,845</span></p>
+            </div>
+          </div>
+          
+          <!-- Third place -->
+          <div class="podium-item position-relative">
+            <div class="podium-avatar bronze-border">
+              <img src="https://i.pravatar.cc/150?img=15" alt="Third place" class="rounded-circle">
+              <div class="rank-badge bronze">3</div>
+            </div>
+            <div class="podium-bar bronze-bg" style="height: 90px;"></div>
+            <div class="podium-info">
+              <h5>James T.</h5>
+              <p class="points"><span class="badge bg-secondary"><i class="fas fa-bolt"></i> 7,125</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Leaderboard table -->
+      <div class="col-lg-8 offset-lg-2">
+        <div class="leaderboard-card bg-dark p-4 rounded-4 shadow">
+          <div class="leaderboard-heading d-flex justify-content-between mb-3">
+            <div>
+              <h4 class="mb-0">Leaderboard</h4>
+              <small class="text-muted">Resets in 3 days, 8 hours</small>
+            </div>
+            <div class="dropdown">
+              <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" id="leaderboardOptions" data-bs-toggle="dropdown" aria-expanded="false">
+                Weekly
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="leaderboardOptions">
+                <li><a class="dropdown-item" href="#">Weekly</a></li>
+                <li><a class="dropdown-item" href="#">Monthly</a></li>
+                <li><a class="dropdown-item" href="#">All Time</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          <ul class="leaderboard-list list-unstyled">
+            <!-- First 3 already shown in podium -->
+            <!-- 4th place -->
+            <li class="leaderboard-item d-flex align-items-center p-3 mb-2 rounded">
+              <div class="leaderboard-rank">4</div>
+              <div class="leaderboard-avatar">
+                <img src="https://i.pravatar.cc/150?img=22" alt="User" class="rounded-circle">
+              </div>
+              <div class="leaderboard-info">
+                <h6 class="mb-0">Sophia R.</h6>
+                <small>3 day streak</small>
+              </div>
+              <div class="leaderboard-trend text-success"><i class="fas fa-caret-up"></i> 2</div>
+              <div class="leaderboard-points ms-auto">
+                <span class="badge bg-light text-dark"><i class="fas fa-bolt"></i> 6,840</span>
+              </div>
+            </li>
+            
+            <!-- 5th place -->
+            <li class="leaderboard-item d-flex align-items-center p-3 mb-2 rounded">
+              <div class="leaderboard-rank">5</div>
+              <div class="leaderboard-avatar">
+                <img src="https://i.pravatar.cc/150?img=56" alt="User" class="rounded-circle">
+              </div>
+              <div class="leaderboard-info">
+                <h6 class="mb-0">Alex W.</h6>
+                <small>8 day streak</small>
+              </div>
+              <div class="leaderboard-trend text-danger"><i class="fas fa-caret-down"></i> 1</div>
+              <div class="leaderboard-points ms-auto">
+                <span class="badge bg-light text-dark"><i class="fas fa-bolt"></i> 6,245</span>
+              </div>
+            </li>
+            
+            <!-- 6th place -->
+            <li class="leaderboard-item d-flex align-items-center p-3 mb-2 rounded">
+              <div class="leaderboard-rank">6</div>
+              <div class="leaderboard-avatar">
+                <img src="https://i.pravatar.cc/150?img=48" alt="User" class="rounded-circle">
+              </div>
+              <div class="leaderboard-info">
+                <h6 class="mb-0">Michael D.</h6>
+                <small>5 day streak</small>
+              </div>
+              <div class="leaderboard-trend text-success"><i class="fas fa-caret-up"></i> 4</div>
+              <div class="leaderboard-points ms-auto">
+                <span class="badge bg-light text-dark"><i class="fas fa-bolt"></i> 5,870</span>
+              </div>
+            </li>
+            
+            <!-- 7th place -->
+            <li class="leaderboard-item d-flex align-items-center p-3 mb-2 rounded">
+              <div class="leaderboard-rank">7</div>
+              <div class="leaderboard-avatar">
+                <img src="https://i.pravatar.cc/150?img=35" alt="User" class="rounded-circle">
+              </div>
+              <div class="leaderboard-info">
+                <h6 class="mb-0">Olivia J.</h6>
+                <small>12 day streak</small>
+              </div>
+              <div class="leaderboard-trend"><i class="fas fa-minus"></i></div>
+              <div class="leaderboard-points ms-auto">
+                <span class="badge bg-light text-dark"><i class="fas fa-bolt"></i> 5,340</span>
+              </div>
+            </li>
+            
+            <!-- You - Highlighted -->
+            <li class="leaderboard-item your-rank d-flex align-items-center p-3 rounded">
+              <div class="leaderboard-rank">12</div>
+              <div class="leaderboard-avatar">
+                <img src="https://i.pravatar.cc/150?img=11" alt="Your avatar" class="rounded-circle">
+              </div>
+              <div class="leaderboard-info">
+                <h6 class="mb-0">You</h6>
+                <small>2 day streak</small>
+              </div>
+              <div class="leaderboard-trend text-success"><i class="fas fa-caret-up"></i> 8</div>
+              <div class="leaderboard-points ms-auto">
+                <span class="badge bg-primary"><i class="fas fa-bolt"></i> 3,240</span>
+              </div>
+            </li>
+          </ul>
+          
+          <div class="mt-3 text-center">
+            <button class="btn btn-sm btn-outline-light px-4">View Full Leaderboard</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mt-4 text-center">
+      <div class="leaderboard-prizes p-3 d-inline-block rounded-3 bg-dark">
+        <h6 class="mb-3"><i class="fas fa-trophy text-warning me-2"></i> Weekly Prizes</h6>
+        <div class="d-flex justify-content-center gap-3 text-center">
+          <div class="prize-item">
+            <div class="prize-icon gold-text mb-2"><i class="fas fa-medal"></i></div>
+            <p class="small mb-0">1000 XP Boost</p>
+          </div>
+          <div class="prize-item">
+            <div class="prize-icon silver-text mb-2"><i class="fas fa-medal"></i></div>
+            <p class="small mb-0">500 XP Boost</p>
+          </div>
+          <div class="prize-item">
+            <div class="prize-icon bronze-text mb-2"><i class="fas fa-medal"></i></div>
+            <p class="small mb-0">250 XP Boost</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
+<style>
+/* Leaderboard Section Styling */
+.leaderboard-section {
+  background-color: #14151a;
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(76, 0, 255, 0.08) 0%, transparent 33%),
+    radial-gradient(circle at 85% 30%, rgba(255, 183, 0, 0.08) 0%, transparent 33%);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.leaderboard-section::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: linear-gradient(135deg, #14151a 25%, transparent 25%) -10px 0,
+              linear-gradient(225deg, #14151a 25%, transparent 25%) -10px 0;
+  background-size: 20px 20px;
+  z-index: 1;
+}
+
+.league-tabs .btn {
+  border-radius: 20px;
+  font-weight: 600;
+  transition: all 0.2s;
+  border-width: 2px;
+}
+
+.league-tabs .btn.active {
+  background-color: var(--bs-primary);
+  color: white;
+  box-shadow: 0 0 15px rgba(var(--bs-primary-rgb), 0.4);
+}
+
+/* Podium styling */
+.podium-container {
+  padding: 30px 0;
+}
+
+.podium-item {
+  width: 130px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 15px;
+  transition: transform 0.3s;
+}
+
+.podium-item:hover {
+  transform: translateY(-5px);
+}
+
+.podium-crown {
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: gold;
+  font-size: 24px;
+  animation: float 2s infinite alternate ease-in-out;
+}
+
+@keyframes float {
+  0% {
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    transform: translateX(-50%) translateY(-5px);
+  }
+}
+
+.podium-avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid white;
+  position: relative;
+  z-index: 2;
+  margin-bottom: -15px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.first-place .podium-avatar {
+  width: 90px;
+  height: 90px;
+}
+
+.gold-border {
+  border-color: gold;
+  box-shadow: 0 0 15px rgba(255,215,0,0.5);
+}
+
+.silver-border {
+  border-color: silver;
+  box-shadow: 0 0 15px rgba(192,192,192,0.5);
+}
+
+.bronze-border {
+  border-color: #cd7f32;
+  box-shadow: 0 0 15px rgba(205,127,50,0.5);
+}
+
+.podium-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.rank-badge {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.gold {
+  background: linear-gradient(145deg, #ffd700, #ffa500);
+  color: #333;
+}
+
+.silver {
+  background: linear-gradient(145deg, #e0e0e0, #c0c0c0);
+  color: #333;
+}
+
+.bronze {
+  background: linear-gradient(145deg, #cd7f32, #a05129);
+  color: white;
+}
+
+.podium-bar {
+  width: 70px;
+  border-radius: 10px 10px 0 0;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.gold-bg {
+  background: linear-gradient(180deg, #ffd700, #ffa500);
+}
+
+.silver-bg {
+  background: linear-gradient(180deg, #e0e0e0, #a0a0a0);
+}
+
+.bronze-bg {
+  background: linear-gradient(180deg, #cd7f32, #8B4513);
+}
+
+.podium-info {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.podium-info h5 {
+  font-weight: 600;
+  margin-bottom: 5px;
+  font-size: 1rem;
+}
+
+/* Leaderboard list styling */
+.leaderboard-card {
+  border-radius: 15px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.leaderboard-item {
+  background-color: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  transition: all 0.2s;
+}
+
+.leaderboard-item:hover {
+  background-color: rgba(255,255,255,0.1);
+  transform: translateX(5px);
+}
+
+.leaderboard-rank {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+  margin-right: 12px;
+}
+
+.leaderboard-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 12px;
+  border: 2px solid rgba(255,255,255,0.2);
+}
+
+.leaderboard-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.leaderboard-info {
+  flex-grow: 1;
+}
+
+.leaderboard-info small {
+  color: rgba(255,255,255,0.6);
+}
+
+.leaderboard-trend {
+  margin: 0 15px;
+  font-weight: bold;
+  width: 30px;
+  text-align: center;
+}
+
+.your-rank {
+  background-color: rgba(var(--bs-primary-rgb), 0.15);
+  border: 2px solid var(--bs-primary);
+  box-shadow: 0 0 15px rgba(var(--bs-primary-rgb), 0.2);
+}
+
+/* Prizes section */
+.leaderboard-prizes {
+  border: 1px solid rgba(255,255,255,0.1);
+  display: inline-block;
+}
+
+.prize-icon {
+  font-size: 24px;
+}
+
+.gold-text {
+  color: gold;
+}
+
+.silver-text {
+  color: silver;
+}
+
+.bronze-text {
+  color: #cd7f32;
+}
+</style>
 <!-- Features Section -->
 <section id="features" class="py-5">
     <div class="container">

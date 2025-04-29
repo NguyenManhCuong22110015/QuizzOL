@@ -421,5 +421,99 @@ export default {
       console.error('Error in getUserByAccountId:', error);
       throw error;
     }
-  } 
+  } ,
+
+  async getUserIdByAccountId(accountId) {
+    try {
+      const account = await db('account')
+        .where({ id: accountId })
+        .first();
+        
+      if (!account) {
+        return null;
+      }
+      
+      return account.user;
+    } catch (error) {
+      console.error('Error in getUserIdByAccountId:', error);
+      throw error;
+    }
+  },
+  async getUsernameByAccountId(accountId) {
+    try {
+      const account = await db('account')
+        .where({ id: accountId })
+        .first();
+        
+      if (!account) {
+        return null;
+      }
+      
+      const user = await db('user')
+        .where({ id: account.user })
+        .first();
+        
+      return user.username;
+    } catch (error) {
+      console.error('Error in getUsernameByAccountId:', error);
+      throw error;
+    }
+  },
+  async updateAvatar(accountId, avatarUrl, public_id) {
+    try {
+      const account = await db('account')
+        .where({ id: accountId })
+        .first();
+        
+      if (!account) {
+        return null;
+      }
+      
+      const user = await db('user')
+        .where({ id: account.user })
+        .first();
+        
+      if (!user) {
+        return null;
+      }
+      
+      // Update avatar URL in media table
+      const [mediaId] = await db('media')
+        .insert({
+          url: avatarUrl,
+          resource_type: 'IMAGE',
+          public_id: public_id
+        });
+        
+      // Update user with new media ID
+      await db('user')
+        .where({ id: user.id })
+        .update({ avata: mediaId });
+        
+      return true;
+    } catch (error) {
+      console.error('Error in updateAvatar:', error);
+      throw error;
+    }
+  },
+  async getAvatarByUserId(userId) {
+    try {
+      const user = await db('user')
+        .where("id", userId).first();
+
+      if (!user) {
+          return null;
+      }
+      const avatar = await db('media')
+        .where('id', user.avata)
+        .first();
+      return avatar.url;
+      
+    }
+    catch(error) {
+      console.error('Error in getAvatarByUserId:', error);
+      throw error;
+    }
+  }
+
 };

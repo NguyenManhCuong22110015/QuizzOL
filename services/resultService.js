@@ -82,6 +82,130 @@ export default {
             console.error('Error completing result:', error);
             return null;
         }
+    },
+    async calculateScore(resultId) {
+        try {
+            const result = await db('result').where('id', resultId).first();
+            if (!result) {
+                console.error(`Result with ID ${resultId} not found`);
+                return null;
+            }
+            
+            const userAnswers = await db('userAnswer').where('result_id', resultId);
+            let score = 0;
+            
+            for (const answer of userAnswers) {
+                // Get the correct option for this question
+                const correctOption = await db('option').where({ 
+                    question_id: answer.question_id, 
+                    isCorrect: true 
+                }).first();
+                
+                // Get the question to access its point value
+                const question = await db('question').where('id', answer.question_id).first();
+                
+                // Default to 1 point if no point value is specified
+                const pointValue = question && question.points ? question.points : 1;
+                
+                // Add points if the answer is correct
+                if (correctOption && answer.option_id === correctOption.id) {
+                    score += pointValue; // Add the question's point value
+                }
+            }
+            
+            // Update the result with the calculated score
+            await db('result').where('id', resultId).update({ score });
+            
+            return score;
+        } catch (error) {
+            console.error('Error calculating score:', error);
+            return null;
+        }
+    },
+    async getUserAnswersByResultId(resultId) {
+        try {
+            const answers = await db('userAnswer').where('result_id', resultId);
+            return answers;
+        } catch (error) {
+            console.error('Error fetching user answers:', error);
+            return null;
+        }
+    },
+    async getResultsByUserId(userId, page = 1, limit = 5) {
+        try {
+            const offset = (page - 1) * limit;
+            
+            // Get paginated results sorted by date (newest first)
+            const results = await db('result')
+                .where('user', userId)
+                .orderBy('end_time', 'desc')
+                .limit(limit)
+                .offset(offset);
+            
+            // Get total count for pagination
+            const [{ count }] = await db('result')
+                .where('user', userId)
+                .count('id as count');
+            
+            // Enrich results with quiz details
+            const enrichedResults = await Promise.all(results.map(async (result) => {
+                // Get quiz info
+                const quiz = await db('quiz').where('id', result.quiz).first();
+                
+                // Get correct/total answers count
+                const userAnswers = await db('userAnswer').where('result_id', result.id);
+                const totalQuestions = await db('quiz_question').where({
+                    quiz_id: result.quiz,
+                    
+                }).count('quiz_id as count');
+                const totalCount = totalQuestions[0].count;
+                
+                let correctCount = 0;
+                
+                for (const answer of userAnswers) {
+                    const correctOption = await db('option')
+                        .where({ 
+                            question_id: answer.question_id, 
+                            isCorrect: true 
+                        })
+                        .first();
+                    
+                    if (correctOption && answer.option_id === correctOption.id) {
+                        correctCount++;
+                    }
+                }
+                
+                return {
+                    ...result,
+                    quiz: quiz || { title: 'Unknown Quiz' },
+                    correctCount,
+                    totalCount,
+                    formattedDate: new Date(result.end_time).toLocaleDateString('vi-VN')
+                };
+            }));
+            
+            return {
+                results: enrichedResults,
+                pagination: {
+                    page,
+                    limit,
+                    totalResults: parseInt(count),
+                    totalPages: Math.ceil(parseInt(count) / limit)
+                }
+            };
+        } catch (error) {
+            console.error('Error fetching user results:', error);
+            return {
+                results: [],
+                pagination: {
+                    page: 1,
+                    limit,
+                    totalResults: 0,
+                    totalPages: 0
+                }
+            };
+        }
     }
+
 
 };

@@ -28,6 +28,29 @@ import "./authentication/passport-setup.js";
 import { options } from "./configs/db.js";
 
 
+import { engine } from 'express-handlebars'; 
+import path from 'path';
+import { fileURLToPath } from 'url';
+import quizRoute from './routes/quizRoute.js';
+import authLoginRoute from './routes/authLoginRoute.js';
+import flashCardRoute from './routes/flashCardRoute.js';
+import rankingRoute from './routes/rankingRoute.js';
+import homeRoute from './routes/homeRoute.js';
+import userRoute from './routes/userRoute.js'
+import adminRoute from './routes/adminRoute.js';
+import studentRoute from './routes/studentRoute.js';
+import './authentication/passport-setup.js';
+import  {options} from './configs/db.js';
+import moment from 'moment-timezone';
+import dotenv from 'dotenv'; 
+import mediaRoute from './routes/mediaRoute.js';
+import userAnswerRoute from './routes/userAnswerRoute.js';
+import resultRoute from './routes/resultRoute.js';
+import flash from 'connect-flash'; 
+import questionRoute from './routes/questionRoute.js';
+import commentRoute from './routes/commentRoute.js';
+import roomRouter from './routes/roomRoute.js';
+
 dotenv.config();
 const app = express();
 app.set("trust proxy", 1);
@@ -90,19 +113,19 @@ app.use(flash());
        toUpperCase: function(text) {
         return text ? text.toUpperCase() : '';
     },
-    or: function() {
+      or: function() {
       // Remove the last argument (Handlebars options)
       const args = Array.prototype.slice.call(arguments, 0, -1);
       return args.some(Boolean);
   },
-    isSubscriptionActive : function(expiryDate) {
+     isSubscriptionActive : function(expiryDate) {
       if (!expiryDate) return false;
       const today = new Date();
       const expiry = new Date(expiryDate);
       
       return expiry > today;
   },
-  range: function(start, end) {
+      range: function(start, end) {
     const array = [];
     for (let i = start; i <= end; i++) {
       array.push(i);
@@ -111,6 +134,24 @@ app.use(flash());
   },
   add: function (a, b) {
     return a + b;
+  },
+  pageRange: function (currentPage, totalPages) {
+    let start = Math.max(1, currentPage - 2);
+    let end = Math.min(totalPages, currentPage + 2);
+    
+    if (end - start < 4 && totalPages > 5) {
+      if (currentPage < totalPages / 2) {
+        end = Math.min(totalPages, start + 4);
+      } else {
+        start = Math.max(1, end - 4);
+      }
+    }
+    
+    const result = [];
+    for (let i = start; i <= end; i++) {
+      result.push(i);
+    }
+    return result;
   },
   stars: function (rating) {
     const fullStars = Math.floor(rating); // Number of full stars
@@ -164,6 +205,44 @@ math: function(lvalue, operator, rvalue) {
       '%': lvalue % rvalue
   }[operator];
 }
+
+    gt :function(a, b) {
+      return a > b;
+    },
+    lt : function(a, b) {
+      return a < b;
+    },
+    subtract : function(a, b) {
+      return a - b;
+    },
+    each_page: function(from, to, current, options) {
+      let result = '';
+      
+      // Show max 5 page numbers to avoid cluttering
+      let start = Math.max(1, current - 2);
+      let end = Math.min(to, start + 4);
+      
+      // Adjust start if we're near the end
+      if (end - start < 4) {
+        start = Math.max(1, end - 4);
+      }
+      
+      for (let i = start; i <= end; i++) {
+        result += options.fn({
+          number: i,
+          active: i === current
+        });
+      }
+      
+      return result;
+    },
+    and:  function() {
+      return Array.prototype.slice.call(arguments, 0, -1).every(Boolean);
+    },
+    not: function(value) {
+      return !value;
+    }
+ 
     
     }
   }));
@@ -238,6 +317,8 @@ app.use("/halenTest", halenTestRoute);
 app.use("/user-answer", userAnswerRoute);  
 app.use("/result", resultRoute);
 app.use("/question", questionRoute);
+app.use("/comment", commentRoute);
+app.use("/room", roomRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello word");

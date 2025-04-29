@@ -10,40 +10,40 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="/css/profile.css" />
 </head>
-<body class="bg-light">
+<body class="">
 
   <main class="container py-4">
-    <!-- Profile Header -->
-    <div class="card mb-4">
-      <div class="card-body">
+    <!-- Profile Header - Modern Design -->
+    <div class="card border-0 shadow-sm mb-4 overflow-hidden">
+      <div class="card-body p-4">
         <div class="row align-items-center">
           <div class="col-md-8 d-flex align-items-center">
-            <!-- Make avatar clickable to open modal -->
-            <div class="position-relative">
-              <img src="{{#if this.user.avatar}}{{this.user.avatar}}{{else}}https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80{{/if}}" 
+            <!-- Enhanced Avatar Section -->
+            <div class="position-relative me-4">
+              <img src="{{#if this.avatar}}{{this.avatar}}{{else}}https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80{{/if}}" 
                    alt="User profile" 
-                   class="rounded-circle profile-image me-3" 
+                   class="rounded-circle profile-image shadow-sm" 
                    id="profileAvatar"
-                   style="cursor: pointer;"
+                   style="width: 80px; height: 80px; object-fit: cover; cursor: pointer; transition: all 0.3s ease;"
                    data-bs-toggle="modal" 
                    data-bs-target="#avatarUploadModal">
-              <!-- Add overlay on hover -->
-              <div class="avatar-overlay position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center rounded-circle">
-                <i class="fas fa-camera text-white"></i>
+              <!-- Improved overlay effect -->
+              <div class="avatar-overlay position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center rounded-circle bg-dark bg-opacity-50 opacity-0" style="transition: opacity 0.3s ease;">
+                <i class="fas fa-camera text-white fs-5"></i>
               </div>
             </div>
+            <!-- Enhanced User Info -->
             <div>
-              <h2 class="h4 mb-1">{{this.user.username}}</h2>
-              <p class="text-secondary mb-1">{{this.account.email}}</p>
-              <div>
-                <span class="badge bg-primary me-2">Level 7</span>
-                <span class="badge bg-light text-dark">Quiz Master</span>
+              <h2 class="h4 mb-1 fw-bold">{{this.user.username}}</h2>
+              <p class="text-secondary mb-2"><i class="fas fa-envelope-open me-2 opacity-50"></i>{{this.account.email}}</p>
+              <div class="d-flex align-items-center">
+                <span class="badge bg-primary bg-gradient me-2 py-2 px-3"><i class="fas fa-star-half-alt me-1"></i> Level 7</span>
               </div>
             </div>
           </div>
           <div class="col-md-4 text-md-end mt-3 mt-md-0">
-            <a class="btn btn-outline-secondary" href="/user/profile">
-              <i class="fas fa-pencil-alt me-1"></i>
+            <a class="btn btn-primary btn-lg rounded-pill shadow-sm hover-lift" href="/user/profile">
+              <i class="fas fa-pencil-alt me-2"></i>
               Chỉnh sửa hồ sơ
             </a>
           </div>
@@ -51,14 +51,14 @@
       </div>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="row mb-4">
+    <!-- Stats Cards - Modern Design -->
+    <div class="row mb-4 g-3">
       <!-- Quiz Completed Card -->
-      <div class="col-md-6 col-lg-3 mb-3 mb-lg-0">
-        <div class="card h-100">
-          <div class="card-body">
-            <div class="d-flex">
-              <div class="stat-icon bg-primary text-white me-3">
+      <div class="col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm h-100 hover-lift" style="transition: transform 0.2s;">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center">
+              <div class="stat-icon rounded-4 bg-primary bg-gradient text-white me-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
                 <i class="fas fa-check-square"></i>
               </div>
               <div>
@@ -71,11 +71,11 @@
       </div>
 
       <!-- Average Score Card -->
-      <div class="col-md-6 col-lg-3 mb-3 mb-lg-0">
-        <div class="card h-100">
-          <div class="card-body">
-            <div class="d-flex">
-              <div class="stat-icon bg-success text-white me-3">
+      <div class="col-md-6 col-lg-3">
+        <div class="card border-0 shadow-sm h-100 hover-lift" style="transition: transform 0.2s;">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center">
+              <div class="stat-icon rounded-4 bg-success bg-gradient text-white me-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
                 <i class="fas fa-chart-bar"></i>
               </div>
               <div>
@@ -123,25 +123,25 @@
     </div>
 
     <!-- Tab Navigation -->
-    <ul class="nav nav-tabs mb-4" id="profileTabs" role="tablist">
+    <ul class="nav nav-pills nav-fill shadow-sm rounded-4 p-2 mb-4" id="profileTabs" role="tablist">
       <li class="nav-item" role="presentation">
-        <button class="nav-link active px-3 py-3" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab" aria-controls="history" aria-selected="true">
-          Lịch sử Quiz
+        <button class="nav-link active px-3 py-3 rounded-3" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab">
+          <i class="fas fa-history me-2"></i>Lịch sử Quiz
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link px-3 py-3" id="achievements-tab" data-bs-toggle="tab" data-bs-target="#achievements" type="button" role="tab" aria-controls="achievements" aria-selected="false">
-          Thành tựu
+        <button class="nav-link px-3 py-3 rounded-3" id="achievements-tab" data-bs-toggle="tab" data-bs-target="#achievements" type="button" role="tab">
+          <i class="fas fa-trophy me-2"></i>Thành tựu
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link px-3 py-3" id="leaderboard-tab" data-bs-toggle="tab" data-bs-target="#leaderboard" type="button" role="tab" aria-controls="leaderboard" aria-selected="false">
-          Bảng xếp hạng
+        <button class="nav-link px-3 py-3 rounded-3" id="leaderboard-tab" data-bs-toggle="tab" data-bs-target="#leaderboard" type="button" role="tab">
+          <i class="fas fa-ranking-star me-2"></i>Bảng xếp hạng
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link px-3 py-3" id="statistics-tab" data-bs-toggle="tab" data-bs-target="#statistics" type="button" role="tab" aria-controls="statistics" aria-selected="false">
-          Thống kê
+        <button class="nav-link px-3 py-3 rounded-3" id="statistics-tab" data-bs-toggle="tab" data-bs-target="#statistics" type="button" role="tab">
+          <i class="fas fa-chart-line me-2"></i>Thống kê
         </button>
       </li>
     </ul>
@@ -149,95 +149,165 @@
     <!-- Tab Content -->
     <div class="tab-content" id="profileTabContent">
       <!-- Quiz History Tab -->
-      <div class="tab-pane fade show active" id="history" role="tabpanel" aria-labelledby="history-tab">
-        <h4 class="mb-3">Lịch sử Quiz gần đây</h4>
-        <div class="card">
+      <div class="tab-pane fade show active" id="history" role="tabpanel">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h4 class="mb-0 fw-bold"><i class="fas fa-list-alt me-2 text-primary"></i>Lịch sử Quiz gần đây</h4>
+          
+          {{#if pagination.totalPages}}
+            <nav aria-label="Quiz history pagination" class="d-none d-md-block">
+              <ul class="pagination pagination-sm mb-0">
+                {{#if (gt pagination.page 1)}}
+                  <li class="page-item">
+                    <a class="page-link rounded-pill-start shadow-sm border-0 me-1" href="/user/overview?page={{subtract pagination.page 1}}" aria-label="Previous">
+                      <i class="fas fa-chevron-left small"></i>
+                    </a>
+                  </li>
+                {{else}}
+                  <li class="page-item disabled">
+                    <span class="page-link rounded-pill-start shadow-sm border-0 me-1">
+                      <i class="fas fa-chevron-left small"></i>
+                    </span>
+                  </li>
+                {{/if}}
+                
+                {{#each_page 1 pagination.totalPages pagination.page}}
+                  <li class="page-item {{#if this.active}}active{{/if}}">
+                    <a class="page-link shadow-sm border-0 mx-1 {{#if this.active}}bg-primary text-white{{else}}text-secondary{{/if}}" 
+                       href="/user/overview?page={{this.number}}"
+                       style="width: 30px; height: 30px; text-align: center; padding: 6px 0; border-radius: 50%;">
+                      {{this.number}}
+                    </a>
+                  </li>
+                {{/each_page}}
+                
+                {{#if (lt pagination.page pagination.totalPages)}}
+                  <li class="page-item">
+                    <a class="page-link rounded-pill-end shadow-sm border-0 ms-1" href="/user/overview?page={{add pagination.page 1}}" aria-label="Next">
+                      <i class="fas fa-chevron-right small"></i>
+                    </a>
+                  </li>
+                {{else}}
+                  <li class="page-item disabled">
+                    <span class="page-link rounded-pill-end shadow-sm border-0 ms-1">
+                      <i class="fas fa-chevron-right small"></i>
+                    </span>
+                  </li>
+                {{/if}}
+              </ul>
+            </nav>
+          {{/if}}
+        </div>
+        
+        <!-- Modern Quiz History Cards -->
+        <div class="card border-0 shadow-sm overflow-hidden">
           <ul class="list-group list-group-flush">
-            <!-- Quiz History Item 1 -->
-            <li class="list-group-item py-3">
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                  <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-2 me-3">
-                    <i class="fas fa-file-alt"></i>
-                  </div>
-                  <div>
-                    <h5 class="mb-1 h6 text-primary">Quiz Toán học cơ bản</h5>
+            {{#if quizHistory.length}}
+              {{#each quizHistory}}
+                <li class="list-group-item py-3 px-4 quiz-item" style="transition: all 0.2s ease;">
+                  <div class="d-flex justify-content-between align-items-center flex-wrap flex-md-nowrap">
                     <div class="d-flex align-items-center">
-                      <small class="text-secondary me-2">Toán học</small>
-                      <span class="badge bg-success bg-opacity-10 text-success">Trung bình</span>
+                      <div class="bg-primary bg-opacity-10 text-primary rounded-circle p-3 me-3 flex-shrink-0" style="width: 56px; height: 56px; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-file-alt fa-lg"></i>
+                      </div>
+                      <div>
+                        <h5 class="mb-1 h6 text-primary fw-bold">{{this.quiz.title}}</h5>
+                        <div class="d-flex align-items-center flex-wrap">
+                          <span class="badge  text-secondary border me-2 px-3 py-2">
+                            <i class="fas fa-folder me-1"></i>{{this.quiz.category_name}}
+                          </span>
+                          <span class="badge {{#if (eq this.status 'COMPLETED')}}bg-success{{else}}bg-warning{{/if}} bg-opacity-10 text-{{#if (eq this.status 'COMPLETED')}}success{{else}}warning{{/if}} px-3 py-2">
+                            <i class="fas {{#if (eq this.status 'COMPLETED')}}fa-check-circle{{else}}fa-clock{{/if}} me-1"></i>{{this.status}}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="d-flex align-items-center mt-2 mt-md-0">
+                      <div class="me-4 d-none d-md-block text-end">
+                        <p class="mb-0 fw-medium">
+                          <span class="text-success fw-bold">{{this.correctCount}}</span>/<span class="text-secondary">{{this.totalCount}}</span> 
+                          <span class="text-secondary small">câu đúng</span>
+                        </p>
+                        <small class="text-secondary d-flex align-items-center justify-content-end"><i class="far fa-calendar-alt me-1"></i> {{this.formattedDate}}</small>
+                      </div>
+                      <a href="/quiz/check-result/{{this.id}}" class="btn btn-sm btn-primary rounded-pill px-3">
+                        <span class="d-none d-sm-inline">Xem chi tiết</span>
+                        <i class="fas fa-chevron-right ms-1"></i>
+                      </a>
                     </div>
                   </div>
-                </div>
-                <div class="d-flex align-items-center">
-                  <div class="me-4 d-none d-md-block text-end">
-                    <p class="mb-0 small"><span class="fw-medium">8/10</span> câu đúng</p>
-                    <small class="text-secondary">13/02/2023</small>
-                  </div>
-                  <a href="#" class="text-primary text-decoration-none">
-                    Xem chi tiết
-                    <i class="fas fa-chevron-right ms-1 small"></i>
+                </li>
+              {{/each}}
+            {{else}}
+              <li class="list-group-item py-5 text-center">
+                <div class="text-secondary py-4">
+                  <i class="fas fa-info-circle fa-3x mb-3 text-primary opacity-50"></i>
+                  <p class="mb-3 h5 fw-normal">Bạn chưa hoàn thành quiz nào</p>
+                  <a href="/quiz/all-quiz-by-category" class="btn btn-primary rounded-pill px-4 py-2">
+                    <i class="fas fa-search me-2"></i>Khám phá quiz
                   </a>
                 </div>
-              </div>
-            </li>
-            
-            <!-- Quiz History Item 2 -->
-            <li class="list-group-item py-3">
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                  <div class="bg-info bg-opacity-10 text-info rounded-circle p-2 me-3">
-                    <i class="fas fa-flask"></i>
-                  </div>
-                  <div>
-                    <h5 class="mb-1 h6 text-primary">Quiz Khoa học thường thức</h5>
-                    <div class="d-flex align-items-center">
-                      <small class="text-secondary me-2">Khoa học</small>
-                      <span class="badge bg-success bg-opacity-10 text-success">Dễ</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center">
-                  <div class="me-4 d-none d-md-block text-end">
-                    <p class="mb-0 small"><span class="fw-medium">10/10</span> câu đúng</p>
-                    <small class="text-secondary">10/02/2023</small>
-                  </div>
-                  <a href="#" class="text-primary text-decoration-none">
-                    Xem chi tiết
-                    <i class="fas fa-chevron-right ms-1 small"></i>
-                  </a>
-                </div>
-              </div>
-            </li>
-            
-            <!-- Quiz History Item 3 -->
-            <li class="list-group-item py-3">
-              <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center">
-                  <div class="bg-danger bg-opacity-10 text-danger rounded-circle p-2 me-3">
-                    <i class="fas fa-book"></i>
-                  </div>
-                  <div>
-                    <h5 class="mb-1 h6 text-primary">Quiz Văn học Việt Nam</h5>
-                    <div class="d-flex align-items-center">
-                      <small class="text-secondary me-2">Văn học</small>
-                      <span class="badge bg-warning bg-opacity-10 text-warning">Khó</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center">
-                  <div class="me-4 d-none d-md-block text-end">
-                    <p class="mb-0 small"><span class="fw-medium">7/10</span> câu đúng</p>
-                    <small class="text-secondary">05/02/2023</small>
-                  </div>
-                  <a href="#" class="text-primary text-decoration-none">
-                    Xem chi tiết
-                    <i class="fas fa-chevron-right ms-1 small"></i>
-                  </a>
-                </div>
-              </div>
-            </li>
+              </li>
+            {{/if}}
           </ul>
         </div>
+        
+        {{#if quizHistory.length}}
+          <nav aria-label="Quiz history pagination" class="mt-4">
+            <ul class="pagination justify-content-center flex-wrap">
+              {{#if (gt pagination.page 1)}}
+                <li class="page-item">
+                  <a class="page-link shadow-sm border-0 rounded-pill px-3 py-2 me-2 d-flex align-items-center" 
+                     href="/user/overview?page={{subtract pagination.page 1}}">
+                    <i class="fas fa-chevron-left me-1"></i>
+                    <span class="d-none d-sm-inline">Trang trước</span>
+                  </a>
+                </li>
+              {{else}}
+                <li class="page-item disabled">
+                  <span class="page-link shadow-sm border-0 rounded-pill px-3 py-2 me-2 d-flex align-items-center">
+                    <i class="fas fa-chevron-left me-1"></i>
+                    <span class="d-none d-sm-inline">Trang trước</span>
+                  </span>
+                </li>
+              {{/if}}
+              
+              <li class="page-item d-none d-md-flex align-items-center mx-2">
+                <span class="text-secondary small">
+                  Trang {{pagination.page}} / {{pagination.totalPages}}
+                </span>
+              </li>
+              
+              <div class="d-flex d-md-none">
+                {{#each_page 1 pagination.totalPages pagination.page}}
+                  <li class="page-item {{#if this.active}}active{{/if}} mx-1">
+                    <a class="page-link shadow-sm border-0 {{#if this.active}}bg-primary text-white{{else}}text-secondary{{/if}}" 
+                       href="/user/overview?page={{this.number}}"
+                       style="width: 40px; height: 40px; text-align: center; padding: 10px 0; border-radius: 50%;">
+                      {{this.number}}
+                    </a>
+                  </li>
+                {{/each_page}}
+              </div>
+              
+              {{#if (lt pagination.page pagination.totalPages)}}
+                <li class="page-item">
+                  <a class="page-link shadow-sm border-0 rounded-pill px-3 py-2 ms-2 d-flex align-items-center" 
+                     href="/user/overview?page={{add pagination.page 1}}">
+                    <span class="d-none d-sm-inline">Trang sau</span>
+                    <i class="fas fa-chevron-right ms-1"></i>
+                  </a>
+                </li>
+              {{else}}
+                <li class="page-item disabled">
+                  <span class="page-link shadow-sm border-0 rounded-pill px-3 py-2 ms-2 d-flex align-items-center">
+                    <span class="d-none d-sm-inline">Trang sau</span>
+                    <i class="fas fa-chevron-right ms-1"></i>
+                  </span>
+                </li>
+              {{/if}}
+            </ul>
+          </nav>
+        {{/if}}
       </div>
 
       <!-- Achievements Tab -->
@@ -613,7 +683,7 @@
           <form id="avatarUploadForm" method="post" action="/user/update-avatar" enctype="multipart/form-data">
             <div class="mb-3 text-center">
               <div class="avatar-preview-container mb-3">
-                <img id="avatarPreview" src="{{#if user.avatar}}{{user.avatar}}{{else}}https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80{{/if}}" 
+                <img id="avatarPreview" src="{{#if user.avatar}}{{user.avatar}}{{else}}https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80{{/if}}" 
                      alt="Avatar Preview" 
                      class="rounded-circle" 
                      style="width: 150px; height: 150px; object-fit: cover;">
@@ -643,7 +713,8 @@
   <!-- Bootstrap JS and Popper.js -->
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
-  
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <script>
     // Enable Bootstrap tooltips
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -651,98 +722,157 @@
       return new bootstrap.Tooltip(tooltipTriggerEl)
     })
     
-    // Add this script to your existing JavaScript section
+    // Enhanced pagination interactions
     document.addEventListener('DOMContentLoaded', function() {
-      // File input change event for avatar preview
-      const avatarFileInput = document.getElementById('avatarFile');
-      const avatarPreview = document.getElementById('avatarPreview');
+      // Add subtle hover animations to pagination buttons
+      const pageLinks = document.querySelectorAll('.page-link');
       
-      if (avatarFileInput && avatarPreview) {
-        avatarFileInput.addEventListener('change', function() {
-          if (this.files && this.files[0]) {
-            const reader = new FileReader();
-            
-            reader.onload = function(e) {
-              avatarPreview.src = e.target.result;
-            };
-            
-            reader.readAsDataURL(this.files[0]);
+      pageLinks.forEach(link => {
+        if (!link.closest('.disabled')) {
+          link.addEventListener('mouseenter', function() {
+            this.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
+          });
+          
+          link.addEventListener('mouseleave', function() {
+            this.style.boxShadow = '';
+          });
+        }
+      });
+      
+      // Animate page number on active page
+      const activePageNumber = document.querySelector('.page-item.active .page-link');
+      if (activePageNumber) {
+        activePageNumber.style.transition = 'transform 0.3s';
+        setTimeout(() => {
+          activePageNumber.style.transform = 'translateY(-2px) scale(1.05)';
+          setTimeout(() => {
+            activePageNumber.style.transform = 'translateY(-2px) scale(1)';
+          }, 300);
+        }, 500);
+      }
+    });
+
+    // Enhanced Avatar Upload Functionality with Cloudinary
+    document.addEventListener('DOMContentLoaded', function() {
+      // File input change event to preview selected image
+      document.getElementById('avatarFile').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            document.getElementById('avatarPreview').src = e.target.result;
+          }
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // Avatar hover effect - keep existing code if any
+      const profileAvatar = document.getElementById('profileAvatar');
+      const avatarOverlay = document.querySelector('.avatar-overlay');
+      
+      if (profileAvatar && avatarOverlay) {
+        profileAvatar.addEventListener('mouseenter', function() {
+          avatarOverlay.style.opacity = '1';
+        });
+        
+        profileAvatar.addEventListener('mouseleave', function() {
+          avatarOverlay.style.opacity = '0';
+        });
+      }
+      
+      // Handle avatar form submission with Cloudinary upload
+      document.getElementById('avatarUploadForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        
+        const fileInput = document.getElementById('avatarFile');
+        if (!fileInput.files || !fileInput.files[0]) {
+          Swal.fire({
+            icon: 'error',
+            title: 'No image selected',
+            text: 'Please select an image to upload',
+          });
+          return;
+        }
+        
+        const formData = new FormData();
+        formData.append('image', fileInput.files[0]);
+        
+        // Show loading indicator
+        Swal.fire({
+          title: 'Uploading image...',
+          html: 'Please wait while we process your image',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
           }
         });
-      }
-      
-      // Avatar upload form submission
-      const avatarUploadForm = document.getElementById('avatarUploadForm');
-      if (avatarUploadForm) {
-        avatarUploadForm.addEventListener('submit', function(e) {
-          e.preventDefault();
+        
+        // Step 1: Upload to Cloudinary via media router
+        fetch('/media/upload-image', {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(cloudinaryData => {
+         
+          // Update loading message
+          Swal.update({
+            title: 'Updating profile...',
+            html: 'Your image has been uploaded, updating your profile'
+          });
           
-          const formData = new FormData(this);
-          
-          // Show loading state
-          const confirmBtn = document.getElementById('confirmAvatarBtn');
-          const originalBtnText = confirmBtn.innerHTML;
-          confirmBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Uploading...';
-          confirmBtn.disabled = true;
-          
-          // Send AJAX request
-          fetch('/user/update-avatar', {
+          // Step 2: Update user profile with the Cloudinary URL
+          return fetch('/user/update-avatar', {
             method: 'POST',
-            body: formData
-          })
-          .then(response => response.json())
-          .then(data => {
-            if (data.success) {
-              // Update all instances of the avatar on the page
-              const allAvatars = document.querySelectorAll('.profile-image');
-              allAvatars.forEach(avatar => {
-                avatar.src = data.avatarUrl;
-              });
-              
-              // Close the modal
-              const modal = bootstrap.Modal.getInstance(document.getElementById('avatarUploadModal'));
-              modal.hide();
-              
-              // Show success message
-              showAlert('success', 'Profile picture updated successfully!');
-            } else {
-              showAlert('danger', data.message || 'Failed to update profile picture.');
-            }
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            showAlert('danger', 'An error occurred. Please try again.');
-          })
-          .finally(() => {
-            // Reset button state
-            confirmBtn.innerHTML = originalBtnText;
-            confirmBtn.disabled = false;
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ avatar: cloudinaryData.imageUrl, public_id:cloudinaryData.publicId  })
+          });
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to update profile');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.success) {
+            // Close the modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('avatarUploadModal'));
+            modal.hide();
+            
+            // Update the profile avatar on the page without reload
+            document.querySelectorAll('.profile-image, #profileAvatar').forEach(img => {
+              img.src = document.getElementById('avatarPreview').src;
+            });
+            
+            // Show success message
+            Swal.fire({
+              icon: 'success',
+              title: 'Profile Updated!',
+              text: 'Your avatar has been successfully updated',
+              timer: 2000,
+              showConfirmButton: false
+            });
+          } else {
+            throw new Error(data.message || 'Failed to update profile');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Upload Failed',
+            text: error.message || 'There was an error uploading your image'
           });
         });
-      }
-      
-      // Helper function to show alerts
-      function showAlert(type, message) {
-        const alertContainer = document.createElement('div');
-        alertContainer.className = `alert alert-${type} alert-dismissible fade show`;
-        alertContainer.setAttribute('role', 'alert');
-        alertContainer.innerHTML = `
-          ${message}
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        `;
-        
-        // Insert at the top of the main content
-        const mainContent = document.querySelector('main');
-        if (mainContent) {
-          mainContent.insertBefore(alertContainer, mainContent.firstChild);
-          
-          // Auto-dismiss after 5 seconds
-          setTimeout(() => {
-            alertContainer.classList.remove('show');
-            setTimeout(() => alertContainer.remove(), 300);
-          }, 5000);
-        }
-      }
+      });
     });
   </script>
 </body>
