@@ -3,6 +3,30 @@ import passport from "passport";
 import session from "express-session";
 import mysqlSession from "express-mysql-session";
 import cloudinary from "cloudinary";
+import { engine } from "express-handlebars";
+import path from "path";
+import { fileURLToPath } from "url";
+import dotenv from "dotenv";
+import moment from "moment-timezone";
+import flash from "connect-flash";
+
+import halenTestRoute from "./routes/halenTestRoute.js";
+import quizRoute from "./routes/quizRoute.js";
+import authLoginRoute from "./routes/authLoginRoute.js";
+import flashCardRoute from "./routes/flashCardRoute.js";
+import rankingRoute from "./routes/rankingRoute.js";
+import homeRoute from "./routes/homeRoute.js";
+import userRoute from "./routes/userRoute.js";
+import adminRoute from "./routes/adminRoute.js";
+import studentRoute from "./routes/studentRoute.js";
+import mediaRoute from "./routes/mediaRoute.js";
+import userAnswerRoute from "./routes/userAnswerRoute.js";
+import resultRoute from "./routes/resultRoute.js";
+import questionRoute from "./routes/questionRoute.js";
+
+import "./authentication/passport-setup.js";
+import { options } from "./configs/db.js";
+
 
 import { engine } from 'express-handlebars'; 
 import path from 'path';
@@ -169,6 +193,19 @@ app.use(flash());
     if (diffDays === 1) return '1 day remaining';
     return `${diffDays} days remaining`;
 },
+math: function(lvalue, operator, rvalue) {
+  lvalue = parseFloat(lvalue);
+  rvalue = parseFloat(rvalue);
+  
+  return {
+      '+': lvalue + rvalue,
+      '-': lvalue - rvalue,
+      '*': lvalue * rvalue,
+      '/': lvalue / rvalue,
+      '%': lvalue % rvalue
+  }[operator];
+}
+
     gt :function(a, b) {
       return a > b;
     },
@@ -205,6 +242,7 @@ app.use(flash());
     not: function(value) {
       return !value;
     }
+ 
     
     }
   }));
@@ -274,6 +312,8 @@ app.use("/user", userRoute);
 app.use("/media", mediaRoute);
 app.use("/admin", adminRoute);
 app.use("/student", studentRoute);
+
+app.use("/halenTest", halenTestRoute);
 app.use("/user-answer", userAnswerRoute);  
 app.use("/result", resultRoute);
 app.use("/question", questionRoute);
