@@ -39,6 +39,7 @@ app.use(flash());
    app.engine('hbs', engine({
     extname : 'hbs',
     helpers: {
+
       extractFirstImage: function (content) {
         if (!content) {
           return "imgs/no_image.jpg";
@@ -218,7 +219,12 @@ math: function(lvalue, operator, rvalue) {
     },
     not: function(value) {
       return !value;
-    }
+    },
+    section: function(name, options) {
+      if (!this._sections) this._sections = {};
+      this._sections[name] = options.fn(this);
+      return null;
+  }
  
     
     }
