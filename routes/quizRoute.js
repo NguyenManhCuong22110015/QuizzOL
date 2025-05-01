@@ -19,40 +19,57 @@ router.get('/quizzes', async (req, res) => {
 })
 
 
-router.post('/quizzes', async (req, res) => {
+router.post('/quizzes', async (req, res) => { // Added 'check' middleware assuming it verifies auth
     try {
         const data = req.body;
+        // Ensure user ID is correctly retrieved from the session after authentication
+        const userId = req.session.authUser?.user || req.user?.id || 1; // Adjust based on your session/passport setup
+
+        if (!userId) {
+            // Handle case where user is not authenticated or ID is not found
+            // You might redirect to login or send an error
+            console.error('User ID not found in session for creating quiz.');
+            // return res.status(401).redirect('/login'); // Example redirect
+             return res.status(401).json({ error: 'User not authenticated' }); // Or send error
+        }
+
+        // Basic validation (add more as needed)
+        if (!data.quizTitle || !data.quizDescription || !data.categoryId) {
+             return res.status(400).json({ error: 'Missing required quiz fields (title, description, category).' });
+        }
+
+
         const quiz = {
             title: data.quizTitle,
             description: data.quizDescription,
-            createdBy: session.userID || 1,
-            category: data.categoryId,
-            tag: data.tag,
-            time: new Date().toISOString().slice(0, 19).replace('T', ' '),
-            media: data.quizMedia
+            createdBy: userId, // Use authenticated user's ID
+            category: data.categoryId, // Assuming categoryId is sent from form
+            tag: data.tag, // Handle tag association if needed (might require separate logic)
+            time: new Date(), // Use current date/time for creation
+            media: data.quizMedia || null // Handle media association if needed
         };
 
-        // Add the quiz to the database and get the inserted quiz ID
-        const quizId = await quizService.addQuiz(quiz) || 0;
+        // Add the quiz to the database using the service
+        // The service should return the ID of the newly inserted quiz
+        const [newQuizId] = await quizService.addQuiz(quiz); // Knex insert typically returns an array with the ID
 
-        // Get question from request body and add them to the quiz
-        const questions = data.questionList || [];
+        if (!newQuizId) {
+            throw new Error('Quiz creation failed, no ID returned.');
+        }
 
-        // Add quizId to each question object and add new question to the database
-        // This returns an array of inserted questions
-        const insertedQuestions = await questionService.addQuestions(quizId, questions) || 0;
+        console.log(`Quiz created with ID: ${newQuizId}`);
 
-        // Now add options for each inserted question using their "option" property
-        await answerService.addOptionsForAllQuestions(questions, insertedQuestions) || 0;
+        // --- MODIFICATION START ---
+        // Instead of returning JSON, redirect to the add question page for the new quiz
+        // Assuming your route for adding questions is like '/admin/quizzes/:id/addquestion'
+        res.redirect(`/question/${newQuizId}/add-question`);
+        // --- MODIFICATION END ---
 
-        res.json({
-            message: "Quiz created successfully",
-            quizId,
-            insertedQuestions
-        });
     } catch (error) {
         console.error('Error creating quiz:', error);
-        res.status(500).json({ error: 'Failed to create quiz' });
+        // Provide a more user-friendly error or render an error page
+        res.status(500).send('Failed to create quiz. Please try again later.'); // Example error response
+        // Or res.render('errorPage', { message: 'Failed to create quiz.' });
     }
 });
 

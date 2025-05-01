@@ -7,13 +7,30 @@ const router = new Router()
 
 
 
-router.get('/add-question', async (req, res) => {
-   
-   
-    res.render('addQuestion', {
-        layout: false,
-    })
-})
+router.get('/:quizId/add-question', async (req, res) => { // Add auth check
+    const { quizId } = req.params;
+    // Optional: Add authorization check (e.g., is the user an admin or the quiz owner?)
+    try {
+        // You might want to fetch quiz details to display on the page
+        const quiz = await quizService.getQuizById(quizId);
+        if (!quiz) {
+             return res.status(404).render('error', { message: 'Quiz not found.' }); // Use admin layout
+        }
+
+        // Render the view for adding questions, passing the quizId and potentially quiz title
+        res.render('addQuestionStudent_dataFilled', { // Assuming this is your view name and location
+            layout: 'student', // Use your admin layout
+            quizId: quizId,
+            quizTitle: quiz.title // Pass title for context
+            // Add any other data needed for the view
+        });
+
+    } catch (error) {
+        console.error(`Error rendering add question page for quiz ${quizId}:`, error);
+        res.status(500).render('error', { layout: 'adminLayout', message: 'Failed to load add question page.' });
+    }
+});
+
 
 router.post('/:quizId/add-question', async (req, res) => {
     const { quizId } = req.params;

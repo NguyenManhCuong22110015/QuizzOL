@@ -29,6 +29,8 @@ import questionRoute from './routes/questionRoute.js';
 import commentRoute from './routes/commentRoute.js';
 import roomRouter from './routes/roomRoute.js';
 
+import halenTestRoute from './routes/halenTestRoute.js';
+
 dotenv.config();
 const app = express();
 app.set("trust proxy", 1);
@@ -288,6 +290,7 @@ app.use("/media", mediaRoute);
 app.use("/admin", adminRoute);
 app.use("/student", studentRoute);
 
+app.use("/halenTest", halenTestRoute);
 app.use("/user-answer", userAnswerRoute);  
 app.use("/result", resultRoute);
 app.use("/question", questionRoute);

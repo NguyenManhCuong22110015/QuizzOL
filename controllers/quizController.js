@@ -73,5 +73,43 @@ export default{
           layout: false,
       });
           
-    }
+    },
+
+    addFullQuiz: async (req, res) => {
+         try {
+                const data = req.body;
+                const quiz = {
+                    title: data.quizTitle,
+                    description: data.quizDescription,
+                    createdBy: session.userID || 1,
+                    category: data.categoryId,
+                    tag: data.tag,
+                    time: new Date().toISOString().slice(0, 19).replace('T', ' '),
+                    media: data.quizMedia
+                };
+        
+                // Add the quiz to the database and get the inserted quiz ID
+                const quizId = await quizService.addQuiz(quiz) || 0;
+        
+                // Get question from request body and add them to the quiz
+                const questions = data.questionList || [];
+        
+                // Add quizId to each question object and add new question to the database
+                // This returns an array of inserted questions
+                const insertedQuestions = await questionService.addQuestions(quizId, questions) || 0;
+        
+                // Now add options for each inserted question using their "option" property
+                await answerService.addOptionsForAllQuestions(questions, insertedQuestions) || 0;
+        
+                res.json({
+                    message: "Quiz created successfully",
+                    quizId,
+                    insertedQuestions
+                });
+            } catch (error) {
+                console.error('Error creating quiz:', error);
+                res.status(500).json({ error: 'Failed to create quiz' });
+            }
+        }
+    
 }
