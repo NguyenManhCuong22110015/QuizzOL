@@ -1,17 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet"  href="/css/custom.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-</head>
-<body>
-    
-
-
-
 <section class="hero-section py-5">
     <div class="container">
         <div class="row align-items-center">
@@ -44,6 +30,8 @@
         </div>
     </div>
 </section>
+
+
 <section class="leaderboard-section py-5">
   <div class="container">
     <div class="text-center mb-4">
@@ -53,9 +41,9 @@
     
     <!-- League selection tabs -->
     <div class="league-tabs d-flex justify-content-center mb-4">
-      <button class="btn btn-outline-primary px-4 py-2 me-2 active">Bronze League</button>
-      <button class="btn btn-outline-primary px-4 py-2 me-2">Silver League</button>
-      <button class="btn btn-outline-primary px-4 py-2">Gold League</button>
+      <button class="btn btn-outline-primary px-4 py-2 me-2 active" data-criteria="score">Score League</button>
+      <button class="btn btn-outline-primary px-4 py-2 me-2" data-criteria="attend">Attend League</button>
+      <button class="btn btn-outline-primary px-4 py-2" data-criteria="mean">Mean League</button>
     </div>
     
     <div class="row">
@@ -63,7 +51,7 @@
       <div class="col-lg-12 mb-4">
         <div class="podium-container d-flex justify-content-center align-items-end">
           <!-- Second place -->
-          <div class="podium-item position-relative">
+          <div class="podium-item position-relative" id="second-place">
             <div class="podium-avatar silver-border">
               <img src="https://i.pravatar.cc/150?img=32" alt="Second place" class="rounded-circle">
               <div class="rank-badge silver">2</div>
@@ -76,7 +64,7 @@
           </div>
           
           <!-- First place (taller) -->
-          <div class="podium-item position-relative first-place">
+          <div class="podium-item position-relative first-place" id="first-place">
             <div class="podium-crown position-absolute"><i class="fas fa-crown"></i></div>
             <div class="podium-avatar gold-border">
               <img src="https://i.pravatar.cc/150?img=67" alt="First place" class="rounded-circle">
@@ -90,7 +78,7 @@
           </div>
           
           <!-- Third place -->
-          <div class="podium-item position-relative">
+          <div class="podium-item position-relative" id="third-place">
             <div class="podium-avatar bronze-border">
               <img src="https://i.pravatar.cc/150?img=15" alt="Third place" class="rounded-circle">
               <div class="rank-badge bronze">3</div>
@@ -110,105 +98,26 @@
           <div class="leaderboard-heading d-flex justify-content-between mb-3">
             <div>
               <h4 class="mb-0">Leaderboard</h4>
-              <small class="text-muted">Resets in 3 days, 8 hours</small>
+              <small class="text-muted" id="leaderboard-reset-text">Resets in 3 days, 8 hours</small>
             </div>
             <div class="dropdown">
               <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" id="leaderboardOptions" data-bs-toggle="dropdown" aria-expanded="false">
                 Weekly
               </button>
               <ul class="dropdown-menu" aria-labelledby="leaderboardOptions">
-                <li><a class="dropdown-item" href="#">Weekly</a></li>
-                <li><a class="dropdown-item" href="#">Monthly</a></li>
-                <li><a class="dropdown-item" href="#">All Time</a></li>
+                <li><a class="dropdown-item" href="javascript:void(0)" data-time="week">Weekly</a></li>
+                <li><a class="dropdown-item" href="javascript:void(0)" data-time="month">Monthly</a></li>
+                <li><a class="dropdown-item" href="javascript:void(0)" data-time="year">All Time</a></li>
               </ul>
             </div>
           </div>
           
-          <ul class="leaderboard-list list-unstyled">
-            <!-- First 3 already shown in podium -->
-            <!-- 4th place -->
-            <li class="leaderboard-item d-flex align-items-center p-3 mb-2 rounded">
-              <div class="leaderboard-rank">4</div>
-              <div class="leaderboard-avatar">
-                <img src="https://i.pravatar.cc/150?img=22" alt="User" class="rounded-circle">
-              </div>
-              <div class="leaderboard-info">
-                <h6 class="mb-0">Sophia R.</h6>
-                <small>3 day streak</small>
-              </div>
-              <div class="leaderboard-trend text-success"><i class="fas fa-caret-up"></i> 2</div>
-              <div class="leaderboard-points ms-auto">
-                <span class="badge bg-light text-dark"><i class="fas fa-bolt"></i> 6,840</span>
-              </div>
-            </li>
-            
-            <!-- 5th place -->
-            <li class="leaderboard-item d-flex align-items-center p-3 mb-2 rounded">
-              <div class="leaderboard-rank">5</div>
-              <div class="leaderboard-avatar">
-                <img src="https://i.pravatar.cc/150?img=56" alt="User" class="rounded-circle">
-              </div>
-              <div class="leaderboard-info">
-                <h6 class="mb-0">Alex W.</h6>
-                <small>8 day streak</small>
-              </div>
-              <div class="leaderboard-trend text-danger"><i class="fas fa-caret-down"></i> 1</div>
-              <div class="leaderboard-points ms-auto">
-                <span class="badge bg-light text-dark"><i class="fas fa-bolt"></i> 6,245</span>
-              </div>
-            </li>
-            
-            <!-- 6th place -->
-            <li class="leaderboard-item d-flex align-items-center p-3 mb-2 rounded">
-              <div class="leaderboard-rank">6</div>
-              <div class="leaderboard-avatar">
-                <img src="https://i.pravatar.cc/150?img=48" alt="User" class="rounded-circle">
-              </div>
-              <div class="leaderboard-info">
-                <h6 class="mb-0">Michael D.</h6>
-                <small>5 day streak</small>
-              </div>
-              <div class="leaderboard-trend text-success"><i class="fas fa-caret-up"></i> 4</div>
-              <div class="leaderboard-points ms-auto">
-                <span class="badge bg-light text-dark"><i class="fas fa-bolt"></i> 5,870</span>
-              </div>
-            </li>
-            
-            <!-- 7th place -->
-            <li class="leaderboard-item d-flex align-items-center p-3 mb-2 rounded">
-              <div class="leaderboard-rank">7</div>
-              <div class="leaderboard-avatar">
-                <img src="https://i.pravatar.cc/150?img=35" alt="User" class="rounded-circle">
-              </div>
-              <div class="leaderboard-info">
-                <h6 class="mb-0">Olivia J.</h6>
-                <small>12 day streak</small>
-              </div>
-              <div class="leaderboard-trend"><i class="fas fa-minus"></i></div>
-              <div class="leaderboard-points ms-auto">
-                <span class="badge bg-light text-dark"><i class="fas fa-bolt"></i> 5,340</span>
-              </div>
-            </li>
-            
-            <!-- You - Highlighted -->
-            <li class="leaderboard-item your-rank d-flex align-items-center p-3 rounded">
-              <div class="leaderboard-rank">12</div>
-              <div class="leaderboard-avatar">
-                <img src="https://i.pravatar.cc/150?img=11" alt="Your avatar" class="rounded-circle">
-              </div>
-              <div class="leaderboard-info">
-                <h6 class="mb-0">You</h6>
-                <small>2 day streak</small>
-              </div>
-              <div class="leaderboard-trend text-success"><i class="fas fa-caret-up"></i> 8</div>
-              <div class="leaderboard-points ms-auto">
-                <span class="badge bg-primary"><i class="fas fa-bolt"></i> 3,240</span>
-              </div>
-            </li>
+          <ul class="leaderboard-list list-unstyled" id="leaderboard-players">
+            <!-- Players will be loaded here -->
           </ul>
           
           <div class="mt-3 text-center">
-            <button class="btn btn-sm btn-outline-light px-4">View Full Leaderboard</button>
+            <button class="btn btn-sm btn-outline-light px-4" id="view-full-leaderboard">View Full Leaderboard</button>
           </div>
         </div>
       </div>
@@ -234,266 +143,9 @@
       </div>
     </div>
   </div>
+
 </section>
 
-<style>
-/* Leaderboard Section Styling */
-.leaderboard-section {
-  background-color: #14151a;
-  background-image: 
-    radial-gradient(circle at 15% 50%, rgba(76, 0, 255, 0.08) 0%, transparent 33%),
-    radial-gradient(circle at 85% 30%, rgba(255, 183, 0, 0.08) 0%, transparent 33%);
-  color: white;
-  position: relative;
-  overflow: hidden;
-}
-
-.leaderboard-section::before {
-  content: '';
-  position: absolute;
-  top: -20px;
-  left: 0;
-  right: 0;
-  height: 40px;
-  background: linear-gradient(135deg, #14151a 25%, transparent 25%) -10px 0,
-              linear-gradient(225deg, #14151a 25%, transparent 25%) -10px 0;
-  background-size: 20px 20px;
-  z-index: 1;
-}
-
-.league-tabs .btn {
-  border-radius: 20px;
-  font-weight: 600;
-  transition: all 0.2s;
-  border-width: 2px;
-}
-
-.league-tabs .btn.active {
-  background-color: var(--bs-primary);
-  color: white;
-  box-shadow: 0 0 15px rgba(var(--bs-primary-rgb), 0.4);
-}
-
-/* Podium styling */
-.podium-container {
-  padding: 30px 0;
-}
-
-.podium-item {
-  width: 130px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0 15px;
-  transition: transform 0.3s;
-}
-
-.podium-item:hover {
-  transform: translateY(-5px);
-}
-
-.podium-crown {
-  top: -30px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: gold;
-  font-size: 24px;
-  animation: float 2s infinite alternate ease-in-out;
-}
-
-@keyframes float {
-  0% {
-    transform: translateX(-50%) translateY(0);
-  }
-  100% {
-    transform: translateX(-50%) translateY(-5px);
-  }
-}
-
-.podium-avatar {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  overflow: hidden;
-  border: 3px solid white;
-  position: relative;
-  z-index: 2;
-  margin-bottom: -15px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-}
-
-.first-place .podium-avatar {
-  width: 90px;
-  height: 90px;
-}
-
-.gold-border {
-  border-color: gold;
-  box-shadow: 0 0 15px rgba(255,215,0,0.5);
-}
-
-.silver-border {
-  border-color: silver;
-  box-shadow: 0 0 15px rgba(192,192,192,0.5);
-}
-
-.bronze-border {
-  border-color: #cd7f32;
-  box-shadow: 0 0 15px rgba(205,127,50,0.5);
-}
-
-.podium-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.rank-badge {
-  position: absolute;
-  bottom: -5px;
-  right: -5px;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 12px;
-}
-
-.gold {
-  background: linear-gradient(145deg, #ffd700, #ffa500);
-  color: #333;
-}
-
-.silver {
-  background: linear-gradient(145deg, #e0e0e0, #c0c0c0);
-  color: #333;
-}
-
-.bronze {
-  background: linear-gradient(145deg, #cd7f32, #a05129);
-  color: white;
-}
-
-.podium-bar {
-  width: 70px;
-  border-radius: 10px 10px 0 0;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
-
-.gold-bg {
-  background: linear-gradient(180deg, #ffd700, #ffa500);
-}
-
-.silver-bg {
-  background: linear-gradient(180deg, #e0e0e0, #a0a0a0);
-}
-
-.bronze-bg {
-  background: linear-gradient(180deg, #cd7f32, #8B4513);
-}
-
-.podium-info {
-  margin-top: 15px;
-  text-align: center;
-}
-
-.podium-info h5 {
-  font-weight: 600;
-  margin-bottom: 5px;
-  font-size: 1rem;
-}
-
-/* Leaderboard list styling */
-.leaderboard-card {
-  border-radius: 15px;
-  border: 1px solid rgba(255,255,255,0.1);
-}
-
-.leaderboard-item {
-  background-color: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  transition: all 0.2s;
-}
-
-.leaderboard-item:hover {
-  background-color: rgba(255,255,255,0.1);
-  transform: translateX(5px);
-}
-
-.leaderboard-rank {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background-color: rgba(255,255,255,0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 14px;
-  margin-right: 12px;
-}
-
-.leaderboard-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin-right: 12px;
-  border: 2px solid rgba(255,255,255,0.2);
-}
-
-.leaderboard-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.leaderboard-info {
-  flex-grow: 1;
-}
-
-.leaderboard-info small {
-  color: rgba(255,255,255,0.6);
-}
-
-.leaderboard-trend {
-  margin: 0 15px;
-  font-weight: bold;
-  width: 30px;
-  text-align: center;
-}
-
-.your-rank {
-  background-color: rgba(var(--bs-primary-rgb), 0.15);
-  border: 2px solid var(--bs-primary);
-  box-shadow: 0 0 15px rgba(var(--bs-primary-rgb), 0.2);
-}
-
-/* Prizes section */
-.leaderboard-prizes {
-  border: 1px solid rgba(255,255,255,0.1);
-  display: inline-block;
-}
-
-.prize-icon {
-  font-size: 24px;
-}
-
-.gold-text {
-  color: gold;
-}
-
-.silver-text {
-  color: silver;
-}
-
-.bronze-text {
-  color: #cd7f32;
-}
-</style>
 <!-- Features Section -->
 <section id="features" class="py-5">
     <div class="container">
@@ -677,45 +329,261 @@
 </section>
 
 <!-- Featured In Section -->
-<div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-4 justify-content-center">
-    <div class="col text-center">
-        <div class="featured-logo p-3">
-            <i class="fas fa-graduation-cap fa-3x"></i>
-            <p class="mt-2 mb-0">EduTech</p>
-        </div>
+<section class="featured-section py-5">
+  <div class="container">
+    <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-4 justify-content-center">
+      <!-- Các column hiện tại -->
     </div>
-    <div class="col text-center">
-        <div class="featured-logo p-3">
-            <i class="fas fa-book-open fa-3x"></i>
-            <p class="mt-2 mb-0">LearnCo</p>
-        </div>
-    </div>
-    <div class="col text-center">
-        <div class="featured-logo p-3">
-            <i class="fas fa-university fa-3x"></i>
-            <p class="mt-2 mb-0">Academy</p>
-        </div>
-    </div>
-    <div class="col text-center">
-        <div class="featured-logo p-3">
-            <i class="fas fa-school fa-3x"></i>
-            <p class="mt-2 mb-0">School Plus</p>
-        </div>
-    </div>
-    <div class="col text-center">
-        <div class="featured-logo p-3">
-            <i class="fas fa-users fa-3x"></i>
-            <p class="mt-2 mb-0">Edu Group</p>
-        </div>
-    </div>
-    <div class="col text-center">
-        <div class="featured-logo p-3">
-            <i class="fas fa-flask fa-3x"></i>
-            <p class="mt-2 mb-0">Study Labs</p>
-        </div>
-    </div>
-</div>
+  </div>
 </section>
 
-</body>
-</html>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Current selected filters
+      let currentCriteria = 'score';
+      let currentTime = 'week';
+      
+      // Load initial data
+      loadLeaderboardData(currentCriteria, currentTime);
+      
+      // Add event listeners to league tabs
+      document.querySelectorAll('.league-tabs button').forEach(button => {
+        button.addEventListener('click', function() {
+          // Update active state
+          document.querySelectorAll('.league-tabs button').forEach(btn => btn.classList.remove('active'));
+          this.classList.add('active');
+          
+          // Update criteria and reload data
+          currentCriteria = this.getAttribute('data-criteria');
+          loadLeaderboardData(currentCriteria, currentTime);
+          
+          // Update heading
+          updateLeaderboardHeading(currentCriteria, currentTime);
+        });
+      });
+      
+      // Add event listeners to time dropdown items
+      document.querySelectorAll('.dropdown-menu a').forEach(item => {
+        item.addEventListener('click', function(e) {
+          // Ngăn không cho trang cuộn lên đầu
+          e.preventDefault();
+          e.stopPropagation();
+          
+          // Update dropdown button text
+          const newTime = this.getAttribute('data-time');
+          let timeText = 'Weekly';
+          
+          if (newTime === 'month') timeText = 'Monthly';
+          else if (newTime === 'year') timeText = 'All Time';
+          
+          document.getElementById('leaderboardOptions').textContent = timeText;
+          
+          // Update time and reload data
+          currentTime = newTime;
+          loadLeaderboardData(currentCriteria, currentTime);
+          
+          // Update heading
+          updateLeaderboardHeading(currentCriteria, currentTime);
+          
+          // Ngăn không cho trang cuộn
+          return false;
+        });
+      });
+      
+      // Function to load leaderboard data
+      function loadLeaderboardData(criteria, time) {
+        const url = `/getTopPlayersByCriteria?criteria=${criteria}&time=${time}`;
+        
+        // Show loading state
+        showLoadingState();
+        
+        fetch(url)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok');
+            }
+            return response.json();
+          })
+          .then(data => {
+            // Update UI with new data
+            updateLeaderboardUI(data);
+          })
+          .catch(error => {
+            console.error('Error fetching leaderboard data:', error);
+            showErrorState();
+          });
+      }
+      
+      // Function to show loading state
+      function showLoadingState() {
+        // Add loading indicators
+        document.getElementById('first-place').classList.add('loading');
+        document.getElementById('second-place').classList.add('loading');
+        document.getElementById('third-place').classList.add('loading');
+        document.getElementById('leaderboard-players').innerHTML = '<li class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></li>';
+      }
+      
+      // Function to show error state
+      function showErrorState() {
+        document.getElementById('leaderboard-players').innerHTML = '<li class="text-center py-4 text-danger"><i class="fas fa-exclamation-circle me-2"></i>Failed to load leaderboard data</li>';
+      }
+      
+      // Function to update the UI with new data
+      function updateLeaderboardUI(data) {
+        const players = data.players;
+        
+        if (!players || players.length === 0) {
+          document.getElementById('leaderboard-players').innerHTML = '<li class="text-center py-4">No players found for this leaderboard</li>';
+          return;
+        }
+        
+        // Update top 3 podium
+        updatePodium(players);
+        
+        // Update leaderboard list (players 4-10)
+        updateLeaderboardList(players);
+        
+        // Update prize text based on time period
+        updatePrizeText(currentTime);
+      }
+      
+      // Function to update the podium with top 3 players
+      function updatePodium(players) {
+        // First place
+        if (players.length > 0) {
+          const first = players[0];
+          const firstPlace = document.getElementById('first-place');
+          firstPlace.querySelector('img').src = first.avatarUrl || `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70)}`;
+          firstPlace.querySelector('h5').textContent = first.username || 'Anonymous';
+          firstPlace.querySelector('.points span').innerHTML = `<i class="fas fa-bolt"></i> ${formatNumber(first.criteriaValue)}`;
+          firstPlace.classList.remove('loading');
+        }
+        
+        // Second place
+        if (players.length > 1) {
+          const second = players[1];
+          const secondPlace = document.getElementById('second-place');
+          secondPlace.querySelector('img').src = second.avatarUrl || `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70)}`;
+          secondPlace.querySelector('h5').textContent = second.username || 'Anonymous';
+          secondPlace.querySelector('.points span').innerHTML = `<i class="fas fa-bolt"></i> ${formatNumber(second.criteriaValue)}`;
+          secondPlace.classList.remove('loading');
+        }
+        
+        // Third place
+        if (players.length > 2) {
+          const third = players[2];
+          const thirdPlace = document.getElementById('third-place');
+          thirdPlace.querySelector('img').src = third.avatarUrl || `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70)}`;
+          thirdPlace.querySelector('h5').textContent = third.username || 'Anonymous';
+          thirdPlace.querySelector('.points span').innerHTML = `<i class="fas fa-bolt"></i> ${formatNumber(third.criteriaValue)}`;
+          thirdPlace.classList.remove('loading');
+        }
+      }
+      
+      // Function to update the leaderboard list
+      function updateLeaderboardList(players) {
+        const leaderboardList = document.getElementById('leaderboard-players');
+        let html = '';
+        
+        // Generate list items for players 4 onwards (up to 7)
+        const displayCount = Math.min(players.length - 3, 4); // Show at most 4 more players after the top 3
+        
+        if (displayCount <= 0) {
+          html = '<li class="text-center py-3">No additional players to display</li>';
+        } else {
+          for (let i = 3; i < 3 + displayCount; i++) {
+            const player = players[i];
+            const trend = Math.random() > 0.5 ? 
+              `<div class="leaderboard-trend text-success"><i class="fas fa-caret-up"></i> ${Math.floor(Math.random() * 5) + 1}</div>` : 
+              `<div class="leaderboard-trend text-danger"><i class="fas fa-caret-down"></i> ${Math.floor(Math.random() * 5) + 1}</div>`;
+              
+            html += `
+              <li class="leaderboard-item d-flex align-items-center p-3 mb-2 rounded">
+                <div class="leaderboard-rank">${i + 1}</div>
+                <div class="leaderboard-avatar">
+                  <img src="${player.avatarUrl || `https://i.pravatar.cc/150?img=${Math.floor(Math.random() * 70)}`}" alt="${player.username || 'User'}" class="rounded-circle">
+                </div>
+                <div class="leaderboard-info">
+                  <h6 class="mb-0">${player.username || 'Anonymous'}</h6>
+                  <small>${Math.floor(Math.random() * 14) + 1} day streak</small>
+                </div>
+                ${trend}
+                <div class="leaderboard-points ms-auto">
+                  <span class="badge bg-light text-dark"><i class="fas fa-bolt"></i> ${formatNumber(player.criteriaValue)}</span>
+                </div>
+              </li>
+            `;
+          }
+          
+          // Add current user (placeholder - in a real app you'd check if the current user is in the list)
+          html += `
+            <li class="leaderboard-item your-rank d-flex align-items-center p-3 rounded">
+              <div class="leaderboard-rank">12</div>
+              <div class="leaderboard-avatar">
+                <img src="https://i.pravatar.cc/150?img=11" alt="Your avatar" class="rounded-circle">
+              </div>
+              <div class="leaderboard-info">
+                <h6 class="mb-0">You</h6>
+                <small>2 day streak</small>
+              </div>
+              <div class="leaderboard-trend text-success"><i class="fas fa-caret-up"></i> 8</div>
+              <div class="leaderboard-points ms-auto">
+                <span class="badge bg-primary"><i class="fas fa-bolt"></i> ${formatNumber(Math.floor(Math.random() * 3000) + 1000)}</span>
+              </div>
+            </li>
+          `;
+        }
+        
+        leaderboardList.innerHTML = html;
+      }
+      
+      // Function to update the leaderboard heading based on criteria and time
+      function updateLeaderboardHeading(criteria, time) {
+        const heading = document.querySelector('.leaderboard-section h2');
+        let timePeriod = 'This Week\'s';
+        
+        if (time === 'month') timePeriod = 'This Month\'s';
+        else if (time === 'year') timePeriod = 'This Year\'s';
+        
+        let criteriaType = 'Top Learners';
+        if (criteria === 'score') criteriaType = 'Top Scorers';
+        else if (criteria === 'attend') criteriaType = 'Most Active Learners';
+        else if (criteria === 'mean') criteriaType = 'Highest Accuracy Learners';
+        
+        heading.textContent = `${timePeriod} ${criteriaType}`;
+        
+        // Update the badge labels based on criteria
+        updateBadgeLabels(criteria);
+      }
+      
+      // Function to update badge labels based on the criteria
+      function updateBadgeLabels(criteria) {
+        const icon = criteria === 'score' ? 'bolt' : 
+                    criteria === 'attend' ? 'check-circle' : 'percentage';
+                    
+        document.querySelectorAll('.leaderboard-points .badge i').forEach(badge => {
+          badge.className = `fas fa-${icon}`;
+        });
+      }
+      
+      // Function to update prize text based on time period
+      function updatePrizeText(time) {
+        const prizeHeader = document.querySelector('.leaderboard-prizes h6');
+        if (time === 'week') {
+          prizeHeader.innerHTML = '<i class="fas fa-trophy text-warning me-2"></i> Weekly Prizes';
+        } else if (time === 'month') {
+          prizeHeader.innerHTML = '<i class="fas fa-trophy text-warning me-2"></i> Monthly Prizes';
+        } else {
+          prizeHeader.innerHTML = '<i class="fas fa-trophy text-warning me-2"></i> Annual Prizes';
+        }
+      }
+      
+      // Utility function to format numbers
+      function formatNumber(num) {
+        if (num >= 1000) {
+          return (num / 1000).toFixed(1) + 'k';
+        }
+        return num;
+      }
+    });
+  </script>

@@ -46,7 +46,14 @@ export const handleLogin = async (req, res) => {
     const email = req.body.login_email || '';
     const password = req.body.login_password || '';
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    
+    // if (!emailRegex.test(email)) {
+    //     req.flash('sweetAlert', JSON.stringify({
+    //         type: 'warning',
+    //         title: 'Invalid Email',
+    //         text: 'Please enter a valid email address'
+    //     }));
+    //     return res.redirect('/auth/login');
+    // }
     try {
         const user = await authService.login(email, password); 
         if (!user) {
@@ -99,15 +106,14 @@ export const handleSignup = async (req, res) => {
     const password = req.body.reg_password || '';
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
-    // Validate email format if needed
-    // if (!emailRegex.test(email)) {
-    //     req.flash('sweetAlert', JSON.stringify({
-    //         type: 'warning',
-    //         title: 'Invalid Email',
-    //         text: 'Please enter a valid email address'
-    //     }));
-    //     return res.redirect('/auth/login');
-    // }
+    if (!emailRegex.test(email)) {
+        req.flash('sweetAlert', JSON.stringify({
+            type: 'warning',
+            title: 'Invalid Email',
+            text: 'Please enter a valid email address'
+        }));
+        return res.redirect('/auth/login');
+    }
     
     const token = req.body['h-captcha-response'];
     if (!token) {

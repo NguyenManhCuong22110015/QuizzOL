@@ -51,8 +51,8 @@
       </form>
       <div class="d-flex">
           {{#if authUser}}
-              <div class="user-profile">
-                <button id="profileDropdownBtn" class="profile-button">
+              <div class="dropdown">
+                <button class="profile-button dropdown-toggle" type="button" id="profileDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
                   {{#if authUser.avatar}}
                     <img src="{{authUser.avatar}}" alt="Profile" class="avatar">
                   {{else}}
@@ -72,14 +72,13 @@
                   <i class="fas fa-chevron-down dropdown-icon"></i>
                 </button>
                 
-                <!-- Dropdown Menu - Updated for mobile responsiveness -->
-                <div id="profileDropdown" class="dropdown-menu">
-                  <a href="/user/overview"><i class="fas fa-user-circle mr-2"></i> Profile</a>
-                  <a href="/my-quizzes"><i class="fas fa-list mr-2"></i> My Quizzes</a>
-                  <a href="/settings"><i class="fas fa-cog mr-2"></i> Settings</a>
-                  <div class="divider"></div>
-                  <a href="/auth/logout" class="logout"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a>
-                </div>
+                <ul class="dropdown-menu" aria-labelledby="profileDropdownBtn">
+                  <li><a class="dropdown-item" href="/user/overview"><i class="fas fa-user-circle mr-2"></i> Profile</a></li>
+                  <li><a class="dropdown-item" href="/my-quizzes"><i class="fas fa-list mr-2"></i> My Quizzes</a></li>
+                  <li><a class="dropdown-item" href="/settings"><i class="fas fa-cog mr-2"></i> Settings</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a></li>
+                </ul>
               </div>
             {{else}}
               <!-- User is not logged in -->
@@ -96,24 +95,32 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  // Simple toggle for the dropdown
-  const profileDropdownBtn = document.getElementById('profileDropdownBtn');
-  const profileDropdown = document.getElementById('profileDropdown');
+  // Bắt sự kiện click trên tất cả các dropdown-item
+  const dropdownItems = document.querySelectorAll('.dropdown-item');
   
-  if (profileDropdownBtn && profileDropdown) {
-    // Toggle dropdown visibility on button click
-    profileDropdownBtn.addEventListener('click', function(e) {
+  dropdownItems.forEach(item => {
+    item.addEventListener('click', function(e) {
+      // Ngăn chặn hành vi mặc định
       e.preventDefault();
-      e.stopPropagation(); // Prevent event from bubbling up
-      profileDropdown.classList.toggle('show');
-      console.log('Dropdown toggled');
-    });
-    
-    // Close dropdown when clicking elsewhere
-    document.addEventListener('click', function(e) {
-      if (!profileDropdownBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
-        profileDropdown.classList.remove('show');
+      e.stopPropagation();
+      
+      // Lấy URL từ thuộc tính href
+      const href = this.getAttribute('href');
+      
+      // Bắt buộc chuyển hướng đến URL mà không phụ thuộc vào Bootstrap
+      if (href) {
+        console.log('Redirecting to:', href);
+        window.location.href = href;
       }
+    });
+  });
+  
+  // Debug để kiểm tra vấn đề với Bootstrap dropdown
+  const profileDropdownBtn = document.getElementById('profileDropdownBtn');
+  if (profileDropdownBtn) {
+    profileDropdownBtn.addEventListener('click', function(e) {
+      console.log('Profile dropdown button clicked');
+      // Không cần stopPropagation() ở đây để tránh xung đột với Bootstrap
     });
   }
 });

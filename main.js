@@ -28,6 +28,8 @@ import flash from 'connect-flash';
 import questionRoute from './routes/questionRoute.js';
 import commentRoute from './routes/commentRoute.js';
 import roomRouter from './routes/roomRoute.js';
+import chatbotRouter from './routes/chatbotRouter.js';
+
 
 import halenTestRoute from './routes/halenTestRoute.js';
 
@@ -302,7 +304,7 @@ app.use("/result", resultRoute);
 app.use("/question", questionRoute);
 app.use("/comment", commentRoute);
 app.use("/room", roomRouter);
-
+app.use("/chatbot", chatbotRouter);
 app.get("/", (req, res) => {
   res.send("Hello word");
 });
