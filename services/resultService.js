@@ -205,7 +205,155 @@ export default {
                 }
             };
         }
-    }
-
-
+    },
+    async getTopPlayersByCriteria(criteria, time, limit = 10) {
+        try {
+            // Xác định khoảng thời gian dựa trên tham số time
+            const endDate = new Date();
+            let startDate = new Date();
+            
+            switch(time) {
+                case 'week':
+                    startDate.setDate(endDate.getDate() - 7); // 7 ngày trước
+                    break;
+                case 'month':
+                    startDate.setMonth(endDate.getMonth() - 1); // 1 tháng trước
+                    break;
+                case 'year':
+                    startDate.setFullYear(endDate.getFullYear() - 1); // 1 năm trước
+                    break;
+                default:
+                    startDate.setDate(endDate.getDate() - 7); // Mặc định là tuần
+            }
+            
+            // Truy vấn cơ bản với join để lấy thông tin avatar
+            const baseQuery = db('result')
+                .where('status', 'COMPLETED')
+                .whereBetween('end_time', [startDate, endDate])
+                .join('user', 'result.user', '=', 'user.id')
+                .leftJoin('media', 'user.avata', '=', 'media.id');
+            
+            let topPlayers;
+            
+            if (criteria === 'score') {
+                // Tiêu chí tổng điểm
+                topPlayers = await baseQuery
+                    .select('user.id as userId', 'user.username', 'user.email', 'user.avata', 'media.url as avatarUrl')
+                    .sum('result.score as totalScore')
+                    .groupBy('user.id', 'user.username', 'user.email', 'user.avata', 'media.url')
+                    .orderBy('totalScore', 'desc')
+                    .limit(limit);
+                    
+                // Thêm thông tin xếp hạng
+                topPlayers = topPlayers.map((player, index) => ({
+                    ...player,
+                    avatar: player.avatarUrl || `https://res.cloudinary.com/dj9r2qksh/image/upload/v1743576404/Quizz_Online/images/z3klhzrkoeikujya3fi9.jpg`, // URL mặc định nếu không có avatar
+                    rank: index + 1,
+                    criteriaValue: player.totalScore || 0
+                }));
+            } 
+            else if (criteria === 'attend') {
+                // Tiêu chí số lượng quiz hoàn thành
+                topPlayers = await baseQuery
+                    .select('user.id as userId', 'user.username', 'user.email', 'user.avata', 'media.url as avatarUrl')
+                    .countDistinct('result.quiz as completedQuizzes')
+                    .groupBy('user.id', 'user.username', 'user.email', 'user.avata', 'media.url')
+                    .orderBy('completedQuizzes', 'desc')
+                    .limit(limit);
+                    
+                // Thêm thông tin xếp hạng
+                topPlayers = topPlayers.map((player, index) => ({
+                    ...player,
+                    avatar: player.avatarUrl || `https://res.cloudinary.com/dj9r2qksh/image/upload/v1743576404/Quizz_Online/images/z3klhzrkoeikujya3fi9.jpg`, // URL mặc định
+                    rank: index + 1,
+                    criteriaValue: parseInt(player.completedQuizzes) || 0
+                }));
+            } 
+            else if (criteria === 'mean') {
+                // Tiêu chí tỷ lệ điểm số trung bình
+                
+                // Lấy tất cả người dùng có kết quả hoàn thành và tổng điểm
+                const userScores = await baseQuery
+                    .select(
+                        'user.id as userId', 
+                        'user.username', 
+                        'user.email', 
+                        'user.avata',
+                        'media.url as avatarUrl',
+                        db.raw('SUM(result.score) as totalEarned'),
+                        db.raw('COUNT(DISTINCT result.id) as quizCount')
+                    )
+                    .groupBy('user.id', 'user.username', 'user.email', 'user.avata', 'media.url');
+                
+                // Tính toán điểm tối đa có thể và tỷ lệ phần trăm cho mỗi người dùng
+                const usersWithPercentages = await Promise.all(
+                    userScores.map(async (user) => {
+                        // Lấy tất cả kết quả hoàn thành của người dùng trong khoảng thời gian
+                        const results = await db('result')
+                            .where('user', user.userId)
+                            .where('status', 'COMPLETED')
+                            .whereBetween('end_time', [startDate, endDate]);
+                        
+                        let totalPossible = 0;
+                        
+                        // Tính điểm tối đa có thể cho mỗi kết quả
+                        for (const result of results) {
+                            // Lấy tất cả câu hỏi trong quiz
+                            const quizQuestions = await db('quiz_question')
+                                .select('question_id')
+                                .where('quiz_id', result.quiz);
+                            
+                            if (quizQuestions.length === 0) continue;
+                            
+                            // Lấy giá trị điểm cho tất cả câu hỏi trong một truy vấn
+                            const questionIds = quizQuestions.map(qq => qq.question_id);
+                            const questions = await db('question')
+                                .select('id', 'points')
+                                .whereIn('id', questionIds);
+                            
+                            // Tính tổng giá trị điểm
+                            questions.forEach(question => {
+                                totalPossible += question.points || 1; // Mặc định là 1 nếu không có điểm
+                            });
+                        }
+                        
+                        // Tính tỷ lệ phần trăm (tránh chia cho 0)
+                        const percentage = totalPossible > 0 
+                            ? (user.totalEarned / totalPossible) * 100 
+                            : 0;
+                        
+                        return {
+                            ...user,
+                            avatar: user.avatarUrl || `https://res.cloudinary.com/dj9r2qksh/image/upload/v1743576404/Quizz_Online/images/z3klhzrkoeikujya3fi9.jpg`, // Thêm URL avatar mặc định
+                            percentage: parseFloat(percentage.toFixed(2)),
+                            totalPossible,
+                            criteriaValue: parseFloat(percentage.toFixed(2))
+                        };
+                    })
+                );
+                
+                // Sắp xếp theo tỷ lệ phần trăm và lấy người chơi hàng đầu
+                topPlayers = usersWithPercentages
+                    .sort((a, b) => b.percentage - a.percentage)
+                    .slice(0, limit)
+                    .map((player, index) => ({
+                        ...player,
+                        rank: index + 1
+                    }));
+            }
+            
+            return {
+                criteria,
+                timePeriod: time,
+                players: topPlayers || []
+            };
+        } catch (error) {
+            console.error('Error fetching top players:', error);
+            return {
+                criteria,
+                timePeriod: time,
+                players: []
+            };
+        }
+    },
 };

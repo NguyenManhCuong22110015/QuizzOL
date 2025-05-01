@@ -1,5 +1,6 @@
 import e, {Router} from 'express'
 import quizService from '../services/quizService.js'
+import resultService from '../services/resultService.js'
 
 const router = new Router()
 
@@ -127,6 +128,18 @@ router.get('/', async (req, res) => {
        });
   })
   
+
+router.get("/getTopPlayersByCriteria", async (req, res) => {
+  try {
+    const { criteria, time } = req.query
+    
+    const topPlayers = await resultService.getTopPlayersByCriteria(criteria, time)
+    return res.json(topPlayers)
+  } catch (error) {
+    console.error("Error fetching top players:", error)
+    res.status(500).json({ error: "Internal server error" })
+  }
+})
 
 
 export default router
