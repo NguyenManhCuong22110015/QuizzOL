@@ -4,3 +4,4 @@ test.sql
 d.sql
 halenTest/
 routes/halenTestRoute.js
+views/Test.hbs

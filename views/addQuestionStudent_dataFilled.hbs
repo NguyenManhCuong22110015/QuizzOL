@@ -251,6 +251,9 @@
     </div>
 <script>
     
+    // Get quiz ID from the span and parse it as integer
+    const quizIdElement = document.getElementById('quizId');
+    const quizId = quizIdElement ? parseInt(quizIdElement.textContent, 10) : null;
 
     // Chuyển đổi giữa các loại câu hỏi
     const typeCards = document.querySelectorAll('.type-card');
@@ -370,26 +373,50 @@
 
     async function saveQuestion(addMore) {
         const activeForm = document.querySelector('.question-form.active');
-        if (!activeForm) { alert('Lỗi: Không tìm thấy form câu hỏi đang hoạt động.'); return; }
+        if (!activeForm) {
+            alert('Lỗi: Không tìm thấy form câu hỏi đang hoạt động.');
+            return;
+        }
+
+        // Validate quiz ID
+        if (!quizId || isNaN(quizId)) {
+            alert('Lỗi: ID quiz không hợp lệ');
+            console.error('Invalid quiz ID:', quizId);
+            return;
+        }
+
         const questionType = activeForm.id.replace('-form', '');
         if (!validateForm(activeForm)) { return; }
+
         const formData = collectFormData(activeForm, questionType);
-        if (!formData) { alert('Lỗi khi thu thập dữ liệu form.'); return; }
-        console.log('Dữ liệu gửi đi:', JSON.stringify(formData, null, 2));
+        if (!formData) {
+            alert('Lỗi khi thu thập dữ liệu form.');
+            return;
+        }
+
         try {
             const response = await fetch(`/question/${quizId}/add-question`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json', }, body: JSON.stringify(formData)
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
             });
+
             if (!response.ok) {
-                const errorData = await response.json().catch(() => ({ message: 'Lỗi không xác định từ server.' }));
-                const specificError = errorData.error || errorData.message || response.statusText;
-                throw new Error(`Lỗi server: ${response.status} - ${specificError}`);
+                const errorData = await response.json();
+                throw new Error(errorData.error || errorData.message || response.statusText);
             }
+
             const result = await response.json();
             console.log('Phản hồi từ server:', result);
             alert(result.message || 'Đã lưu câu hỏi thành công!');
-            if (addMore) { resetForm(activeForm, questionType); }
-            else { window.location.href = `/admin/quizzes`; }
+
+            if (addMore) {
+                resetForm(activeForm, questionType);
+            } else {
+                window.location.href = `/admin/quizzes`;
+            }
         } catch (error) {
             console.error('Lỗi khi lưu câu hỏi:', error);
             alert(`Đã xảy ra lỗi khi lưu câu hỏi: ${error.message}`);

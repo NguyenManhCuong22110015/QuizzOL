@@ -13,101 +13,131 @@ const router = new Router()
 
 
 router.get('/quizzes', async (req, res) => {
-    const data = await quizService.getAllQuizzes() || 0;
-    res.json(data);
-    //res.render('quiz/quiz_list', { list: data })
-})
-
-
-router.post('/quizzes', async (req, res) => { // Added 'check' middleware assuming it verifies auth
-    try {
-        const data = req.body;
-        // Ensure user ID is correctly retrieved from the session after authentication
-        const userId = req.session.authUser?.user || req.user?.id || 1; // Adjust based on your session/passport setup
-
-        if (!userId) {
-            // Handle case where user is not authenticated or ID is not found
-            // You might redirect to login or send an error
-            console.error('User ID not found in session for creating quiz.');
-            // return res.status(401).redirect('/login'); // Example redirect
-             return res.status(401).json({ error: 'User not authenticated' }); // Or send error
-        }
-
-        // Basic validation (add more as needed)
-        if (!data.quizTitle || !data.quizDescription || !data.categoryId) {
-             return res.status(400).json({ error: 'Missing required quiz fields (title, description, category).' });
-        }
-
-
-        const quiz = {
-            title: data.quizTitle,
-            description: data.quizDescription,
-            createdBy: userId, // Use authenticated user's ID
-            category: data.categoryId, // Assuming categoryId is sent from form
-            tag: data.tag, // Handle tag association if needed (might require separate logic)
-            time: new Date(), // Use current date/time for creation
-            media: data.quizMedia || null // Handle media association if needed
-        };
-
-        // Add the quiz to the database using the service
-        // The service should return the ID of the newly inserted quiz
-        const [newQuizId] = await quizService.addQuiz(quiz); // Knex insert typically returns an array with the ID
-
-        if (!newQuizId) {
-            throw new Error('Quiz creation failed, no ID returned.');
-        }
-
-        console.log(`Quiz created with ID: ${newQuizId}`);
-
-        // --- MODIFICATION START ---
-        // Instead of returning JSON, redirect to the add question page for the new quiz
-        // Assuming your route for adding questions is like '/admin/quizzes/:id/addquestion'
-        res.redirect(`/question/${newQuizId}/add-question`);
-        // --- MODIFICATION END ---
-
-    } catch (error) {
-        console.error('Error creating quiz:', error);
-        // Provide a more user-friendly error or render an error page
-        res.status(500).send('Failed to create quiz. Please try again later.'); // Example error response
-        // Or res.render('errorPage', { message: 'Failed to create quiz.' });
+    try {        
+       
+            quizzes = [
+              {
+                "id": 1,
+                "rowNumber": 1,
+                "title": "Táo Quân Fun Facts",
+                "description": "How much do you know about the Year End Show?",
+                "categoryName": "Entertainment",
+                "tagsString": "comedy, television, tet",
+                "imageUrl": "/api/placeholder/40/40",
+                "formattedCreatedAt": "18/03/25",
+                "relativeUpdatedAt": "2 days ago"
+              },
+              {
+                "id": 2,
+                "rowNumber": 2,
+                "title": "Basic Math Challenge",
+                "description": "Test your fundamental math skills.",
+                "categoryName": "Academic",
+                "tagsString": "math, numbers, arithmetic",
+                "imageUrl": "https://placehold.co/40x40/e1e1e1/909090?text=M",
+                "formattedCreatedAt": "19/03/25",
+                "relativeUpdatedAt": "a few seconds ago"
+              },
+              {
+                "id": 3,
+                "rowNumber": 3,
+                "title": "World Geography Quiz",
+                "description": "Explore countries, capitals, and landmarks.",
+                "categoryName": "Knowledge",
+                "tagsString": "geography, world, travel",
+                "imageUrl": "/images/quiz/geo_thumb.jpg", // Example custom image path
+                "formattedCreatedAt": "10/02/25",
+                "relativeUpdatedAt": "about a month ago"
+              },
+              {
+                "id": 4,
+                "rowNumber": 4,
+                "title": "Programming Concepts",
+                "description": "Basic concepts for aspiring coders.",
+                "categoryName": "Technical",
+                "tagsString": "programming, coding, computer science",
+                "imageUrl": "/api/placeholder/40/40",
+                "formattedCreatedAt": "20/03/25",
+                "relativeUpdatedAt": "10 minutes ago"
+              },
+              {
+                "id": 5,
+                "rowNumber": 5,
+                "title": "Vietnamese Literature",
+                "description": "Authors and works in Vietnamese literature.",
+                "categoryName": "Education",
+                "tagsString": "literature, vietnam, authors",
+                "imageUrl": "https://placehold.co/40x40/77aa77/ffffff?text=VL",
+                "formattedCreatedAt": "01/01/25",
+                "relativeUpdatedAt": "3 months ago"
+              }
+            ];
+    
+        res.render('quizzes_dataFilled', {
+            layout: 'student',
+            quizzes: quizzes
+        });
+    } 
+    catch (error) {
+        console.error(`Error rendering test view for addQuestionStudent_dataFilled:`, error);
+        res.status(500).render('error', { message: 'Failed to load test view.' });        
     }
 });
 
 
-// router.get('/quizzes/:id', async (req, res) => {
-//     const quizId = req.params.id;
+router.post('/quizzes', async (req, res) => {
+    try {
+        const data = req.body;
+        const userId = req.session.authUser?.user || req.user?.id || 1;
 
-//     try {
-//         // Fetch the quiz details
-//         const quiz = await quizService.getQuizById(quizId);
+        if (!userId) {
+            return res.status(401).json({ error: 'User not authenticated' });
+        }
+
+        // Basic validation
+        if (!data.quizTitle || !data.quizDescription || !data.categoryId) {
+            return res.status(400).json({ error: 'Missing required quiz fields' });
+        }
+
+        // Ensure categoryId is an integer
+        const categoryId = parseInt(data.categoryId, 10);
+        if (isNaN(categoryId)) {
+            return res.status(400).json({ error: 'Invalid category ID format' });
+        }
+
+        const quiz = {
+            title: data.quizTitle,
+            description: data.quizDescription,
+            createdBy: userId,
+            category: categoryId,
+            tag: data.tags || null,
+            time: new Date(),
+            media: data.quizMedia || null
+        };
+
+        const [newQuizId] = await quizService.addQuiz(quiz);
         
-//         if (!quiz) {
-//             return res.status(404).json({ error: 'Quiz not found' });
-//         }
+        if (!newQuizId) {
+            return res.status(500).json({ error: 'Failed to create quiz' });
+        }
+
+        // Send success response and redirect URL
+        res.json({
+            success: true,
+            message: 'Quiz created successfully',
+            redirectUrl: `/question/${newQuizId}/add-question`
+        });
+
+    } catch (error) {
+        console.error('Error creating quiz:', error);
+        res.status(500).json({
+            error: 'Failed to create quiz',
+            message: error.message
+        });
+    }
+});
 
 
-//         const questionList = await questionService.getQuestionsByQuizId(quizId);
-
-//         // Fetch options for each question
-//         const questionsWithOptions = await Promise.all(
-//             questionList.map(async (question) => {
-//                 const options = await answerService.getAnswersByQuestionId(question.id);
-//                 return { ...question, options };
-//             })
-//         );
-
-//         // Combine the data
-//         const data = {
-//             quiz: quiz,
-//             questions: questionsWithOptions
-//         };
-
-//         res.json(data);
-//     } catch (error) {
-//         console.error('Error fetching quiz details:', error);
-//         res.status(500).json({ error: 'Failed to fetch quiz details' });
-//     }
-// });
 //old GET quiz by id router
 router.get('/quizzes/:id', async (req, res) => {
     const quizId = req.params.id;

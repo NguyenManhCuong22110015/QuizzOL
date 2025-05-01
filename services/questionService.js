@@ -88,52 +88,35 @@ export default {
 
   // ...existing code...
 
-  async addQuestion(quizId, questionData) {
-    return await db.transaction(async (trx) => {
-      try {
-        // 1. Insert question
-        const [newQuestionId] = await trx("question").insert({
-          content: questionData.content,
-          type: questionData.type,
-          img_url: questionData.img_url || null,
-          points: questionData.points,
-          explanation: questionData.explanation || null,
+  async addQuestion(questionData) {
+    const { content, type, points, explanation, img_url, option } = questionData;
+    
+    try {
+        // Insert the question first
+        const [questionId] = await db('question').insert({
+            content,
+            type,
+            points: points || 1,
+            explanation,
+            img_url
         });
 
-        // 2. Create quiz-question mapping
-        await trx("quiz_question").insert({
-          quiz_id: quizId,
-          question_id: newQuestionId,
-        });
+        // If we have options, insert them
+        if (option && option.length > 0) {
+            const optionsToInsert = option.map(opt => ({
+                content: opt.content,
+                isCorrect: opt.isCorrect,
+                question_id: questionId
+            }));
 
-        // 3. Insert options if applicable
-        const options = questionData.option || [];
-        if (
-          options.length > 0 &&
-          [
-            "SINGLE_ANSWER",
-            "MULTIPLE_ANSWER",
-            "TRUE_FALSE",
-            "FILL_IN_THE_BLANK",
-          ].includes(questionData.type)
-        ) {
-          const preparedOptions = options.map((opt) => ({
-            question_id: newQuestionId,
-            content: opt.content,
-            isCorrect: opt.isCorrect ? 1 : 0,
-          }));
-          await trx("option").insert(preparedOptions);
+            await db('option').insert(optionsToInsert);
         }
 
-        return {
-          id: newQuestionId,
-          ...questionData,
-        };
-      } catch (error) {
-        console.error("Error in addQuestion:", error);
+        return [questionId];
+    } catch (error) {
+        console.error('Error in addQuestion:', error);
         throw error;
-      }
-    });
+    }
   },
 
   // Delete all questions for a quiz

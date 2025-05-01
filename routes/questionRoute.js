@@ -5,8 +5,6 @@ import db from '../configs/db.js' // Import the Knex instance directly
 
 const router = new Router()
 
-
-
 router.get('/:quizId/add-question', async (req, res) => { // Add auth check
     const { quizId } = req.params;
     // Optional: Add authorization check (e.g., is the user an admin or the quiz owner?)
@@ -31,40 +29,41 @@ router.get('/:quizId/add-question', async (req, res) => { // Add auth check
     }
 });
 
-
 router.post('/:quizId/add-question', async (req, res) => {
-    const { quizId } = req.params;
-    const questionData = req.body;
-
     try {
-        // Validation
-        if (!questionData || !questionData.content || !questionData.type || questionData.points === undefined) {
-            return res.status(400).json({ error: 'Thiếu thông tin câu hỏi cơ bản (content, type, points).' });
+        const quizId = parseInt(req.params.quizId, 10);
+        
+        if (isNaN(quizId)) {
+            return res.status(400).json({ error: 'Invalid quiz ID format' });
         }
 
-        if ((questionData.type === 'SINGLE_ANSWER' || questionData.type === 'MULTIPLE_ANSWER') 
-            && (!questionData.option || questionData.option.length < 2)) {
-            return res.status(400).json({ error: 'Câu hỏi trắc nghiệm phải có ít nhất 2 lựa chọn.' });
+        const quiz = await quizService.getQuizById(quizId);
+        if (!quiz) {
+            return res.status(404).json({ error: 'Quiz not found' });
         }
 
-        // Call service method to add question
-        const newQuestion = await questionService.addQuestion(quizId, questionData);
+        const questionData = req.body;
+        const [questionId] = await questionService.addQuestion(questionData);
 
-        res.status(201).json({ 
+        if (!questionId) {
+            return res.status(500).json({ error: 'Failed to create question' });
+        }
+
+        await quizService.addQuestionToQuiz(quizId, questionId);
+
+        res.status(201).json({
             success: true,
-            message: 'Question added successfully!', 
-            questionId: newQuestion.id 
+            message: 'Question added successfully',
+            questionId: questionId
         });
 
     } catch (error) {
-        console.error('Error adding question:', error);
-        res.status(500).json({ 
-            success: false,
-            error: 'Failed to add question to database.',
-            details: error.message 
+        console.error('Error in addQuestion:', error);
+        res.status(500).json({
+            error: 'Failed to add question',
+            message: error.message
         });
     }
 });
-
 
 export default router
