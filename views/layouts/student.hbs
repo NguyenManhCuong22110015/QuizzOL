@@ -51,16 +51,11 @@
                         <div class="left-menu">
                             <h3 class="quizizz-logo d-none d-md-block">QUIZZ</h3>
                             <nav class="main-nav">
-                                <a href="#" class="nav-link">School & District</a>
-                                <a href="#" class="nav-link">Các kế hoạch</a>
-                                <a href="#" class="nav-link">Use Cases</a>
-                                <a href="#" class="nav-link">Cho doanh nghiệp</a>
-                                <a href="#" class="nav-link">Library</a>
+                               
                             </nav>
                         </div>
                         <div class="right-menu">
-                            <a href="#" class="nav-link d-none d-lg-inline-block">Liên hệ chúng tôi</a>
-                            <a href="#" class="nav-link">Nhập mã</a>
+                           
                             <a href="#" class="nav-link">Đăng nhập</a>
                             <a href="#" class="btn register-btn">Đăng ký</a>
                         </div>
@@ -76,108 +71,94 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Sidebar toggle for mobile
-            const sidebarToggle = document.getElementById('sidebar-toggle');
-            const sidebar = document.getElementById('sidebar');
+            // Khai báo biến toàn cục cho scope hiện tại
+            let choiceNameModal, viewMembersModal, changeRoomNameModal, inviteUserModal, playGameModal, addQuizModal;
+            let members = []; // Khai báo members trước với giá trị mặc định
+            let currentUsername = '{{username}}' || '';
+            let roomId = '{{roomId}}'' || '';
+            let choiceNameModalElement; 
             
-            if (sidebarToggle && sidebar) {
-                sidebarToggle.addEventListener('click', function() {
-                    sidebar.classList.toggle('active');
-                });
-                
-                // Close sidebar when clicking outside of it on mobile
-                document.addEventListener('click', function(event) {
-                    const isClickInsideSidebar = sidebar.contains(event.target);
-                    const isClickOnToggle = sidebarToggle.contains(event.target);
-                    
-                    if (!isClickInsideSidebar && !isClickOnToggle && sidebar.classList.contains('active')) {
-                        sidebar.classList.remove('active');
-                    }
-                });
-            }
-            
-            // Add hover-scale class to suitable elements for hover effect
-            const scaleElements = document.querySelectorAll('.welcome-card, .nav-link');
-            scaleElements.forEach(element => {
-                element.classList.add('hover-scale');
-            });
-            
-            // Optional: Dark mode toggle
-            let isDarkMode = true; // Already dark by default
-            
-            function toggleDarkMode() {
-                document.body.classList.toggle('dark-mode');
-                isDarkMode = !isDarkMode;
-                localStorage.setItem('quizizz-dark-mode', isDarkMode);
-            }
-            
-            // Check for saved dark mode preference
-            const savedDarkMode = localStorage.getItem('quizizz-dark-mode');
-            if (savedDarkMode === 'false') {
-                toggleDarkMode();
-            }
-            
-            // Add animation to menu items when page loads
-            const menuItems = document.querySelectorAll('.menu-link');
-            menuItems.forEach((item, index) => {
-                item.style.opacity = '0';
-                item.style.animation = `fadeInLeft 0.3s ease forwards ${0.1 + index * 0.1}s`;
-            });
-            
-            // Add CSS for menu animation
-            const style = document.createElement('style');
-            style.innerHTML = `
-                @keyframes fadeInLeft {
-                    from {
-                        opacity: 0;
-                        transform: translateX(-20px);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateX(0);
-                    }
+            // Khởi tạo tất cả các modal
+            function initializeModals() {
+                choiceNameModalElement = document.getElementById('choiceNameModal');
+                if (choiceNameModalElement) {
+                    choiceNameModal = new bootstrap.Modal(choiceNameModalElement);
                 }
-            `;
-            document.head.appendChild(style);
-            
-            // Example of interactive counter for activity count
-            const activityCounter = document.querySelector('.counter');
-            if (activityCounter) {
-                let count = 0;
-                const maxCount = 20;
                 
-                // Simulate activity count increase when interacting with page
-                document.addEventListener('click', function() {
-                    if (count < maxCount) {
-                        count++;
-                        activityCounter.textContent = `${count}/${maxCount}`;
-                    }
-                });
+                const viewMembersModalElement = document.getElementById('viewMembersModal');
+                if (viewMembersModalElement) {
+                    viewMembersModal = new bootstrap.Modal(viewMembersModalElement);
+                }
+                
+                const changeRoomNameModalElement = document.getElementById('changeRoomNameModal');
+                if (changeRoomNameModalElement) {
+                    changeRoomNameModal = new bootstrap.Modal(changeRoomNameModalElement);
+                }
+                
+                const inviteUserModalElement = document.getElementById('inviteUserModal');
+                if (inviteUserModalElement) {
+                    inviteUserModal = new bootstrap.Modal(inviteUserModalElement);
+                }
+                
+                const playGameModalElement = document.getElementById('playGameModal');
+                if (playGameModalElement) {
+                    playGameModal = new bootstrap.Modal(playGameModalElement);
+                }
+                
+                const addQuizModalElement = document.getElementById('addQuizModal');
+                if (addQuizModalElement) {
+                    addQuizModal = new bootstrap.Modal(addQuizModalElement);
+                }
             }
             
-            // Get Started button animation
-            const getStartedBtn = document.querySelector('.btn-get-started');
-            if (getStartedBtn) {
-                getStartedBtn.addEventListener('click', function() {
-                    this.classList.add('clicked');
-                    this.textContent = 'Đang tải...';
+            // Đăng ký sự kiện cho form username sau khi modal được khởi tạo
+            function setupUsernameForm() {
+                const usernameForm = document.getElementById('usernameForm');
+                if (usernameForm) {
+                    usernameForm.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        const usernameInput = document.getElementById('usernameInput');
+                        if (usernameInput && usernameInput.value.trim()) {
+                            currentUsername = usernameInput.value.trim();
+                            console.log("Set username to:", currentUsername);
+                            
+                            if (choiceNameModal) {
+                                choiceNameModal.hide();
+                                
+                                // Sử dụng sự kiện hidden.bs.modal trên đối tượng choiceNameModalElement
+                                if (choiceNameModalElement) {
+                                    choiceNameModalElement.addEventListener('hidden.bs.modal', function() {
+                                        setupEventListeners(); // Thiết lập lại sự kiện sau khi modal đóng
+                                    });
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+            
+            // Khởi tạo người dùng (đảm bảo gọi sau khi modal được khởi tạo)
+            function initializeUser() {
+                const isUserLoggedIn = !!currentUsername;
+                
+                if (isUserLoggedIn) {
+                    console.log("Using logged in username:", currentUsername);
+                    // Xử lý khi đã có username
+                } else {
+                    // Đảm bảo form username được thiết lập trước khi hiển thị modal
+                    setupUsernameForm();
                     
+                    // Hiển thị modal chọn tên sau một khoảng thời gian ngắn
                     setTimeout(() => {
-                        this.textContent = 'Bắt đầu ngay';
-                        this.classList.remove('clicked');
-                    }, 1500);
-                });
-                
-                // Add CSS for button click animation
-                const btnStyle = document.createElement('style');
-                btnStyle.innerHTML = `
-                    .btn-get-started.clicked {
-                        background-color: #4CAF50;
-                        pointer-events: none;
-                    }
-                `;
-                document.head.appendChild(btnStyle);
+                        if (choiceNameModal) choiceNameModal.show();
+                    }, 500);
+                }
             }
+            
+            // Đảm bảo thứ tự khởi tạo đúng
+            initializeModals();
+            initializeUser();
+            setupEventListeners();
         });      
     </script>
 </body>

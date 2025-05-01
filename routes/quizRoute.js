@@ -280,5 +280,31 @@ router.get('/all-quiz-by-category', async (req, res) => {
 })
 
 
+router.get("/test", async (req, res) => {
+    try {
+       
+        res.render('quizzes', {
+            layout: "student"
+        })
+    } catch (error) {
+        console.error('Error fetching quizzes:', error);
+        res.status(500).json({ error: 'Failed to fetch quizzes' });
+    }
+})
+
+
+router.get("/1/question", async (req, res) => {
+    try {
+        // const quizId = req.params.id;
+        // const quiz = await quizService.getQuizById(quizId) || 0;
+        res.render('questionOfQuiz', {
+            layout: "student",
+           
+        })
+    } catch (error) {
+        console.error('Error fetching quizzes:', error);
+        res.status(500).json({ error: 'Failed to fetch quizzes' });
+    }
+})
 
 export default router
