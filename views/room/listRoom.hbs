@@ -76,7 +76,7 @@
               
               <div class="d-flex justify-content-between align-items-center mt-4">
                 {{#if this.is_private}}
-                  <button class="btn custom-btn btn-enter" data-bs-toggle="modal" data-bs-target="#passwordModal" data-room-name="{{this.name}}">
+                  <button class="btn custom-btn btn-enter" data-bs-toggle="modal" data-bs-target="#passwordModal" data-room-name="{{this.name}}" data-room-id="{{this.id}}">
                     <i class="fas fa-key me-2"></i>Enter Room
                   </button>
                 {{else}}
@@ -336,24 +336,68 @@
         document.querySelector('#passwordContainer').style.display = 'block';
       });
       
-      // Set room name in password modal
+      // Set room name and ID in password modal
       const passwordModal = document.getElementById('passwordModal');
       passwordModal.addEventListener('show.bs.modal', function (event) {
         const button = event.relatedTarget;
         const roomName = button.getAttribute('data-room-name');
+        const roomId = button.getAttribute('data-room-id'); // Add this attribute to your button
+        
+        // Store room ID in the modal for later use
+        passwordModal.setAttribute('data-room-id', roomId);
+        
         const roomNameElement = document.querySelector('#passwordRoomName span');
         roomNameElement.textContent = roomName;
+        
+        // Clear previous input and errors
+        document.getElementById('enterRoomPassword').value = '';
+        document.getElementById('wrongPasswordAlert').classList.add('d-none');
       });
       
-      // Demo password submit handler
+      // Password validation with server API
       document.getElementById('submitPassword').addEventListener('click', function() {
         const password = document.getElementById('enterRoomPassword').value;
-        // This is just a demo - in a real app you'd validate with the server
-        if (password === '1234') {
-          window.location.href = '/quiz-room/123'; // Redirect to the room
-        } else {
-          document.getElementById('wrongPasswordAlert').classList.remove('d-none');
-        }
+        const roomId = passwordModal.getAttribute('data-room-id');
+        const errorAlert = document.getElementById('wrongPasswordAlert');
+        
+        // Show loading state
+        const submitBtn = document.getElementById('submitPassword');
+        const originalBtnHtml = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Checking...';
+        submitBtn.disabled = true;
+        
+        // Make API request to check password
+        fetch(`/room/check-password/${roomId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ password: password }),
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Restore button state
+          submitBtn.innerHTML = originalBtnHtml;
+          submitBtn.disabled = false;
+          
+          if (data.success) {
+            // Password is correct, redirect to chat page
+            window.location.href = `/room/chat-page/${roomId}`;
+          } else {
+            // Password is incorrect, show error
+            errorAlert.textContent = data.message || 'Incorrect password. Please try again.';
+            errorAlert.classList.remove('d-none');
+          }
+        })
+        .catch(error => {
+          // Restore button state
+          submitBtn.innerHTML = originalBtnHtml;
+          submitBtn.disabled = false;
+          
+          console.error('Error checking password:', error);
+          errorAlert.textContent = 'Server error. Please try again later.';
+          errorAlert.classList.remove('d-none');
+        });
       });
     });
     
