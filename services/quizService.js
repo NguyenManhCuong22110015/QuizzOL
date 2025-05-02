@@ -137,6 +137,17 @@ export default {
         }
     },
 
+    async addQuestionToQuiz(quizId, questionId) {
+        try {
+            return await db('quiz_question').insert({
+                quiz_id: quizId,
+                question_id: questionId
+            });
+        } catch (error) {
+            console.error('Error in addQuestionToQuiz:', error);
+            throw error;
+        }
+    },
 
     async getQuizPageDetails(quizId) {
     try {

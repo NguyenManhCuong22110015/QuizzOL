@@ -31,6 +31,8 @@ import roomRouter from './routes/roomRoute.js';
 import chatbotRouter from './routes/chatbotRouter.js';
 
 
+import halenTestRoute from './routes/halenTestRoute.js';
+
 dotenv.config();
 const app = express();
 app.set("trust proxy", 1);
@@ -39,6 +41,7 @@ app.use(flash());
    app.engine('hbs', engine({
     extname : 'hbs',
     helpers: {
+
       extractFirstImage: function (content) {
         if (!content) {
           return "imgs/no_image.jpg";
@@ -218,7 +221,12 @@ math: function(lvalue, operator, rvalue) {
     },
     not: function(value) {
       return !value;
-    }
+    },
+    section: function(name, options) {
+      if (!this._sections) this._sections = {};
+      this._sections[name] = options.fn(this);
+      return null;
+  }
  
     
     }
@@ -290,6 +298,7 @@ app.use("/media", mediaRoute);
 app.use("/admin", adminRoute);
 app.use("/student", studentRoute);
 
+app.use("/halenTest", halenTestRoute);
 app.use("/user-answer", userAnswerRoute);  
 app.use("/result", resultRoute);
 app.use("/question", questionRoute);
