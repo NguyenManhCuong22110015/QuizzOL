@@ -119,7 +119,7 @@
             <div class="card-header bg-primary text-white py-3">
               <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 text-truncate">
-                  Room Members <span class="badge bg-light text-dark member-count">0</span>
+                  Room Members <span class="badge bg-light text-dark member-count" id="memberCount">0</span>
                 </h5>
                 <button class="btn btn-light btn-sm rounded-circle p-1" id="manageMembers">
                   <i class="fas fa-users-gear"></i>
@@ -289,7 +289,6 @@
       </div>
     </div>
     
-    <!-- Add Quiz Modal -->
     <div class="modal fade" id="addQuizModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -504,50 +503,467 @@
         const messageInput = document.getElementById('messageInput');
         const roomName = document.getElementById('roomName');
         const roomAvatar = document.getElementById('roomAvatar');
-        
-        // Modals
-        const choiceNameModalElement = document.getElementById('choiceNameModal');
-        const choiceNameModal = choiceNameModalElement ? new bootstrap.Modal(choiceNameModalElement) : null;
-        
-        const addQuizModalElement = document.getElementById('addQuizModal');
-        const addQuizModal = addQuizModalElement ? new bootstrap.Modal(addQuizModalElement) : null;
+        const membersList = document.getElementById('membersList');
+        const memberCount = document.getElementById('memberCount');
 
-        const viewMembersModalElement = document.getElementById('viewMembersModal');
-        const viewMembersModal = viewMembersModalElement ? new bootstrap.Modal(viewMembersModalElement) : null;
-
-        const changeRoomNameModalElement = document.getElementById('changeRoomNameModal');
-        const changeRoomNameModal = changeRoomNameModalElement ? new bootstrap.Modal(changeRoomNameModalElement) : null;
-
-        const inviteUserModalElement = document.getElementById('inviteUserModal');
-        const inviteUserModal = inviteUserModalElement ? new bootstrap.Modal(inviteUserModalElement) : null;
-
-        const playGameModalElement = document.getElementById('playGameModal');
-        const playGameModal = playGameModalElement ? new bootstrap.Modal(playGameModalElement) : null;
+        // WebSocket connection
+        let socket;
         
-        // Messages array
-        let messages = [];
-        
-        // Get room ID
+        // Get room ID from URL
         const roomId = window.location.pathname.split('/').pop() || 'demo-room';
-        
-        // Room info
-        const room = { name: 'Demo Quiz Room', id: roomId };
-        
-        // Set room info
-        if (roomName) {
-          roomName.textContent = room.name;
-          roomName.title = room.name;
+
+        // Username management with localStorage
+        const USERNAME_KEY = 'chat_username_global';
+        const USERNAME_EXPIRY_KEY = 'chat_username_expiry_global';
+        let currentUsername = getUsernameFromLocalStorage();
+
+        // Initialize WebSocket connection
+        function initWebSocket() {
+          // Get the protocol (ws:// or wss://) based on the current page protocol
+          const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+          const host = window.location.host;
+          const wsUrl = `${protocol}${host}`;
+          
+          console.log(`Connecting to WebSocket at ${wsUrl}`);
+          
+          socket = new WebSocket(wsUrl);
+          
+          socket.onopen = function() {
+            console.log('WebSocket connection established');
+            
+            // Join room with username
+            if (currentUsername) {
+              joinRoom(currentUsername, roomId);
+            }
+          };
+          
+          socket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            console.log('Received WebSocket message:', data);
+            
+            handleWebSocketMessage(data);
+          };
+          
+          socket.onclose = function() {
+            console.log('WebSocket connection closed');
+            
+            // Show disconnected message
+            addMessage({
+              username: 'System',
+              message: 'Disconnected from server. Trying to reconnect...',
+              timestamp: new Date().toISOString()
+            });
+            
+            // Try to reconnect after a delay
+            setTimeout(initWebSocket, 3000);
+          };
+          
+          socket.onerror = function(error) {
+            console.error('WebSocket error:', error);
+          };
         }
-        if (roomAvatar) {
-          roomAvatar.textContent = room.name.charAt(0).toUpperCase();
+        
+        // Handle WebSocket messages
+        function handleWebSocketMessage(data) {
+          switch(data.type) {
+            case 'message':
+              addMessage({
+                username: data.username,
+                message: data.message,
+                timestamp: new Date().toISOString(),
+                userAvatar: data.userAvatar
+              });
+              break;
+              
+            case 'playerList':
+              updateMembersList(data.players);
+              break;
+              
+            case 'start_game':
+              // Show notification that game is starting
+              addMessage({
+                username: 'System',
+                message: 'Game is starting!',
+                timestamp: new Date().toISOString()
+              });
+              break;
+              
+            case 'question':
+              // Handle question for the game
+              showQuestion(data.question, data.questionNumber, data.totalQuestions);
+              break;
+              
+            case 'all_answers':
+              // Show results of current question
+              showQuestionResults(data.answers, data.correctAnswer);
+              break;
+              
+            case 'end_game':
+              // Show final game results
+              showFinalResults(data.results, data.totalQuestions);
+              break;
+              
+            case 'error':
+              // Show error message
+              addMessage({
+                username: 'System',
+                message: `Error: ${data.message}`,
+                timestamp: new Date().toISOString()
+              });
+              console.error('WebSocket error message:', data.message);
+              break;
+          }
+        }
+        
+        // Join room function
+        function joinRoom(username, roomId) {
+          if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify({
+              type: 'join_room',
+              username: username,
+              roomId: roomId
+            }));
+            
+            console.log(`Joining room ${roomId} as ${username}`);
+          } else {
+            console.error('Socket is not open, cannot join room');
+          }
+        }
+        
+        // Send message function
+        function sendMessage(message) {
+          if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify({
+              type: 'message',
+              username: currentUsername,
+              message: message,
+              roomId: roomId,
+              userAvatar: '' // Add avatar if available
+            }));
+            
+            console.log(`Sending message: ${message}`);
+          } else {
+            console.error('Socket is not open, cannot send message');
+            
+            // Show error message
+            addMessage({
+              username: 'System',
+              message: 'Cannot send message: Not connected to server',
+              timestamp: new Date().toISOString()
+            });
+          }
+        }
+        
+        // Function to update members list
+        function updateMembersList(players) {
+          if (membersList) {
+            membersList.innerHTML = '';
+            
+            players.forEach(player => {
+              const listItem = document.createElement('li');
+              listItem.className = 'list-group-item d-flex align-items-center';
+              
+              const initial = player.charAt(0).toUpperCase();
+              
+              listItem.innerHTML = `
+                <div class="member-avatar me-2">${initial}</div>
+                <span>${player}</span>
+              `;
+              
+              membersList.appendChild(listItem);
+            });
+            
+            // Update member count
+            if (memberCount) {
+              memberCount.textContent = players.length;
+            }
+          }
+        }
+        
+        // Start game function
+        function startGame() {
+          if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify({
+              type: 'start_game',
+              roomId: roomId
+            }));
+          }
+        }
+        
+        // Function to submit answer
+        function submitAnswer(answerId) {
+          if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify({
+              type: 'submit_answer',
+              username: currentUsername,
+              answer: answerId
+            }));
+          }
+        }
+        
+        // Request next question
+        function requestNextQuestion() {
+          if (socket && socket.readyState === WebSocket.OPEN) {
+            socket.send(JSON.stringify({
+              type: 'next_question',
+              roomId: roomId
+            }));
+          }
+        }
+        
+        // Handle showing questions in the UI
+        function showQuestion(question, questionNumber, totalQuestions) {
+          // Get modal elements
+          const playGameModal = document.getElementById('playGameModal');
+          const questionSection = document.getElementById('questionSection');
+          const resultsSection = document.getElementById('resultsSection');
+          const finalResultsSection = document.getElementById('finalResultsSection');
+          const questionText = document.getElementById('questionText');
+          const answerOptions = document.getElementById('answerOptions');
+          const currentQuestionNumber = document.getElementById('currentQuestionNumber');
+          const totalQuestionsElement = document.getElementById('totalQuestions');
+          
+          if (!playGameModal || !questionSection) return;
+          
+          // Show modal if not already shown
+          const modal = bootstrap.Modal.getInstance(playGameModal) || new bootstrap.Modal(playGameModal);
+          modal.show();
+          
+          // Update question display
+          questionSection.style.display = 'block';
+          resultsSection.style.display = 'none';
+          finalResultsSection.style.display = 'none';
+          
+          // Update question details
+          if (questionText) questionText.textContent = question.text;
+          if (currentQuestionNumber) currentQuestionNumber.textContent = questionNumber;
+          if (totalQuestionsElement) totalQuestionsElement.textContent = totalQuestions;
+          
+          // Create answer options
+          if (answerOptions) {
+            answerOptions.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+              const optionDiv = document.createElement('div');
+              optionDiv.className = 'col-md-6';
+              optionDiv.innerHTML = `
+                <div class="card mb-2 answer-option" data-option="${index}">
+                  <div class="card-body">
+                    <div class="d-flex align-items-center">
+                      <div class="answer-letter me-3">${String.fromCharCode(65 + index)}</div>
+                      <div>${option.text}</div>
+                    </div>
+                  </div>
+                </div>
+              `;
+              
+              // Add click event to submit answer
+              optionDiv.querySelector('.answer-option').addEventListener('click', function() {
+                submitAnswer(index);
+                
+                // Disable all options after selection
+                document.querySelectorAll('.answer-option').forEach(opt => {
+                  opt.style.pointerEvents = 'none';
+                  opt.classList.add('disabled');
+                });
+                
+                // Highlight selected option
+                this.classList.add('selected');
+              });
+              
+              answerOptions.appendChild(optionDiv);
+            });
+          }
+          
+          // Start timer
+          startQuestionTimer(30); // 30 seconds per question
+        }
+        
+        // Timer for questions
+        function startQuestionTimer(seconds) {
+          const timerBar = document.getElementById('timerBar');
+          const timerDisplay = document.getElementById('timerDisplay');
+          
+          if (!timerBar || !timerDisplay) return;
+          
+          // Reset timer UI
+          timerBar.style.width = '100%';
+          timerDisplay.textContent = `${seconds}s`;
+          
+          let timeRemaining = seconds;
+          const timerInterval = setInterval(() => {
+            timeRemaining--;
+            
+            // Update timer display
+            if (timerDisplay) timerDisplay.textContent = `${timeRemaining}s`;
+            
+            // Update progress bar
+            if (timerBar) {
+              const percentage = (timeRemaining / seconds) * 100;
+              timerBar.style.width = `${percentage}%`;
+              
+              // Change color based on time remaining
+              if (timeRemaining <= 5) {
+                timerBar.classList.add('bg-danger');
+              } else if (timeRemaining <= 15) {
+                timerBar.classList.add('bg-warning');
+                timerBar.classList.remove('bg-danger');
+              }
+            }
+            
+            if (timeRemaining <= 0) {
+              clearInterval(timerInterval);
+              
+              // Auto-submit if no answer was selected
+              const selected = document.querySelector('.answer-option.selected');
+              if (!selected) {
+                submitAnswer(-1); // -1 indicates no answer
+              }
+            }
+          }, 1000);
+        }
+        
+        // Show question results
+        function showQuestionResults(answers, correctAnswer) {
+          const resultsSection = document.getElementById('resultsSection');
+          const questionSection = document.getElementById('questionSection');
+          const resultsTableBody = document.getElementById('resultsTableBody');
+          
+          if (!resultsSection || !questionSection || !resultsTableBody) return;
+          
+          // Switch sections
+          questionSection.style.display = 'none';
+          resultsSection.style.display = 'block';
+          
+          // Clear previous results
+          resultsTableBody.innerHTML = '';
+          
+          // Add results to table
+          answers.forEach(result => {
+            const row = document.createElement('tr');
+            
+            // Add CSS class based on correctness
+            if (result.correct) {
+              row.classList.add('table-success');
+            } else {
+              row.classList.add('table-danger');
+            }
+            
+            row.innerHTML = `
+              <td>${result.username}</td>
+              <td>${result.answer >= 0 ? String.fromCharCode(65 + result.answer) : 'No answer'}</td>
+              <td>${result.correct ? '<i class="fas fa-check-circle text-success"></i>' : '<i class="fas fa-times-circle text-danger"></i>'}</td>
+              <td>${result.score}</td>
+            `;
+            
+            resultsTableBody.appendChild(row);
+          });
+          
+          // Add next question button with timeout
+          setTimeout(() => {
+            // Add button to request next question
+            if (resultsSection) {
+              const nextButton = document.createElement('button');
+              nextButton.className = 'btn btn-primary mt-3';
+              nextButton.textContent = 'Next Question';
+              nextButton.addEventListener('click', requestNextQuestion);
+              
+              // Remove existing button if any
+              const existingButton = resultsSection.querySelector('.btn-primary');
+              if (existingButton) {
+                existingButton.remove();
+              }
+              
+              resultsSection.appendChild(nextButton);
+            }
+          }, 2000);
+        }
+        
+        // Show final results
+        function showFinalResults(results, totalQuestions) {
+          const finalResultsSection = document.getElementById('finalResultsSection');
+          const questionSection = document.getElementById('questionSection');
+          const resultsSection = document.getElementById('resultsSection');
+          const finalResultsTableBody = document.getElementById('finalResultsTableBody');
+          const restartGameBtn = document.getElementById('restartGameBtn');
+          
+          if (!finalResultsSection || !finalResultsTableBody) return;
+          
+          // Switch sections
+          questionSection.style.display = 'none';
+          resultsSection.style.display = 'none';
+          finalResultsSection.style.display = 'block';
+          
+          // Clear previous results
+          finalResultsTableBody.innerHTML = '';
+          
+          // Add results to table
+          results.forEach((result, index) => {
+            const row = document.createElement('tr');
+            
+            // Highlight top 3 players
+            if (index === 0) row.classList.add('table-warning'); // gold
+            if (index === 1) row.classList.add('table-light'); // silver
+            if (index === 2) row.classList.add('table-secondary'); // bronze
+            
+            const correctAnswers = Math.floor(result.score / 10); // Assuming 10 points per correct answer
+            
+            row.innerHTML = `
+              <td>${index + 1}</td>
+              <td>${result.username}</td>
+              <td>${result.score}</td>
+              <td>${correctAnswers}/${totalQuestions}</td>
+            `;
+            
+            finalResultsTableBody.appendChild(row);
+          });
+          
+          // Add restart button event
+          if (restartGameBtn) {
+            restartGameBtn.addEventListener('click', function() {
+              startGame();
+            });
+          }
+        }
+        
+        // Initialize on page load
+        initWebSocket();
+        
+        // Handle message form submission
+        if (messageForm) {
+          messageForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!currentUsername) {
+              const choiceNameModal = new bootstrap.Modal(document.getElementById('choiceNameModal'));
+              choiceNameModal.show();
+              return;
+            }
+            
+            const messageText = messageInput.value.trim();
+            if (messageText) {
+              sendMessage(messageText);
+              messageInput.value = '';
+            }
+          });
+        }
+        
+        // Handle play quiz button
+        const playQuizBtn = document.getElementById('playQuizBtn');
+        if (playQuizBtn) {
+          playQuizBtn.addEventListener('click', function() {
+            startGame();
+          });
+        }
+        
+        // Handle mobile play button
+        const mobilePlay = document.getElementById('mobilePlay');
+        if (mobilePlay) {
+          mobilePlay.addEventListener('click', function() {
+            startGame();
+          });
         }
 
-        // Username management with localStorage - CHANGED TO GLOBAL KEYS
-        const USERNAME_KEY = 'chat_username_global'; // Changed to global key
-        const USERNAME_EXPIRY_KEY = 'chat_username_expiry_global'; // Changed to global key
-        
-        let currentUsername = '';
-        
         // Save username to localStorage with expiration
         function saveUsernameToLocalStorage(username) {
           const expiryTime = Date.now() + (60 * 60 * 1000); // 1 hour
@@ -574,8 +990,6 @@
         // Function to add message to chat
         function addMessage(messageData) {
           if (!chatMessages) return;
-          
-          messages.push(messageData);
           
           const messageElement = document.createElement('div');
           const isCurrentUser = messageData.username === currentUsername;
@@ -609,42 +1023,12 @@
           }
           
           // Hide welcome message
-          if (welcomeMessage && messages.length > 0) {
+          if (welcomeMessage) {
             welcomeMessage.style.display = 'none';
           }
           
           chatMessages.appendChild(messageElement);
           chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-        
-        // Get username (localStorage or server)
-        currentUsername = getUsernameFromLocalStorage();
-        
-        // Check server provided username
-        const serverProvidedUsername = '{{username}}';
-        if (!currentUsername && serverProvidedUsername && serverProvidedUsername !== '{{username}}') {
-          currentUsername = serverProvidedUsername;
-          saveUsernameToLocalStorage(currentUsername);
-        }
-        
-        // Username required to enter chat
-        if (!currentUsername && choiceNameModal) {
-          // Configure modal to be non-dismissible
-          choiceNameModalElement.setAttribute('data-bs-backdrop', 'static');
-          choiceNameModalElement.setAttribute('data-bs-keyboard', 'false');
-          
-          // Show the modal
-          setTimeout(() => {
-            choiceNameModal.show();
-          }, 500);
-        } else {
-          // Add welcome message if we have username
-          addMessage({
-            username: 'System',
-            message: `Welcome to the room, ${currentUsername}!`,
-            userAvatar: '',
-            timestamp: new Date().toISOString()
-          });
         }
         
         // Handle username form submission
@@ -656,15 +1040,18 @@
             
             if (username) {
               currentUsername = username;
-              saveUsernameToLocalStorage(username); // Save to global storage
+              saveUsernameToLocalStorage(username);
               
+              const choiceNameModal = bootstrap.Modal.getInstance(document.getElementById('choiceNameModal'));
               if (choiceNameModal) choiceNameModal.hide();
+              
+              // Join room with new username
+              joinRoom(username, roomId);
               
               // Add welcome message
               addMessage({
                 username: 'System',
                 message: `Welcome to the room, ${username}!`,
-                userAvatar: '',
                 timestamp: new Date().toISOString()
               });
             } else {
@@ -673,198 +1060,29 @@
           });
         }
         
-        // ===== FIX FOR SENDING MESSAGES =====
-        if (messageForm) {
-          messageForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            if (!currentUsername) {
-              if (choiceNameModal) choiceNameModal.show();
-              return;
-            }
-            
-            const messageText = messageInput.value.trim();
-            if (messageText) {
-              // Add the message to chat
-              addMessage({
-                username: currentUsername,
-                message: messageText,
-                timestamp: new Date().toISOString()
-              });
-              
-              // Clear input
-              messageInput.value = '';
-            }
-          });
+        // Check server provided username
+        const serverProvidedUsername = '{{username}}';
+        if (!currentUsername && serverProvidedUsername && serverProvidedUsername !== '{{username}}') {
+          currentUsername = serverProvidedUsername;
+          saveUsernameToLocalStorage(currentUsername);
         }
         
-        // ===== FIX FOR BUTTON HANDLERS =====
-        // Add Quiz Button
-        const addQuizBtn = document.getElementById('addQuizBtn');
-        if (addQuizBtn && addQuizModal) {
-          addQuizBtn.addEventListener('click', function() {
-            addQuizModal.show();
-          });
-        }
-        
-        // Mobile Add Quiz
-        const mobileAddQuiz = document.getElementById('mobileAddQuiz');
-        if (mobileAddQuiz && addQuizModal) {
-          mobileAddQuiz.addEventListener('click', function() {
-            addQuizModal.show();
-          });
-        }
-        
-        // View/Manage Members
-        const manageMembers = document.getElementById('manageMembers');
-        const manageMembersBtn = document.getElementById('manageMembersBtn');
-        const mobileManageMembers = document.getElementById('mobileManageMembers');
-        
-        if (manageMembers && viewMembersModal) {
-          manageMembers.addEventListener('click', function() {
-            viewMembersModal.show();
-          });
-        }
-        
-        if (manageMembersBtn && viewMembersModal) {
-          manageMembersBtn.addEventListener('click', function() {
-            viewMembersModal.show();
-          });
-        }
-        
-        if (mobileManageMembers && viewMembersModal) {
-          mobileManageMembers.addEventListener('click', function() {
-            viewMembersModal.show();
-          });
-        }
-        
-        // Change Room Name
-        const changeRoomNameBtn = document.getElementById('changeRoomNameBtn');
-        if (changeRoomNameBtn && changeRoomNameModal) {
-          changeRoomNameBtn.addEventListener('click', function() {
-            changeRoomNameModal.show();
-          });
-        }
-        
-        // Invite Users
-        const inviteBtn = document.getElementById('inviteBtn');
-        const mobileInvite = document.getElementById('mobileInvite');
-        const copyRoomLinkBtn = document.getElementById('copyRoomLinkBtn');
-        
-        if (inviteBtn && inviteUserModal) {
-          inviteBtn.addEventListener('click', function() {
-            // Set room link
-            const roomLink = document.getElementById('roomLink');
-            if (roomLink) roomLink.value = window.location.href;
-            inviteUserModal.show();
-          });
-        }
-        
-        if (mobileInvite && inviteUserModal) {
-          mobileInvite.addEventListener('click', function() {
-            // Set room link
-            const roomLink = document.getElementById('roomLink');
-            if (roomLink) roomLink.value = window.location.href;
-            inviteUserModal.show();
-          });
-        }
-        
-        if (copyRoomLinkBtn) {
-          copyRoomLinkBtn.addEventListener('click', function() {
-            navigator.clipboard.writeText(window.location.href)
-              .then(() => alert('Room link copied to clipboard!'));
-          });
-        }
-        
-        // Copy link button
-        const copyLink = document.getElementById('copyLink');
-        if (copyLink) {
-          copyLink.addEventListener('click', function() {
-            const roomLink = document.getElementById('roomLink');
-            if (roomLink) {
-              roomLink.select();
-              document.execCommand('copy');
-              alert('Link copied to clipboard!');
-            }
-          });
-        }
-        
-        // Play Quiz
-        const playQuizBtn = document.getElementById('playQuizBtn');
-        const mobilePlay = document.getElementById('mobilePlay');
-        
-        if (playQuizBtn && playGameModal) {
-          playQuizBtn.addEventListener('click', function() {
-            playGameModal.show();
-          });
-        }
-        
-        if (mobilePlay && playGameModal) {
-          mobilePlay.addEventListener('click', function() {
-            playGameModal.show();
-          });
-        }
-        
-        // Room name form
-        const roomNameForm = document.getElementById('roomNameForm');
-        if (roomNameForm) {
-          roomNameForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const newRoomNameInput = document.getElementById('newRoomName');
-            if (newRoomNameInput && newRoomNameInput.value.trim()) {
-              const newName = newRoomNameInput.value.trim();
-              if (roomName) roomName.textContent = newName;
-              if (roomName) roomName.title = newName;
-              if (roomAvatar) roomAvatar.textContent = newName.charAt(0).toUpperCase();
-              
-              if (changeRoomNameModal) changeRoomNameModal.hide();
-              
-              addMessage({
-                username: 'System',
-                message: `Room name changed to "${newName}"`,
-                timestamp: new Date().toISOString()
-              });
-            }
-          });
-        }
-        
-        // Quiz form
-        const quizForm = document.getElementById('quizForm');
-        if (quizForm) {
-          quizForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const questionText = document.getElementById('questionText');
-            if (questionText && questionText.value.trim()) {
-              if (addQuizModal) addQuizModal.hide();
-              
-              addMessage({
-                username: 'System',
-                message: `New quiz question added by ${currentUsername}`,
-                timestamp: new Date().toISOString()
-              });
-              
-              // Reset form
-              quizForm.reset();
-            }
-          });
-        }
-        
-        // Share button
-        const shareBtn = document.getElementById('shareBtn');
-        if (shareBtn) {
-          shareBtn.addEventListener('click', function() {
-            if (navigator.share) {
-              navigator.share({
-                title: 'Join my chat room',
-                text: 'Join me in this chat room!',
-                url: window.location.href
-              })
-              .catch(err => console.error('Error sharing:', err));
-            } else {
-              alert('Web Share API not supported in your browser. Copy the link manually.');
-            }
-          });
+        // Username required to enter chat
+        if (!currentUsername) {
+          const choiceNameModal = new bootstrap.Modal(document.getElementById('choiceNameModal'));
+          // Configure modal to be non-dismissible
+          document.getElementById('choiceNameModal').setAttribute('data-bs-backdrop', 'static');
+          document.getElementById('choiceNameModal').setAttribute('data-bs-keyboard', 'false');
+          
+          // Show the modal
+          setTimeout(() => {
+            choiceNameModal.show();
+          }, 500);
+        } else {
+          // Join room with existing username
+          setTimeout(() => {
+            joinRoom(currentUsername, roomId);
+          }, 1000);
         }
       });
     </script>

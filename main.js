@@ -31,7 +31,6 @@ import roomRouter from './routes/roomRoute.js';
 import chatbotRouter from './routes/chatbotRouter.js';
 
 
-import halenTestRoute from './routes/halenTestRoute.js';
 
 dotenv.config();
 const app = express();
@@ -75,6 +74,12 @@ app.use(flash());
         return moment(dateString)
           .tz("Asia/Ho_Chi_Minh")
           .format("h:mm A z, dddd MMMM D, YYYY");
+      },
+      gte: function(a, b) {
+        return a >= b;
+      },
+      lookup: function(obj, field) {
+        return obj && typeof obj === 'object' && field in obj ? obj[field] : null;
       },
       formatLongDate: function (dateString) {
         return moment(dateString)
@@ -298,7 +303,6 @@ app.use("/media", mediaRoute);
 app.use("/admin", adminRoute);
 app.use("/student", studentRoute);
 
-app.use("/halenTest", halenTestRoute);
 app.use("/user-answer", userAnswerRoute);  
 app.use("/result", resultRoute);
 app.use("/question", questionRoute);
