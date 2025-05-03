@@ -89,7 +89,7 @@ async function startGame(roomId) {
     }
 }
 
-async function joinRoom(roomId, username, ws) {
+async function joinRoom(roomId, username, ws, avatar) {
     try {
         // Get room from database
         const roomDoc = await db('room').where('id', roomId).first();
@@ -111,16 +111,17 @@ async function joinRoom(roomId, username, ws) {
             }
         }
 
-        // Add player
+        // Add player with avatar
         activeRooms.get(roomId).players.set(username, { 
             score: 0, 
             time: 0,
-            ws: ws 
+            ws: ws,
+            avatar: avatar  // Store avatar
         });
 
         // Update player count in database
         await db('room').where('id', roomId).update({
-            currentPlayers: activeRooms.get(roomId).players.size
+            current_players: activeRooms.get(roomId).players.size
         });
 
         return { success: true };
@@ -240,12 +241,16 @@ function initWebSocket(server) {
 
                 switch (data.type) {
                     case "join_room":
-                        const joinResult = await joinRoom(data.roomId, data.username, ws);
+                        const joinResult = await joinRoom(data.roomId, data.username, ws, data.avatar);
                         if (joinResult.success) {
                             userRoom = data.roomId;
                             broadcastToRoom(data.roomId, {
                                 type: "playerList",
-                                players: Array.from(activeRooms.get(data.roomId).players.keys())
+                                players: Array.from(activeRooms.get(data.roomId).players.entries())
+                                    .map(([username, player]) => ({
+                                        username,
+                                        avatar: player.avatar
+                                    }))
                             });
                         } else {
                             ws.send(JSON.stringify({ 
@@ -269,7 +274,7 @@ function initWebSocket(server) {
                             type: "message",
                             username: data.username,
                             message: data.message,
-                            userAvatar: data.userAvatar
+                            avatar: data.avatar
                         });
                         break;
 
@@ -361,21 +366,25 @@ function initWebSocket(server) {
                     try {
                         // Update database
                         await db('room').where('id', userRoom).update({
-                            currentPlayers: activeRoom.players.size
+                            current_players: activeRoom.players.size
                         });
 
                         // Clean up if room empty
                         if (activeRoom.players.size === 0) {
                             activeRooms.delete(userRoom);
                             await db('room').where('id', userRoom).update({
-                                isActive: false, // Changed from true to false
-                                currentPlayers: 0
+                                isActive: false, 
+                                current_players: 0
                             });
                         } else {
                             // Notify remaining players
                             broadcastToRoom(userRoom, {
                                 type: "playerList",
-                                players: Array.from(activeRoom.players.keys())
+                                players: Array.from(activeRoom.players.entries())
+                                    .map(([username, player]) => ({
+                                        username,
+                                        avatar: player.avatar
+                                    }))
                             });
                         }
                     } catch (error) {

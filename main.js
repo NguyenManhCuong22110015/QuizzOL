@@ -3,7 +3,7 @@ import passport from "passport";
 import session from "express-session";
 import mysqlSession from "express-mysql-session";
 import cloudinary from "cloudinary";
-
+import http from 'http';
 import { engine } from "express-handlebars";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -27,7 +27,7 @@ import questionRoute from "./routes/questionRoute.js";
 import commentRoute from "./routes/commentRoute.js";
 import roomRouter from "./routes/roomRoute.js";
 import chatbotRouter from "./routes/chatbotRouter.js";
-
+import initWebSocket from "./services/webSocketService.js";
 
 
 dotenv.config();
@@ -241,6 +241,15 @@ app.set("views", "./views");
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 app.use(express.static(path.join(__dirname, "public")));
+
+
+// Define webSocket server
+
+const server = http.createServer(app);
+const wss = initWebSocket(server);
+
+
+
 const MySQLStore = mysqlSession(session);
 const sessionStore = new MySQLStore({
   ...options,
@@ -273,14 +282,12 @@ app.use(async function (req, res, next) {
   if (req.session.auth === null || req.session.auth === undefined) {
     req.session.auth = false;
   }
-
   res.locals.auth = req.session.auth;
   res.locals.authUser = req.session.authUser || null;
 
   next();
 });
 app.use((req, res, next) => {
-  // Trước khi render, thêm biến loading
   res.locals.showLoading = true;
   next();
 });
@@ -320,7 +327,11 @@ app.get("/", (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
+const WS_PORT = process.env.WS_PORT || 3001;
 
 app.listen(PORT, () => {
   console.log("App is running");
+});
+server.listen(WS_PORT, () => {
+  console.log("App is running with WebSocket support on port", WS_PORT);
 });

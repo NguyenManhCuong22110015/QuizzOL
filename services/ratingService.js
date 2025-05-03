@@ -19,10 +19,10 @@ const ratingService = {
       }
 
       // 3. Thêm rating vào database
-      const [id] = await db("rating").insert({
+      const [id] = await db("rate").insert({
         quiz: quizId,
         user: userId,
-        rating,
+        score:rating,
       });
 
       return { id };
@@ -35,7 +35,7 @@ const ratingService = {
   // Cập nhật đánh giá hiện có
   async updateRating(ratingId, newRating) {
     try {
-      await db("rating").where("id", ratingId).update({ rating: newRating });
+      await db("rate").where("id", ratingId).update({ score: newRating });
 
       return { id: ratingId };
     } catch (error) {
@@ -47,8 +47,8 @@ const ratingService = {
   // Lấy đánh giá của người dùng cho một quiz
   async getUserRating(quizId, userId) {
     try {
-      const rating = await db("rating")
-        .select("id", "rating")
+      const rating = await db("rate")
+        .select("id", "score")
         .where({
           quiz: quizId,
           user: userId,
@@ -65,9 +65,9 @@ const ratingService = {
   // Tính toán điểm đánh giá trung bình cho một quiz
   async calculateAverageRating(quizId) {
     try {
-      const result = await db("rating")
+      const result = await db("rate")
         .where("quiz", quizId)
-        .avg("rating as averageRating")
+        .avg("score as averageRating")
         .count("id as count")
         .first();
 

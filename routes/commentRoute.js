@@ -10,6 +10,9 @@ const router = new Router();
 router.post("/add-comment", async (req, res) => {
   try {
     let { quizId, userId, content } = req.body;
+
+    userId = await userService.getUserIdByAccountId(userId);
+
     console.log("Received comment data:", { quizId, userId, content });
 
     // Validate input
@@ -23,7 +26,7 @@ router.post("/add-comment", async (req, res) => {
       console.log(`User ID ${userId} not found in database`);
 
       // Nếu không tìm thấy, sử dụng ID 30 (Trung Trần) từ kết quả SQL của bạn
-      userId = 30;
+      
       console.log(`Using default user ID 30 (Trung Trần)`);
     } else {
       console.log(`Found user by ID ${userId}: ${userExists.username}`);
@@ -56,19 +59,18 @@ router.post("/add-rating", async (req, res) => {
     let { quizId, userId, rating } = req.body;
     console.log("Received rating data:", { quizId, userId, rating });
 
+    userId = await userService.getUserIdByAccountId(userId);
+
     // Validate input
     if (!quizId || !userId || !rating || rating < 1 || rating > 5) {
       return res.status(400).json({ error: "Invalid rating data" });
     }
 
-    // Kiểm tra userId có tồn tại không
     const userExists = await db("user").where("id", userId).first();
     if (!userExists) {
       console.log(`User ID ${userId} not found in database`);
 
-      // Nếu không tìm thấy, sử dụng ID 30 (Trung Trần) từ kết quả SQL của bạn
-      userId = 30;
-      console.log(`Using default user ID 30 (Trung Trần)`);
+      return res.status(400).log("Co loi");
     } else {
       console.log(`Found user by ID ${userId}: ${userExists.username}`);
     }
@@ -115,6 +117,7 @@ router.post("/add-rating", async (req, res) => {
 router.get("/user-rating/:quizId/:userId", async (req, res) => {
   try {
     let { quizId, userId } = req.params;
+    userId = await userService.getUserIdByAccountId(userId);
     console.log("Fetching rating for:", { quizId, userId });
 
     if (!quizId || !userId) {
@@ -126,9 +129,8 @@ router.get("/user-rating/:quizId/:userId", async (req, res) => {
     if (!userExists) {
       console.log(`User ID ${userId} not found in database`);
 
-      // Nếu không tìm thấy, sử dụng ID 30 (Trung Trần) từ kết quả SQL của bạn
-      userId = 30;
-      console.log(`Using default user ID 30 (Trung Trần)`);
+      
+      userId = await userService.getUserIdByAccountId(userId);
     } else {
       console.log(`Found user by ID ${userId}: ${userExists.username}`);
     }
