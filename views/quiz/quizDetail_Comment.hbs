@@ -1,7 +1,6 @@
-<link rel="stylesheet" href="/css/quizDetail.css">
+<link rel="stylesheet" href="/css/quizDetail.css"/> {{!-- Ensure this CSS path is correct --}}
+<!-- Add SweetAlert2 library -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<!-- Add Font Awesome for star icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 <!-- Add meta tags for user info -->
 <meta name="user-name" content="{{authUser.username}}">
@@ -10,6 +9,7 @@
 {{/if}}
 
 <body>
+  
   <div class="main-content">
     <div class="container">
       <div class="quiz-header">
@@ -43,13 +43,7 @@
       </div>
 
       <div class="quiz-details">
-        <div class="rating">
-          {{!-- You would ideally use a Handlebars helper here to generate star icons based on stats.averageRating --}}
-          {{!-- Simple display for now: --}}
-           {{{stars stats.averageRating }}} <span class="rating-count text-secondary">{{rating.count}} lượt đánh giá</span> {{!-- Assuming stats.ratingCount is the number of ratings --}}
-        </div>
-
-        <!-- Rating Container - NEW -->
+        {{!-- Rating Section - Updated to include interactive stars --}}
         <div class="rating-container">
           <h4>Đánh giá của bạn:</h4>
           <div class="star-rating" data-quiz-id="{{quiz.id}}" data-user-id="{{authUser.id}}">
@@ -64,7 +58,13 @@
             <span class="rating-count">{{rating.count}} lượt đánh giá</span>
           </p>
         </div>
-        
+
+        {{!-- Average Rating Display --}}
+        <div class="rating">
+          {{!-- You would ideally use a Handlebars helper here to generate star icons based on stats.averageRating --}}
+          {{{stars stats.averageRating }}} <span class="rating-count text-secondary">{{rating.count}} lượt đánh giá</span>
+        </div>
+
         <h3 class="description-title">
           <i class="fas fa-info-circle"></i> Mô tả
         </h3>
@@ -179,6 +179,7 @@
     </div>
   </div>
 
-  <!-- Thêm script cho rating và comment functionality -->
+  {{!-- Add script tag for the external JavaScript file --}}
   <script src="/js/quizDetail_Comment.js"></script>
+
 </body>
