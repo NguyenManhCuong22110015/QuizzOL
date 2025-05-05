@@ -16,7 +16,6 @@ import userRoute from "./routes/userRoute.js";
 import adminRoute from "./routes/adminRoute.js";
 import studentRoute from "./routes/studentRoute.js";
 import "./authentication/passport-setup.js";
-import { options } from "./configs/db.js";
 import moment from "moment-timezone";
 import dotenv from "dotenv";
 import mediaRoute from "./routes/mediaRoute.js";
@@ -28,7 +27,7 @@ import commentRoute from "./routes/commentRoute.js";
 import roomRouter from "./routes/roomRoute.js";
 import chatbotRouter from "./routes/chatbotRouter.js";
 import initWebSocket from "./services/webSocketService.js";
-
+import { pool } from './configs/db.js';
 
 dotenv.config();
 const app = express();
@@ -251,12 +250,23 @@ const wss = initWebSocket(server);
 
 
 const MySQLStore = mysqlSession(session);
+
+
 const sessionStore = new MySQLStore({
-  ...options,
   clearExpired: true,
-  checkExpirationInterval: 900000,
-  expiration: 86400000,
-});
+  checkExpirationInterval: 900000, // 15 minutes
+  expiration: 86400000, // 1 day
+  createDatabaseTable: true,
+  connectionLimit: 1, // Minimize connections
+  schema: {
+    tableName: 'sessions',
+    columnNames: {
+      session_id: 'session_id',
+      expires: 'expires',
+      data: 'data'
+    }
+  }
+}, pool);
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -294,14 +304,7 @@ app.use((req, res, next) => {
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-//   app.use(facebookPassport.initialize());
-//   app.use(facebookPassport.session());
-//   app.use(googlePassport.initialize());
-//   app.use(googlePassport.session());
-//   app.use(passport.initialize());
-//   app.use(passport.session());
-//   app.use(githubPassport.initialize());
-// app.use(githubPassport.session());
+
 
 app.use("/quiz", quizRoute);
 app.use("/auth", authLoginRoute);

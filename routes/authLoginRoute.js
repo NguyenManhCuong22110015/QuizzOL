@@ -38,16 +38,6 @@ router.get('/google',googlePassport.authenticate('google', { scope: ['profile', 
 router.get('/google/callback',googlePassport.authenticate('google', { failureRedirect: '/login' }),
     loginToGoogle);
 
-router.get( '/github',(req, res, next) => {req.logout((err) => {
-        if (err) return next(err);
-        next();
-      }); 
-    },
-    githubPassport.authenticate('github', { scope: ['user:email'] })
-);
-
-router.get( '/github', githubPassport.authenticate('github', { failureRedirect: '/login' }), loginToGithub );
-
 router.post('/update-password',check, handleUpdatePassword);
 
 router.get('/logout', (req, res, next) => {
