@@ -20,7 +20,10 @@
 <body>
     <!-- Navigation -->
     {{> navbar}}
-        
+    {{> loading 
+   isVisible=true 
+   videoSource="https://res.cloudinary.com/dj9r2qksh/video/upload/v1742444295/Recording_2025-03-20_111752_ynsddt.mp4"
+}}    
   
     <!-- Page Content -->
     {{{body}}}
@@ -34,3 +37,4 @@
     <script src="/js/script.js"></script>
 
 </html>
+

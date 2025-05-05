@@ -14,7 +14,6 @@ router.get('/', (req, res) => {
       title: 'Admin Dashboard',
       layout: 'admin' ,
       activePage: 'quizzes'
-       
     });
   });
   router.get('/setting', (req, res) => {
