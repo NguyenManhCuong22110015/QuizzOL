@@ -1,12 +1,9 @@
-<link rel="stylesheet" href="/css/Custom-spinner.css" />
 <style>
   html, body {
-  overflow: auto !important; /* Đảm bảo luôn cuộn được */
-  height: 100%; /* Tránh layout shift */
-  margin: 0;
-  padding: 0;
-  overscroll-behavior: none; /* Ngăn chặn hành vi cuộn không mong muốn */
-}
+    overflow: auto !important;
+    height: 100%;
+    margin: 0;
+  }
 
   .loading-overlay {
     position: fixed;
@@ -20,181 +17,65 @@
     justify-content: center;
     align-items: center;
     opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s, visibility 0.3s;
-    pointer-events: none;
+    transition: opacity 0.3s;
   }
 
   .loading-overlay.active {
     display: flex;
     opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
   }
 
-  .loading-container {
-    text-align: center;
-    color: white;
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
   }
 
-  .loading-video-container, .bouncy-loader {
-    max-width: 100%;
-    overflow: hidden;
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
 </style>
 
 {{#if isVisible}}
 <div id="loading-overlay" class="loading-overlay">
-  <div class="loading-container">
-    <div class="loading-content">
-      <div class="bouncy-loader" id="bouncy-loader"></div>
-      <p class="loading-text mt-3">Please wait...</p>
-      
-      <div class="loading-video-container mt-3" style="display: none;">
-        <video 
-          width="280" 
-          autoplay 
-          loop 
-          muted 
-          playsinline
-          class="loading-video"
-          onloadstart="this.parentElement.style.display = 'block';"
-          onerror="this.parentElement.style.display = 'none';"
-        >
-          <source src="{{videoSource}}" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      </div>
-    </div>
-  </div>
+  <div class="spinner"></div>
 </div>
 {{/if}}
 
 <script>
-  // Track active requests
-  let activeRequests = 0;
-
-  // Show loading function
   function showLoading() {
     const overlay = document.getElementById('loading-overlay');
     if (overlay) {
-      overlay.style.display = 'flex';
       overlay.classList.add('active');
+      document.body.style.overflow = 'auto';
     }
   }
 
-  // Hide loading function
   function hideLoading() {
-    if (activeRequests > 0) return;
-    
     const overlay = document.getElementById('loading-overlay');
     if (overlay) {
       overlay.classList.remove('active');
-      setTimeout(() => {
-        overlay.style.display = 'none';
-      }, 300);
+      document.body.style.overflow = 'auto';
     }
   }
 
-  // Initialize loading logic
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', () => {
     showLoading();
-    
-    // Ghi đè overflow để đảm bảo cuộn
     document.body.style.overflow = 'auto';
-    document.documentElement.style.overflow = 'auto';
     
-    // Tải LDRS spinner
-    if (!window.ldrsLoaded) {
-      window.ldrsLoaded = true;
-      const ldrsScript = document.createElement('script');
-      ldrsScript.src = 'https://cdn.jsdelivr.net/npm/ldrs/dist/auto/bouncy.js';
-      ldrsScript.async = true;
-      ldrsScript.onload = function() {
-        if (typeof window.bouncy !== 'undefined' && window.bouncy.register) {
-          window.bouncy.register();
-          requestAnimationFrame(() => {
-            const bouncyEl = document.createElement('l-bouncy');
-            bouncyEl.setAttribute('size', '45');
-            bouncyEl.setAttribute('stroke', '5');
-            bouncyEl.setAttribute('speed', '2.5');
-            bouncyEl.setAttribute('color', 'white');
-            const container = document.getElementById('bouncy-loader');
-            if (container) {
-              container.appendChild(bouncyEl);
-            }
-          });
-        }
-      };
-      document.head.appendChild(ldrsScript);
-    }
+    window.addEventListener('load', () => {
+      setTimeout(hideLoading, 300);
+    });
     
-    // Xử lý click trên các link
-    document.addEventListener('click', function(event) {
+    document.addEventListener('click', (event) => {
       const target = event.target.closest('a');
       if (target && target.href && !target.target && !target.href.startsWith('#')) {
         showLoading();
       }
     });
-    
-    // Tắt loading khi trang tải xong
-    window.addEventListener('load', function() {
-      const maxLoadingTime = setTimeout(() => {
-        hideLoading();
-      }, 5000);
-      
-      setTimeout(() => {
-        if (activeRequests === 0) {
-          clearTimeout(maxLoadingTime);
-          hideLoading();
-        }
-      }, 300);
-    });
   });
-
-  // Override fetch
-  const originalFetch = window.fetch;
-  window.fetch = function() {
-    activeRequests++;
-    showLoading();
-    
-    return originalFetch.apply(this, arguments)
-      .then(response => {
-        activeRequests--;
-        if (activeRequests === 0) {
-          hideLoading();
-        }
-        return response;
-      })
-      .catch(error => {
-        activeRequests--;
-        if (activeRequests === 0) {
-          hideLoading();
-        }
-        throw error;
-      });
-  };
-
-  // Override XMLHttpRequest
-  const originalOpen = XMLHttpRequest.prototype.open;
-  XMLHttpRequest.prototype.open = function() {
-    const xhr = this;
-    const originalSend = xhr.send;
-    
-    xhr.send = function() {
-      activeRequests++;
-      showLoading();
-      
-      xhr.addEventListener('loadend', function() {
-        activeRequests--;
-        if (activeRequests === 0) {
-          hideLoading();
-        }
-      });
-      
-      return originalSend.apply(this, arguments);
-    };
-    
-    return originalOpen.apply(this, arguments);
-  };
 </script>
