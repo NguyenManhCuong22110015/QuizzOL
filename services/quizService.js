@@ -148,6 +148,61 @@ export default {
             throw error;
         }
     },
+    async updateQuiz(quizId, quizData) {
+        try {
+            // Make sure all fields are properly sanitized
+            return await db('quiz').where('id', quizId).update(quizData);
+        } catch (error) {
+            console.error('Error in updateQuiz:', error);
+            throw error;
+        }
+    },
+    async searchQuizzes(searchTerm) {
+        try {
+            const quizzes = await db('quiz')
+                .select('quiz.*')
+                .where('quiz.title', 'like', `%${searchTerm}%`)
+                .orWhere('quiz.description', 'like', `%${searchTerm}%`);
+                
+            if (!quizzes || quizzes.length === 0) {
+                return [];
+            }
+            
+            // Lấy thêm thông tin về media và số lượng câu hỏi
+            const quizIds = quizzes.map(quiz => quiz.id);
+            
+            const mediaResults = await db('media')
+                .select('id', 'url')
+                .whereIn('id', quizzes.map(quiz => quiz.media).filter(Boolean));
+                
+            const mediaMap = mediaResults.reduce((map, item) => {
+                map[item.id] = item.url;
+                return map;
+            }, {});
+            
+            const questionCounts = await db('quiz_question')
+                .select('quiz_id')
+                .count('question_id as count')
+                .whereIn('quiz_id', quizIds)
+                .groupBy('quiz_id');
+                
+            const questionCountMap = questionCounts.reduce((map, item) => {
+                map[item.quiz_id] = item.count;
+                return map;
+            }, {});
+            
+            return quizzes.map(quiz => ({
+                ...quiz,
+                imageUrl: quiz.media && mediaMap[quiz.media] 
+                    ? mediaMap[quiz.media] 
+                    : 'https://placehold.co/600x400?text=Quiz&bg=f0f4f8',
+                numberOfQuestions: questionCountMap[quiz.id] || 0
+            }));
+        } catch (error) {
+            console.error('Error in searchQuizzes:', error);
+            return [];
+        }
+    },
 
     async getQuizPageDetails(quizId) {
     try {
@@ -293,5 +348,5 @@ export default {
         // or return a specific error object or null.
         throw error;
     }
-}
+    }
 };
