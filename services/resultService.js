@@ -8,7 +8,7 @@ export default {
         try {
             const res = await db('result').select('*').where({ quiz: quizId, user: userId, status: "IN_PROGRESS" }).first();
             if (res){
-                const userAnswers = await db('userAnswer')
+                const userAnswers = await db('useranswer')
                 .select('*')
                 .where({ result_id: res.id });
                 
@@ -91,7 +91,7 @@ export default {
                 return null;
             }
             
-            const userAnswers = await db('userAnswer').where('result_id', resultId);
+            const userAnswers = await db('useranswer').where('result_id', resultId);
             let score = 0;
             
             for (const answer of userAnswers) {
@@ -124,7 +124,7 @@ export default {
     },
     async getUserAnswersByResultId(resultId) {
         try {
-            const answers = await db('userAnswer').where('result_id', resultId);
+            const answers = await db('useranswer').where('result_id', resultId);
             return answers;
         } catch (error) {
             console.error('Error fetching user answers:', error);
@@ -153,7 +153,7 @@ export default {
                 const quiz = await db('quiz').where('id', result.quiz).first();
                 
                 // Get correct/total answers count
-                const userAnswers = await db('userAnswer').where('result_id', result.id);
+                const userAnswers = await db('useranswer').where('result_id', result.id);
                 const totalQuestions = await db('quiz_question').where({
                     quiz_id: result.quiz,
                     

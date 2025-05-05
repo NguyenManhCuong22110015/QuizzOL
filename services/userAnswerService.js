@@ -4,7 +4,7 @@ export default {
 async addUserAnswer(questionId, resultId, answerId) {
     try {
         // Check if answer already exists
-        const existing = await db('userAnswer')
+        const existing = await db('useranswer')
             .where({
                 question_id: questionId,
                 result_id: resultId
@@ -17,7 +17,7 @@ async addUserAnswer(questionId, resultId, answerId) {
         }
         
         // Create new answer
-        await db('userAnswer').insert({
+        await db('useranswer').insert({
             question_id: questionId,
             result_id: resultId,
             option_id: answerId,
@@ -33,7 +33,7 @@ async addUserAnswer(questionId, resultId, answerId) {
 async updateUserAnswer(questionId, resultId, answerId) {
     try {
         // Check if answer exists
-        const existing = await db('userAnswer')
+        const existing = await db('useranswer')
             .where({
                 question_id: questionId,
                 result_id: resultId
@@ -46,7 +46,7 @@ async updateUserAnswer(questionId, resultId, answerId) {
         }
         
         // Update the answer
-        await db('userAnswer')
+        await db('useranswer')
             .where({
                 question_id: questionId,
                 result_id: resultId
@@ -66,7 +66,7 @@ async updateUserAnswer(questionId, resultId, answerId) {
 async addTextAnswer(questionId, resultId, textAnswer) {
     try {
         // Check if answer already exists
-        const existing = await db('userAnswer')
+        const existing = await db('useranswer')
             .where({
                 question_id: questionId,
                 result_id: resultId
@@ -79,7 +79,7 @@ async addTextAnswer(questionId, resultId, textAnswer) {
         }
         
         // Create new answer
-        await db('userAnswer').insert({
+        await db('useranswer').insert({
             question_id: questionId,
             result_id: resultId,
             text_answer: textAnswer,
@@ -95,7 +95,7 @@ async addTextAnswer(questionId, resultId, textAnswer) {
 async updateTextAnswer(questionId, resultId, textAnswer) {
     try {
         // Check if answer exists
-        const existing = await db('userAnswer')
+        const existing = await db('useranswer')
             .where({
                 question_id: questionId,
                 result_id: resultId
@@ -108,7 +108,7 @@ async updateTextAnswer(questionId, resultId, textAnswer) {
         }
         
         // Update the answer
-        await db('userAnswer')
+        await db('useranswer')
             .where({
                 question_id: questionId,
                 result_id: resultId
