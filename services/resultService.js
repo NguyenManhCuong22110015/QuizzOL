@@ -231,16 +231,16 @@ export default {
                 .where('status', 'COMPLETED')
                 .whereBetween('end_time', [startDate, endDate])
                 .join('user', 'result.user', '=', 'user.id')
-                .leftJoin('media', 'user.avata', '=', 'media.id');
+                .leftJoin('media', 'user.avatar', '=', 'media.id');
             
             let topPlayers;
             
             if (criteria === 'score') {
                 // Tiêu chí tổng điểm
                 topPlayers = await baseQuery
-                    .select('user.id as userId', 'user.username', 'user.email', 'user.avata', 'media.url as avatarUrl')
+                    .select('user.id as userId', 'user.username', 'user.email', 'user.avatar', 'media.url as avatarUrl')
                     .sum('result.score as totalScore')
-                    .groupBy('user.id', 'user.username', 'user.email', 'user.avata', 'media.url')
+                    .groupBy('user.id', 'user.username', 'user.email', 'user.avatar', 'media.url')
                     .orderBy('totalScore', 'desc')
                     .limit(limit);
                     
@@ -255,9 +255,9 @@ export default {
             else if (criteria === 'attend') {
                 // Tiêu chí số lượng quiz hoàn thành
                 topPlayers = await baseQuery
-                    .select('user.id as userId', 'user.username', 'user.email', 'user.avata', 'media.url as avatarUrl')
+                    .select('user.id as userId', 'user.username', 'user.email', 'user.avatar', 'media.url as avatarUrl')
                     .countDistinct('result.quiz as completedQuizzes')
-                    .groupBy('user.id', 'user.username', 'user.email', 'user.avata', 'media.url')
+                    .groupBy('user.id', 'user.username', 'user.email', 'user.avatar', 'media.url')
                     .orderBy('completedQuizzes', 'desc')
                     .limit(limit);
                     
@@ -278,12 +278,12 @@ export default {
                         'user.id as userId', 
                         'user.username', 
                         'user.email', 
-                        'user.avata',
+                        'user.avatar',
                         'media.url as avatarUrl',
                         db.raw('SUM(result.score) as totalEarned'),
                         db.raw('COUNT(DISTINCT result.id) as quizCount')
                     )
-                    .groupBy('user.id', 'user.username', 'user.email', 'user.avata', 'media.url');
+                    .groupBy('user.id', 'user.username', 'user.email', 'user.avatar', 'media.url');
                 
                 // Tính toán điểm tối đa có thể và tỷ lệ phần trăm cho mỗi người dùng
                 const usersWithPercentages = await Promise.all(

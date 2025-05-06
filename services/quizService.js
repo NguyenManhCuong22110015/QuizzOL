@@ -213,7 +213,7 @@ export default {
         // NOTE: Comment table schema lacks timestamp. Fetching user info.
         const comments = await db('comment')
             .join('user', 'comment.user', 'user.id')
-            .leftJoin('media', 'user.avata', 'media.id') // Join for user avatar
+            .leftJoin('media', 'user.avatar', 'media.id') // Join for user avatar
             .where('comment.quiz', quizId)
             .select(
                 'comment.id',

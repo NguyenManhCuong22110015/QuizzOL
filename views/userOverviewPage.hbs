@@ -690,7 +690,7 @@
           <form id="avatarUploadForm" method="post" action="/user/update-avatar" enctype="multipart/form-data">
             <div class="mb-3 text-center">
               <div class="avatar-preview-container mb-3">
-                <img id="avatarPreview" src="{{#if user.avatar}}{{user.avatar}}{{else}}https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80{{/if}}" 
+                <img id="avatarPreview" src="{{#if authUser.avatar}}{{authUser.avatar}}{{else}}https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80{{/if}}" 
                      alt="Avatar Preview" 
                      class="rounded-circle" 
                      style="width: 150px; height: 150px; object-fit: cover;">

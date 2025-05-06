@@ -62,6 +62,9 @@ app.engine(
       eq: function (a, b) {
         return a === b;
       },
+      isOptionSelected: function(selectedOptions, optionId) {
+        if (!selectedOptions || !Array.isArray(selectedOptions)) return false;
+        return selectedOptions.includes(optionId);},
       noteq: function (a, b) {
         return a !== b;
       },

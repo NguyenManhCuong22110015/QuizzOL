@@ -49,16 +49,13 @@ export default {
           .first();
           
         if (account) {
-          // Nếu account đã tồn tại, cập nhật last_login
-         
-            
-          // Lấy thông tin user tương ứng
+
           let user = await trx('user')
             .where({ id: account.user })
             .first();
           
           // Cập nhật avatar nếu user chưa có
-          if (!user.avata && avatarUrl) {
+          if (!user.avatar && avatarUrl) {
             // First, insert the avatar URL into the media table
             const [mediaId] = await trx('media')
               .insert({
@@ -69,7 +66,7 @@ export default {
             // Then update the user table with the media ID
             await trx('user')
               .where({ id: user.id })
-              .update({ avata: mediaId });
+              .update({ avatar: mediaId });
               
             // Refresh user data
             user = await trx('user')
@@ -82,12 +79,14 @@ export default {
             .where({ id: account.id })
             .first();
           
-          // Trả về thông tin kết hợp
-          return {
+            const avatar = await trx('media')
+            .where('id', user.avatar).first().select('url');
+
+            return {
             id: updatedAccount.id,
             email: updatedAccount.email,
             username: user.username,
-            avata: user.avatar,
+            avatar: avatar.url,
             role: updatedAccount.role,
             provider: updatedAccount.provider,
             // last_login: updatedAccount.last_login,
@@ -122,7 +121,7 @@ export default {
               // Then update the user table with the media ID
               await trx('user')
                 .where({ id: userId })
-                .update({ avata: mediaId });
+                .update({ avatar: mediaId });
             }
           } else {
             // Nếu email chưa tồn tại, tạo user mới
@@ -142,7 +141,7 @@ export default {
             const [newUserId] = await trx('user')
               .insert({
                 username: username,
-                avata: avatarId // Store ID, not URL
+                avatar: avatarId // Store ID, not URL
               });
               
             userId = newUserId;
@@ -174,7 +173,7 @@ export default {
             id: newAccount.id,
             email: newAccount.email,
             username: newUser.username,
-            avata: newUser.avatar,
+            avatar: newUser.avatar,
             role: newAccount.role,
             provider: newAccount.provider,
             // last_login: newAccount.last_login,
@@ -211,7 +210,7 @@ export default {
 
   async updateFields(accountId, field, value) {
     try {
-      const allowedFields = ['username', 'avata', 'gender', 'password', 'dob'];
+      const allowedFields = ['username', 'avatar', 'gender', 'password', 'dob'];
       if (!allowedFields.includes(field)) {
         throw new Error(`Field not allowed: ${field}`);
       }
@@ -221,7 +220,7 @@ export default {
         .first();
 
       // Special handling for avatar field
-      if (field === 'avata') {
+      if (field === 'avatar') {
         return await db.transaction(async (trx) => {
           // First, insert the avatar URL into the media table
           const [mediaId] = await trx('media')
@@ -306,7 +305,7 @@ export default {
         id: account.id,
         email: account.email,
         username: user.username,
-        avata: user.avatar,
+        avatar: user.avatar,
         role: account.role,
         provider: account.provider,
         user: user.id
@@ -321,7 +320,7 @@ export default {
     try {
       // Get user with avatar URL
       const user = await db('user')
-        .leftJoin('media', 'user.avata', 'media.id')
+        .leftJoin('media', 'user.avatar', 'media.id')
         .select('user.*', 'media.url as avatar_url')
         .where('user.id', userId)
         .first();
@@ -488,7 +487,7 @@ export default {
       // Update user with new media ID
       await db('user')
         .where({ id: user.id })
-        .update({ avata: mediaId });
+        .update({ avatar: mediaId });
         
       return true;
     } catch (error) {
@@ -505,7 +504,7 @@ export default {
           return null;
       }
       const avatar = await db('media')
-        .where('id', user.avata)
+        .where('id', user.avatar)
         .first();
       return avatar.url;
       
@@ -534,7 +533,7 @@ export default {
       }
       
       const avatar = await db('media')
-        .where('id', user.avata)
+        .where('id', user.avatar)
         .first();
         
       return avatar.url;

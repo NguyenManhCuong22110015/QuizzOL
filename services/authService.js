@@ -22,7 +22,18 @@ export default {
         
         if (!validPassword) return null; 
 
-        return user; 
+        const otherData = await db('user')
+        .where({ 'user.id': user.user })
+        .leftJoin('media', 'user.avatar', '=', 'media.id')
+        .select('user.username', 'user.avatar', 'media.url as avatar_url')
+        .first();        if (!otherData) return null;
+        const userData = {
+           ...user,
+            username: otherData.username,
+            avatar: otherData.avatar_url,
+        };
+
+        return userData; 
     },
     
     async createAccountWithVerification(email, password) {

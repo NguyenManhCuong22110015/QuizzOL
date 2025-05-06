@@ -43,7 +43,7 @@ export default {
        const defaultInfo = { username: "Guest User", avatarUrl: null, avatarInitials: "G", streakDays: 0 };
        if (!userId || isNaN(parseInt(userId, 10))) { return defaultInfo; }
        try {
-           const user = await db('user').leftJoin('media', 'user.avata', 'media.id').where('user.id', userId).first('user.username', 'media.url as avatarUrl');
+           const user = await db('user').leftJoin('media', 'user.avatar', 'media.id').where('user.id', userId).first('user.username', 'media.url as avatarUrl');
            if (!user) { return { ...defaultInfo, username: "Unknown User", avatarInitials: "?" }; }
            const initials = user.username ? user.username.charAt(0).toUpperCase() : '?';
            const streakDays = 0; // Placeholder

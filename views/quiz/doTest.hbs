@@ -85,6 +85,30 @@
                         {{/each}}
                     </div>
                     </div>
+                {{else if (eq type "MULTIPLE_ANSWER")}}
+                    <div class="question-card" id="question-{{question_number}}" data-question-id="{{id}}" data-question-number="{{question_number}}">
+                        <span class="question-number">{{question_number}}</span>
+                        <div class="question-text">{{content}}</div>
+                        {{#if imageUrl}}
+                        <div class="image-placeholder">
+                            <img src="{{imageUrl}}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                        {{/if}}
+                        <div class="options">
+                            {{#each options}}
+                            <div>
+                                <input 
+                                    type="checkbox" 
+                                    id="q{{../question_number}}_option{{@index}}" 
+                                    name="question-{{../question_number}}" 
+                                    value="{{id}}"
+                                    class="multiple-choice"
+                                    {{#if (isOptionSelected ../selected_options id)}}checked{{/if}}>
+                                <label for="q{{../question_number}}_option{{@index}}">{{content}}</label>
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
                 {{/if}}
             {{/each}}
 
@@ -345,6 +369,68 @@
         }
     }
     
+    // Function to handle saving multiple choice answers (checkboxes)
+    async function saveMultipleChoiceAnswers(event) {
+        const questionElement = event.target.closest('.question-card');
+        
+        if (!questionElement || !currentResultId) return;
+        
+        const questionId = questionElement.getAttribute('data-question-id');
+        const questionNumber = questionElement.getAttribute('data-question-number');
+        
+        // Get all checked options for this question
+        const checkedOptions = Array.from(
+            questionElement.querySelectorAll('input[type="checkbox"]:checked')
+        ).map(checkbox => checkbox.value);
+        
+        // Only save if at least one option is selected
+        if (checkedOptions.length === 0) return;
+        
+        // Visual feedback - mark as completed
+        markCompleted(parseInt(questionNumber));
+        
+        try {
+            // Try to update first
+            const updateResponse = await fetch('/user-answer/update-multiple', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    resultId: currentResultId,
+                    questionId: questionId,
+                    optionIds: checkedOptions
+                })
+            });
+            
+            // If update returns 404 (not found), create a new answer
+            if (!updateResponse.ok && updateResponse.status === 404) {
+                const addResponse = await fetch('/user-answer/add-multiple', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        resultId: currentResultId,
+                        questionId: questionId,
+                        optionIds: checkedOptions
+                    })
+                });
+                
+                if (!addResponse.ok) {
+                    throw new Error('Failed to create multiple choice answer');
+                }
+            } else if (!updateResponse.ok) {
+                throw new Error('Failed to update multiple choice answer');
+            }
+            
+            console.log(`Successfully saved multiple choice answer for question ${questionId}`);
+            
+        } catch (error) {
+            console.error('Error saving multiple choice answer:', error);
+        }
+    }
+    
     // Function to submit quiz automatically or manually
     async function submitQuiz(message = 'Submit Quiz?') {
         try {
@@ -500,6 +586,12 @@
         const textInputs = document.querySelectorAll('input[type="text"]');
         textInputs.forEach(input => {
             input.addEventListener('blur', saveTextAnswer);
+        });
+        
+        // Add event listeners for checkboxes
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', saveMultipleChoiceAnswers);
         });
         
         // Handle submit button
