@@ -40,42 +40,24 @@
   }
 </style>
 
-{{#if isVisible}}
 <div id="loading-overlay" class="loading-overlay">
   <div class="spinner"></div>
 </div>
-{{/if}}
 
 <script>
-  function showLoading() {
+  // Chỉ hiển thị loading khi navigation hoàn tất
+  window.addEventListener('DOMContentLoaded', () => {
     const overlay = document.getElementById('loading-overlay');
-    if (overlay) {
-      overlay.classList.add('active');
-      document.body.style.overflow = 'auto';
-    }
-  }
-
-  function hideLoading() {
-    const overlay = document.getElementById('loading-overlay');
-    if (overlay) {
-      overlay.classList.remove('active');
-      document.body.style.overflow = 'auto';
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
-    showLoading();
-    document.body.style.overflow = 'auto';
     
+    // Hiển thị loading ngay khi bắt đầu tải trang
+    overlay.classList.add('active');
+    
+    // Ẩn loading ngay khi UI đã render (DOMContentLoaded hoàn tất)
+    overlay.classList.remove('active');
+    
+    // Đảm bảo ẩn loading khi toàn bộ tài nguyên (hình ảnh, script, etc.) tải xong
     window.addEventListener('load', () => {
-      setTimeout(hideLoading, 300);
-    });
-    
-    document.addEventListener('click', (event) => {
-      const target = event.target.closest('a');
-      if (target && target.href && !target.target && !target.href.startsWith('#')) {
-        showLoading();
-      }
+      overlay.classList.remove('active');
     });
   });
 </script>
