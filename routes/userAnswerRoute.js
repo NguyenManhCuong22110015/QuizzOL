@@ -120,5 +120,75 @@ router.put('/update-text', async (req, res) => {
     }
 });
 
+router.post('/add-multiple', async (req, res) => {
+    try {
+        const {resultId, questionId, optionIds} = req.body;
+        
+        // Kiểm tra các trường bắt buộc
+        if (!resultId || !questionId || !Array.isArray(optionIds) || optionIds.length === 0) {
+            return res.status(400).json({ error: 'Missing required fields or invalid option IDs array' });
+        }
+        
+        const response = await userAnswerService.addMultiChoiceAnswers(questionId, resultId, optionIds);
+        
+        if (response) {
+            return res.status(200).json({ message: 'Multiple choice answers added successfully' });
+        } else {
+            return res.status(500).json({ error: 'Failed to add multiple choice answers' });
+        }
+    } catch (error) {
+        console.error('Error adding multiple choice answers:', error);
+        res.status(500).json({ error: 'Failed to add multiple choice answers' });
+    }
+});
+
+router.put('/update-multiple', async (req, res) => {
+    try {
+        const {resultId, questionId, optionIds} = req.body;
+        
+        // Kiểm tra các trường bắt buộc
+        if (!resultId || !questionId || !Array.isArray(optionIds)) {
+            return res.status(400).json({ error: 'Missing required fields or invalid option IDs array' });
+        }
+        
+        const response = await userAnswerService.updateMultiChoiceAnswers(questionId, resultId, optionIds);
+        
+        // Kiểm tra nếu không tìm thấy bản ghi
+        if (response.notFound) {
+            return res.status(404).json({ error: 'Answers not found' });
+        }
+        
+        // Kiểm tra các lỗi khác
+        if (response.error) {
+            return res.status(500).json({ error: response.error });
+        }
+        
+        return res.status(200).json({ message: 'Multiple choice answers updated successfully' });
+    } catch (error) {
+        console.error('Error updating multiple choice answers:', error);
+        res.status(500).json({ error: 'Failed to update multiple choice answers' });
+    }
+});
+
+router.get('/get-multiple', async (req, res) => {
+    try {
+        const {resultId, questionId} = req.query;
+        
+        // Kiểm tra các trường bắt buộc
+        if (!resultId || !questionId) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+        
+        const optionIds = await userAnswerService.getMultiChoiceAnswers(questionId, resultId);
+        
+        return res.status(200).json({ optionIds });
+    } catch (error) {
+        console.error('Error fetching multiple choice answers:', error);
+        res.status(500).json({ error: 'Failed to fetch multiple choice answers' });
+    }
+});
+
+
+
 
 export default router

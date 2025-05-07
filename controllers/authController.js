@@ -56,7 +56,6 @@ export const handleLogin = async (req, res) => {
     // }
     try {
         const user = await authService.login(email, password); 
-        console.log('User from login:', user);
         if (!user) {
             req.flash('sweetAlert', JSON.stringify({
                 type: 'error',
@@ -235,7 +234,6 @@ export const verifyEmail = async (req, res) => {
 export const loginToGoogle = async (req, res) => {
     try {
         const user = await userService.createAccountForUser(req.user, 'google');
-        console.log('User from Google login:', user);
         req.session.userId = user.id;
         req.session.role = user.role;
         req.session.auth = true;

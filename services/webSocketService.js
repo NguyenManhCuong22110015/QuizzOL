@@ -41,10 +41,14 @@ async function startGame(roomId) {
         const roomDoc = await db('room').where('id', roomId).first();
         
         // Lấy danh sách quiz IDs từ bảng room_quiz
-        const roomQuizzes = await db('room_quiz').where('room_id', roomId).select('quiz_id');
-        const quizIds = roomQuizzes.map(rq => rq.quiz_id);
+        const roomQuizzes = await db('room').where('id', roomId).select('quiz');
+        const quizIds = roomQuizzes.map(rq => rq.quiz);
+        if (!quizIds.length) {
+            quizIds.push(1);
+        }
         
-        // Lấy thông tin các quiz
+
+        console.log("Quiz IDs:", quizIds);
         const quizzes = await db('quiz').whereIn('id', quizIds);
 
         if (!quizzes.length) {
@@ -59,6 +63,7 @@ async function startGame(roomId) {
         const questions = await db('question')
             .join('quiz_question', 'question.id', '=', 'quiz_question.question_id')
             .whereIn('quiz_question.quiz_id', quizIds)
+            .whereIn('question.type', ['SINGLE_ANSWER', 'TRUE_FALSE'])
             .select('question.*');
         
         // Lấy danh sách đáp án cho các câu hỏi
@@ -73,6 +78,8 @@ async function startGame(roomId) {
                 options: questionOptions
             };
         });
+
+        console.log("Questions with options:", questionsWithOptions);
 
         activeRoom.gameState.isActive = true;
         activeRoom.gameState.questions = questionsWithOptions;

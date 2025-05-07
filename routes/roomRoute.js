@@ -66,5 +66,24 @@ router.post('/check-password/:roomId', async (req, res) => {
     }
 });
 
+router.post('/create', async (req, res) => {
+
+    try {
+        const { name,max_participants, password, description } = req.body;
+        const userId = req.session.authUser.id; // Assuming you have the user ID in the session
+        const result = await roomService.createRoom(userId, name,max_participants, password, description);
+        
+        if (result.success) {
+            return res.json({ success: true, message: 'Room created successfully' });
+        } else {
+            return res.status(400).json({ success: false, message: result.message });
+        }
+    } catch (error) {
+        console.error('Error creating room:', error);
+        return res.status(500).json({ success: false, message: 'Server error' });
+    }
+
+});
+
 
 export default router;

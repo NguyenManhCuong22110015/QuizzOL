@@ -99,8 +99,21 @@ app.engine(
         }
         return text.charAt(0).toUpperCase();
       },
+      includes:  function(array, value) {
+        if (!array) return false;
+        return Array.isArray(array) && array.includes(value);
+      },
       toUpperCase: function (text) {
         return text ? text.toUpperCase() : "";
+      },
+      isOptionInArray:function(array, value) {
+        return Array.isArray(array) && array.includes(value);
+      },
+      isCorrectOption: function(optionId, allOptions) {
+        return allOptions.some(opt => opt.id === optionId && opt.is_correct);
+      },
+      isIncorrectSelectedOption:function(optionId, selected, allOptions) {
+        return selected.includes(optionId) && !allOptions.some(opt => opt.id === optionId && opt.is_correct);
       },
       or: function () {
         // Remove the last argument (Handlebars options)

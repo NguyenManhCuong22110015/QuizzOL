@@ -99,28 +99,32 @@ document.addEventListener('DOMContentLoaded', function() {
   const dropdownItems = document.querySelectorAll('.dropdown-item');
   
   dropdownItems.forEach(item => {
-    item.addEventListener('click', function(e) {
-      // Ngăn chặn hành vi mặc định
-      e.preventDefault();
-      e.stopPropagation();
-      
+    item.addEventListener('click', function() {
       // Lấy URL từ thuộc tính href
       const href = this.getAttribute('href');
       
-      // Bắt buộc chuyển hướng đến URL mà không phụ thuộc vào Bootstrap
+      // Chuyển hướng đến URL
       if (href) {
-        console.log('Redirecting to:', href);
         window.location.href = href;
       }
     });
   });
   
-  // Debug để kiểm tra vấn đề với Bootstrap dropdown
+  // Đảm bảo dropdown luôn hiển thị đúng vị trí
   const profileDropdownBtn = document.getElementById('profileDropdownBtn');
   if (profileDropdownBtn) {
-    profileDropdownBtn.addEventListener('click', function(e) {
-      console.log('Profile dropdown button clicked');
-      // Không cần stopPropagation() ở đây để tránh xung đột với Bootstrap
+    const dropdown = new bootstrap.Dropdown(profileDropdownBtn);
+    
+    profileDropdownBtn.addEventListener('click', function() {
+      // Tính toán lại vị trí dropdown menu
+      setTimeout(() => {
+        const menu = document.querySelector('.dropdown-menu');
+        if (menu && menu.classList.contains('show')) {
+          // Đảm bảo menu hiển thị đúng vị trí
+          menu.style.zIndex = '9999';
+          menu.style.position = 'absolute';
+        }
+      }, 0);
     });
   }
 });

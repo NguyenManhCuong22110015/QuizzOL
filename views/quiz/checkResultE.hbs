@@ -1,9 +1,11 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/checkRes.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+  crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/checkRes.css" />
 
 <body>
-  
+
   <div class="container">
     <button id="backButton" class="back-button"><i class="fas fa-arrow-left"></i> Quay lại</button>
     <button class="mobile-menu-button">☰</button>
@@ -17,51 +19,212 @@
       </div>
 
       {{#each this.data.answers}}
-        <div id="question{{@index}}" class="question-container {{#if @first}}active{{/if}}">
-          <div class="question-box">
-            <h3>Câu hỏi {{add @index 1}}</h3>
-            <p>{{#if this.isCorrect}}Hoàn thành{{else}}Chưa hoàn thành{{/if}}</p>
-            <p>{{#if this.isCorrect}}Đạt điểm 1,00 trên 1,00{{else}}Chưa đạt điểm{{/if}}</p>
-            <p><i class="fas fa-flag"></i> Đặt cờ</p>
-            <p>{{this.question.question.content}}</p>
-            
-            {{#if this.question.image_url}}
-              <div class="question-image">
-                <img src="{{this.question.image_url}}" alt="Question Image">
-              </div>
-            {{/if}}
-            
-            <ul class="answers-list">
-              {{#each this.allOptions}}
-                <li class="answer-item {{#if (eq ../correctOptionId this.id)}}correct-answer{{/if}} {{#if (and (eq ../option_id this.id) (not (eq ../correctOptionId this.id)))}}incorrect-answer{{/if}}">
-                  <label>
-                    <input type="radio" name="q{{@../index}}" value="{{this.id}}" 
-                      {{#if (eq ../option_id this.id)}}checked{{/if}} disabled>
-                    <span class="answer-text">{{this.content}}</span>
-                    {{#if (eq ../correctOptionId this.id)}}
-                      <span class="correct-indicator"><i class="fas fa-check-circle"></i></span>
-                    {{/if}}
-                    {{#if (and (eq ../option_id this.id) (not (eq ../correctOptionId this.id)))}}
-                      <span class="incorrect-indicator"><i class="fas fa-times-circle"></i></span>
-                    {{/if}}
-                  </label>
-                </li>
-              {{/each}}
-            </ul>
-            
-            {{#if (not this.isCorrect)}}
-              <div class="feedback-box incorrect">
-                <i class="fas fa-exclamation-circle"></i>
-                <span>Đáp án đúng là: {{this.correctOption.content}}</span>
-              </div>
+      <div id="question{{@index}}" class="question-container {{#if @first}}active{{/if}}">
+        {{#if (eq this.question.type "SINGLE_ANSWER")}}
+        <div class="question-box">
+          <h3>Câu hỏi {{add @index 1}}</h3>
+          <p>{{#if this.isCorrect}}Hoàn thành{{else}}Chưa hoàn thành{{/if}}</p>
+          <p>{{#if this.isCorrect}}Đạt điểm {{this.question.points}} trên {{this.question.points}}{{else}}Chưa đạt điểm{{/if}}</p>
+          <p><i class="fas fa-flag"></i> Đặt cờ</p>
+          <p>{{this.question.content}}</p>
+
+          {{#if this.question.image_url}}
+          <div class="question-image">
+            <img src="{{this.question.image_url}}" alt="Question Image">
+          </div>
+          {{/if}}
+
+          <ul class="answers-list">
+            {{#each this.allOptions}}
+            <li
+              class="answer-item {{#if (eq ../correctOptionId this.id)}}correct-answer{{/if}} {{#if (and (eq ../option_id this.id) (not (eq ../correctOptionId this.id)))}}incorrect-answer{{/if}}">
+              <label>
+                <input type="radio" name="q{{@../index}}" value="{{this.id}}" {{#if (eq ../option_id
+                  this.id)}}checked{{/if}} disabled>
+                <span class="answer-text">{{this.content}}</span>
+                {{#if (eq ../correctOptionId this.id)}}
+                <span class="correct-indicator"><i class="fas fa-check-circle"></i></span>
+                {{/if}}
+                {{#if (and (eq ../option_id this.id) (not (eq ../correctOptionId this.id)))}}
+                <span class="incorrect-indicator"><i class="fas fa-times-circle"></i></span>
+                {{/if}}
+              </label>
+            </li>
+            {{/each}}
+          </ul>
+
+          {{#if (not this.isCorrect)}}
+          <div class="feedback-box incorrect">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>Đáp án đúng là: {{this.correctOption.content}}</span>
+          </div>
+          {{else}}
+          <div class="feedback-box correct">
+            <i class="fas fa-check-circle"></i>
+            <span>Bạn đã chọn đúng!</span>
+          </div>
+          {{/if}}
+        </div>
+        {{/if}}
+        {{#if (eq this.question.type "TRUE_FALSE")}}
+        <div class="question-box">
+          <h3>Câu hỏi {{add @index 1}}</h3>
+          <p>{{#if this.isCorrect}}Hoàn thành{{else}}Chưa hoàn thành{{/if}}</p>
+          <p>{{#if this.isCorrect}}Đạt điểm {{this.question.points}} trên {{this.question.points}}{{/if}}</p>
+          <p><i class="fas fa-flag"></i> Đặt cờ</p>
+          <p>{{this.question.question.content}}</p>
+
+          {{#if this.question.image_url}}
+          <div class="question-image">
+            <img src="{{this.question.image_url}}" alt="Question Image">
+          </div>
+          {{/if}}
+
+          <ul class="answers-list">
+            {{#each this.allOptions}}
+            <li
+              class="answer-item {{#if (eq ../correctOptionId this.id)}}correct-answer{{/if}} {{#if (and (eq ../option_id this.id) (not (eq ../correctOptionId this.id)))}}incorrect-answer{{/if}}">
+              <label>
+                <input type="radio" name="q{{@../index}}" value="{{this.id}}" {{#if (eq ../option_id
+                  this.id)}}checked{{/if}} disabled>
+                <span class="answer-text">{{this.content}}</span>
+                {{#if (eq ../correctOptionId this.id)}}
+                <span class="correct-indicator"><i class="fas fa-check-circle"></i></span>
+                {{/if}}
+                {{#if (and (eq ../option_id this.id) (not (eq ../correctOptionId this.id)))}}
+                <span class="incorrect-indicator"><i class="fas fa-times-circle"></i></span>
+                {{/if}}
+              </label>
+            </li>
+            {{/each}}
+          </ul>
+
+          {{#if (not this.isCorrect)}}
+          <div class="feedback-box incorrect">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>Đáp án đúng là: {{this.correctOption.content}}</span>
+          </div>
+          {{else}}
+          <div class="feedback-box correct">
+            <i class="fas fa-check-circle"></i>
+            <span>Bạn đã chọn đúng!</span>
+          </div>
+          {{/if}}
+        </div>
+        {{/if}}
+        {{#if (eq this.question.type "MULTIPLE_ANSWER")}}
+<div class="question-box">
+  <h3>Câu hỏi {{add @index 1}}</h3>
+  <p>{{#if this.isCorrect}}Hoàn thành{{else}}Chưa hoàn thành{{/if}}</p>
+  <p>{{#if this.isCorrect}}Đạt điểm {{this.question.points}} trên {{this.question.points}}{{else}}Chưa đạt điểm{{/if}}</p>
+  <p><i class="fas fa-flag"></i> Đặt cờ</p>
+  <p>{{this.question.content}}</p>
+
+  {{#if this.question.image_url}}
+  <div class="question-image">
+    <img src="{{this.question.image_url}}" alt="Question Image">
+  </div>
+  {{/if}}
+
+  <ul class="answers-list multiple-choice">
+    {{#each this.allOptions}}
+    <li class="answer-item 
+          {{#if this.isCorrect}}correct-answer{{/if}} 
+          {{#if (and (includes ../selected_options this.id) (not this.isCorrect))}}incorrect-answer{{/if}}">
+      <label>
+        <input type="checkbox" name="q{{@../index}}_opt{{@index}}" value="{{this.id}}" 
+               {{#if (includes ../selected_options this.id)}}checked{{/if}} disabled>
+        <span class="answer-text">{{this.content}}</span>
+
+        {{#if this.isCorrect}}
+        <span class="correct-indicator"><i class="fas fa-check-circle"></i></span>
+        {{else if (includes ../selected_options this.id)}}
+        <span class="incorrect-indicator"><i class="fas fa-times-circle"></i></span>
+        {{/if}}
+      </label>
+    </li>
+    {{/each}}
+  </ul>
+
+  {{!-- Thêm phần hiển thị cụ thể đáp án của người dùng --}}
+  <div class="user-selections">
+    <h4>Đáp án bạn đã chọn:</h4>
+    {{#if selected_options.length}}
+      <ul class="user-selected-list">
+        {{#each this.allOptions}}
+          {{#if (includes ../selected_options this.id)}}
+          <li>{{this.content}}
+            {{#if this.isCorrect}}
+              <span class="correct-indicator"><i class="fas fa-check-circle"></i> (Đúng)</span>
             {{else}}
-              <div class="feedback-box correct">
-                <i class="fas fa-check-circle"></i>
-                <span>Bạn đã chọn đúng!</span>
-              </div>
+              <span class="incorrect-indicator"><i class="fas fa-times-circle"></i> (Sai)</span>
+            {{/if}}
+          </li>
+          {{/if}}
+        {{/each}}
+      </ul>
+    {{else}}
+      <p class="no-answer">Bạn chưa chọn đáp án nào.</p>
+    {{/if}}
+  </div>
+
+  {{#if (not this.isCorrect)}}
+  <div class="feedback-box incorrect">
+    <i class="fas fa-exclamation-circle"></i>
+    <span>Đáp án đúng:
+      <ul class="correct-answers-list">
+      {{#each this.allOptions}}
+        {{#if this.isCorrect}}
+        <li>{{this.content}}</li>
+        {{/if}}
+      {{/each}}
+      </ul>
+    </span>
+  </div>
+  {{else}}
+  <div class="feedback-box correct">
+    <i class="fas fa-check-circle"></i>
+    <span>Bạn đã chọn đúng tất cả!</span>
+  </div>
+  {{/if}}
+</div>
+{{/if}}
+        {{#if (eq this.question.type "FILL_IN_THE_BLANK")}}
+        <div class="question-box">
+          <h3>Câu hỏi {{add @index 1}}</h3>
+          <p>{{#if this.isCorrect}}Hoàn thành{{else}}Chưa hoàn thành{{/if}}</p>
+          <p>{{#if this.isCorrect}}Đạt điểm {{this.question.points}} trên {{this.question.points}}{{/if}}</p>
+          <p><i class="fas fa-flag"></i> Đặt cờ</p>
+          <p>{{this.question.content}}</p>
+
+          {{#if this.question.image_url}}
+          <div class="question-image">
+            <img src="{{this.question.image_url}}" alt="Question Image">
+          </div>
+          {{/if}}
+
+          <div class="fill-blank-answer">
+            <div class="user-answer">
+              <label>Câu trả lời của bạn:</label>
+              <input type="text" value="{{this.text_answer}}"
+                class="{{#if this.isCorrect}}correct-answer{{else}}incorrect-answer{{/if}}" disabled>
+            </div>
+
+            {{#if (not this.isCorrect)}}
+            <div class="feedback-box incorrect">
+              <i class="fas fa-exclamation-circle"></i>
+              <span>Đáp án đúng là: <strong>{{this.correctAnswer}}</strong></span>
+            </div>
+            {{else}}
+            <div class="feedback-box correct">
+              <i class="fas fa-check-circle"></i>
+              <span>Bạn đã trả lời đúng!</span>
+            </div>
             {{/if}}
           </div>
         </div>
+        {{/if}}
+      </div>
       {{/each}}
 
       <div class="navigation-buttons">
@@ -79,12 +242,12 @@
       <div class="user-info">
         <div class="user-avatar">{{this.data.user.username.[0]}}</div>
         <p>{{this.data.user.username}}</p>
-        
+
       </div>
 
       <div class="question-navigation">
         {{#each this.data.answers}}
-          <button data-question="{{add @index 1}}" {{#if @first}}class="active"{{/if}}>{{add @index 1}}</button>
+        <button data-question="{{add @index 1}}" {{#if @first}}class="active" {{/if}}>{{add @index 1}}</button>
         {{/each}}
       </div>
 
@@ -93,60 +256,60 @@
   </div>
 
   <script>
-  const questionContainers = document.querySelectorAll('.question-container');
-  const questionNavigationButtons = document.querySelectorAll('.question-navigation button');
-  const prevBtn = document.getElementById('prevBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  
-  // Add this to your existing script section
-  document.getElementById('backButton').addEventListener('click', () => {
-  // Check if the previous page was do-test
-  if (document.referrer.includes('/do-test')) {
-    // If coming from do-test, redirect to quizzes page
-    window.location.href = '/quiz/all-quiz-by-category';
-  } else {
-    // Otherwise use normal back button behavior
-    window.history.back();
-  }
-});
-  
-  let currentQuestion = 1;
+    const questionContainers = document.querySelectorAll('.question-container');
+    const questionNavigationButtons = document.querySelectorAll('.question-navigation button');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
 
-  function showQuestion(questionNumber) {
-    questionContainers.forEach(container => container.classList.remove('active'));
-    document.getElementById(`question${questionNumber-1}`).classList.add('active');
-
-    questionNavigationButtons.forEach(button => button.classList.remove('active'));
-    document.querySelector(`.question-navigation button[data-question="${questionNumber}"]`).classList.add('active');
-
-    prevBtn.disabled = questionNumber === 1;
-    nextBtn.textContent = questionNumber === questionContainers.length ? 'Hoàn thành việc xem lại' : 'Next';
-  }
-
-  questionNavigationButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      currentQuestion = parseInt(button.dataset.question);
-      showQuestion(currentQuestion);
+    // Add this to your existing script section
+    document.getElementById('backButton').addEventListener('click', () => {
+      // Check if the previous page was do-test
+      if (document.referrer.includes('/do-test')) {
+        // If coming from do-test, redirect to quizzes page
+        window.location.href = '/quiz/all-quiz-by-category';
+      } else {
+        // Otherwise use normal back button behavior
+        window.history.back();
+      }
     });
-  });
 
-  prevBtn.addEventListener('click', () => {
-    if (currentQuestion > 1) {
-      currentQuestion--;
-      showQuestion(currentQuestion);
+    let currentQuestion = 1;
+
+    function showQuestion(questionNumber) {
+      questionContainers.forEach(container => container.classList.remove('active'));
+      document.getElementById(`question${questionNumber - 1}`).classList.add('active');
+
+      questionNavigationButtons.forEach(button => button.classList.remove('active'));
+      document.querySelector(`.question-navigation button[data-question="${questionNumber}"]`).classList.add('active');
+
+      prevBtn.disabled = questionNumber === 1;
+      nextBtn.textContent = questionNumber === questionContainers.length ? 'Hoàn thành việc xem lại' : 'Next';
     }
-  });
 
-  nextBtn.addEventListener('click', () => {
-    if (currentQuestion < questionContainers.length) {
-      currentQuestion++;
-      showQuestion(currentQuestion);
-    } else {
-    window.location.href = '/quiz/all-quiz-by-category';
-    }
-  });
+    questionNavigationButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        currentQuestion = parseInt(button.dataset.question);
+        showQuestion(currentQuestion);
+      });
+    });
 
-  showQuestion(currentQuestion);
-</script>
+    prevBtn.addEventListener('click', () => {
+      if (currentQuestion > 1) {
+        currentQuestion--;
+        showQuestion(currentQuestion);
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentQuestion < questionContainers.length) {
+        currentQuestion++;
+        showQuestion(currentQuestion);
+      } else {
+        window.location.href = '/quiz/all-quiz-by-category';
+      }
+    });
+
+    showQuestion(currentQuestion);
+  </script>
 
 </body>

@@ -76,6 +76,22 @@ export default {
             console.error('Error checking room password:', error);
             return { success: false, message: 'Server error' };
         }
+    },
+    async createRoom(userId, name,max_participants, password, description){
+        try {
+            const roomId = await db('room').insert({
+                name: name,
+                max_players: max_participants,
+                password: password,
+                creator: userId,
+            }).returning('id');
+            
+           
+            return { success: true, message: 'Room created successfully' };
+        } catch (error) {
+            console.error('Error creating room:', error);
+            return { success: false, message: 'Server error' };
+        }
     }
 
 

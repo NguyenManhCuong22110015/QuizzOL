@@ -1,4 +1,5 @@
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js"></script>
 </head>
+
 <body>
     <div class="container">
         <div class="left-panel">
@@ -18,101 +20,90 @@
             </div>
 
             {{#each this.quiz.questions}}
-               {{#if (eq type "SINGLE_ANSWER")}}
-                    <div class="question-card" id="question-{{question_number}}" data-question-id="{{id}}" data-question-number="{{question_number}}">
-                        <span class="question-number">{{question_number}}</span>
-                        <div class="question-text">{{content}}</div>
-                        {{#if imageUrl}}
-                        <div class="image-placeholder">
-                            <img src="{{imageUrl}}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
-                        </div>
-                        {{/if}}
-                        <div class="options">
-                       {{#each options}}
-                            <div>
-                                <input 
-                                type="radio" 
-                                id="q{{../question_number}}_option{{@index}}" 
-                                name="question-{{../question_number}}" 
-                                value="{{id}}" 
-                                {{#if (eq ../option_id id)}}checked{{/if}}>
-                                <label for="q{{../question_number}}_option{{@index}}">{{content}}</label>
-                            </div>
-                            {{/each}}
-                        </div>
-                    </div>
-                {{else if (eq type "FILL_IN_THE_BLANK")}}
-                    <div class="question-card" id="question-{{question_number}}" data-question-id="{{id}}" data-question-number="{{question_number}}">
-                        <span class="question-number">{{question_number}}</span>
-                        <div class="question-text">{{content}}</div>
-                        {{#if imageUrl}}
-                        <div class="image-placeholder">
-                            <img src="{{imageUrl}}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
-                        </div>
-                        {{/if}}
-                        <div class="fill-blank-container">
-                            <div class="input-wrapper">
-                                <input 
-                                    type="text" 
-                                    id="q{{question_number}}_input" 
-                                    class="fill-blank-input" 
-                                    placeholder="Type your answer here..."
-                                    value="{{#if text_answer}}{{text_answer}}{{/if}}"
-                                >
-                                <div class="input-border"></div>
-                            </div>
-                        </div>
-                    </div>
-                {{else if (eq type "TRUE_FALSE")}}
-                    <div class="question-card" id="question-{{question_number}}" data-question-id="{{id}}" data-question-number="{{question_number}}">
-                    <span class="question-number">{{question_number}}</span>
-                    <div class="question-text">{{content}}</div>
-                    {{#if imageUrl}}
-                        <div class="image-placeholder">
-                        <img src="{{imageUrl}}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
-                        </div>
-                    {{/if}}
-                    <div class="options">
-                        {{#each options}}
-                        <div>
-                            <input 
-                            type="radio" 
-                            id="q{{../question_number}}_option{{@index}}" 
-                            name="question-{{../question_number}}" 
-                            value="{{id}}">
-                            <label for="q{{../question_number}}_option{{@index}}">{{content}}</label>
-                        </div>
-                        {{/each}}
-                    </div>
-                    </div>
-                {{else if (eq type "MULTIPLE_ANSWER")}}
-                    <div class="question-card" id="question-{{question_number}}" data-question-id="{{id}}" data-question-number="{{question_number}}">
-                        <span class="question-number">{{question_number}}</span>
-                        <div class="question-text">{{content}}</div>
-                        {{#if imageUrl}}
-                        <div class="image-placeholder">
-                            <img src="{{imageUrl}}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
-                        </div>
-                        {{/if}}
-                        <div class="options">
-                            {{#each options}}
-                            <div>
-                                <input 
-                                    type="checkbox" 
-                                    id="q{{../question_number}}_option{{@index}}" 
-                                    name="question-{{../question_number}}" 
-                                    value="{{id}}"
-                                    class="multiple-choice"
-                                    {{#if (isOptionSelected ../selected_options id)}}checked{{/if}}>
-                                <label for="q{{../question_number}}_option{{@index}}">{{content}}</label>
-                            </div>
-                            {{/each}}
-                        </div>
-                    </div>
+            {{#if (eq type "SINGLE_ANSWER")}}
+            <div class="question-card" id="question-{{question_number}}" data-question-id="{{id}}"
+                data-question-number="{{question_number}}">
+                <span class="question-number">{{question_number}}</span>
+                <div class="question-text">{{content}}</div>
+                {{#if imageUrl}}
+                <div class="image-placeholder">
+                    <img src="{{imageUrl}}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
                 {{/if}}
+                <div class="options">
+                    {{#each options}}
+                    <div>
+                        <input type="radio" id="q{{../question_number}}_option{{@index}}"
+                            name="question-{{../question_number}}" value="{{id}}" {{#if (eq ../option_id
+                            id)}}checked{{/if}}>
+                        <label for="q{{../question_number}}_option{{@index}}">{{content}}</label>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+            {{else if (eq type "FILL_IN_THE_BLANK")}}
+            <div class="question-card" id="question-{{question_number}}" data-question-id="{{id}}"
+                data-question-number="{{question_number}}">
+                <span class="question-number">{{question_number}}</span>
+                <div class="question-text">{{content}}</div>
+                {{#if imageUrl}}
+                <div class="image-placeholder">
+                    <img src="{{imageUrl}}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                {{/if}}
+                <div class="fill-blank-container">
+                    <div class="input-wrapper">
+                        <input type="text" id="q{{question_number}}_input" class="fill-blank-input"
+                            placeholder="Type your answer here..." value="{{#if text_answer}}{{text_answer}}{{/if}}">
+                        <div class="input-border"></div>
+                    </div>
+                </div>
+            </div>
+            {{else if (eq type "TRUE_FALSE")}}
+            <div class="question-card" id="question-{{question_number}}" data-question-id="{{id}}"
+                data-question-number="{{question_number}}">
+                <span class="question-number">{{question_number}}</span>
+                <div class="question-text">{{content}}</div>
+                {{#if imageUrl}}
+                <div class="image-placeholder">
+                    <img src="{{imageUrl}}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                {{/if}}
+                <div class="options">
+                    {{#each options}}
+                    <div>
+                        <input type="radio" id="q{{../question_number}}_option{{@index}}"
+                            name="question-{{../question_number}}" value="{{id}}">
+                        <label for="q{{../question_number}}_option{{@index}}">{{content}}</label>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+            {{else if (eq type "MULTIPLE_ANSWER")}}
+            <div class="question-card" id="question-{{question_number}}" data-question-id="{{id}}"
+                data-question-number="{{question_number}}">
+                <span class="question-number">{{question_number}}</span>
+                <div class="question-text">{{content}}</div>
+                {{#if imageUrl}}
+                <div class="image-placeholder">
+                    <img src="{{imageUrl}}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                {{/if}}
+                <div class="options">
+                    {{#each options}}
+                    <div>
+                        <input type="checkbox" id="q{{../question_number}}_option{{@index}}"
+                            name="question-{{../question_number}}" value="{{id}}" class="multiple-choice" {{#if
+                            (isOptionSelected ../selected_options id)}}checked{{/if}}>
+                        <label for="q{{../question_number}}_option{{@index}}">{{content}}</label>
+                    </div>
+                    {{/each}}
+                </div>
+            </div>
+            {{/if}}
             {{/each}}
 
-    
+
 
             <button class="submit-button">Submit Answers</button>
         </div>
@@ -137,145 +128,131 @@
             </div>
             <div class="question-grid">
                 {{#each (range 1 numberOfQuestions)}}
-                    <button onclick="scrollToQuestion({{this}})" id="question-button-{{this}}">{{this}}</button>
+                <button onclick="scrollToQuestion({{this}})" id="question-button-{{this}}">{{this}}</button>
                 {{/each}}
             </div>
         </div>
     </div>
     <script>
-    // Get result data from server
-    const resultId = '{{resultId}}';
-    const startTime = new Date('{{startTime}}');
-    const endTime = new Date('{{endTime}}');
-    let currentResultId = resultId;
-    
-    // Timer variables
-    let timeDiff = 0;
-    let seconds = 0;
-    let minutes = 0;
-    let timeLeft = 0; // Time left in seconds
-    
-    // Setup timer based on start time
-    function initializeTimer() {
-        const now = new Date();
-        
-        // Calculate how much time has passed since start
-        timeDiff = Math.floor((now - startTime) / 1000);
-        seconds = timeDiff % 60;
-        minutes = Math.floor(timeDiff / 60);
-        
-        // Calculate time left until end
-        timeLeft = Math.max(0, Math.floor((endTime - now) / 1000));
-        
-        updateTimerDisplay();
-        
-        // Start the timer
-        const timerInterval = setInterval(() => {
-            // Update elapsed time
-            seconds++;
-            if (seconds === 60) {
-                seconds = 0;
-                minutes++;
-            }
-            
-            // Update time left
-            timeLeft--;
-            
+        // Get result data from server
+        const resultId = '{{resultId}}';
+        const startTime = new Date('{{startTime}}');
+        const endTime = new Date('{{endTime}}');
+        let currentResultId = resultId;
+
+        // Timer variables
+        let timeDiff = 0;
+        let seconds = 0;
+        let minutes = 0;
+        let timeLeft = 0; // Time left in seconds
+
+        // Setup timer based on start time
+        function initializeTimer() {
+            const now = new Date();
+
+            // Calculate how much time has passed since start
+            timeDiff = Math.floor((now - startTime) / 1000);
+            seconds = timeDiff % 60;
+            minutes = Math.floor(timeDiff / 60);
+
+            // Calculate time left until end
+            timeLeft = Math.max(0, Math.floor((endTime - now) / 1000));
+
             updateTimerDisplay();
-            
-            // Check if time is up
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                submitQuiz('Time is up!');
-            } else if (timeLeft <= 60) {
-                // Show warning at last minute
-                if (timeLeft === 60) {
+
+            // Start the timer
+            const timerInterval = setInterval(() => {
+                // Update elapsed time
+                seconds++;
+                if (seconds === 60) {
+                    seconds = 0;
+                    minutes++;
+                }
+
+                // Update time left
+                timeLeft--;
+
+                updateTimerDisplay();
+
+                // Check if time is up
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    submitQuiz('Time is up!');
+                } else if (timeLeft <= 60) {
+                    // Show warning at last minute
+                    if (timeLeft === 60) {
+                        Swal.fire({
+                            title: 'Last Minute!',
+                            text: 'You have 1 minute left to complete the quiz.',
+                            icon: 'warning',
+                            timer: 5000,
+                            timerProgressBar: true,
+                            showConfirmButton: false
+                        });
+                    }
+
+                    // Blink the timer in red during the last minute
+                    document.getElementById('timer').classList.add('time-warning');
+                } else if (timeLeft === 300) { // 5 minutes left
                     Swal.fire({
-                        title: 'Last Minute!',
-                        text: 'You have 1 minute left to complete the quiz.',
-                        icon: 'warning',
+                        title: '5 Minutes Left',
+                        text: 'You have 5 minutes left to complete the quiz.',
+                        icon: 'info',
                         timer: 5000,
                         timerProgressBar: true,
                         showConfirmButton: false
                     });
                 }
-                
-                // Blink the timer in red during the last minute
-                document.getElementById('timer').classList.add('time-warning');
-            } else if (timeLeft === 300) { // 5 minutes left
-                Swal.fire({
-                    title: '5 Minutes Left',
-                    text: 'You have 5 minutes left to complete the quiz.',
-                    icon: 'info',
-                    timer: 5000,
-                    timerProgressBar: true,
-                    showConfirmButton: false
-                });
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            // Format for elapsed time
+            const formattedSeconds = String(seconds).padStart(2, '0');
+            const formattedMinutes = String(minutes).padStart(2, '0');
+
+            // Format for time left
+            const timeLeftMinutes = Math.floor(timeLeft / 60);
+            const timeLeftSeconds = timeLeft % 60;
+            const formattedTimeLeftMinutes = String(timeLeftMinutes).padStart(2, '0');
+            const formattedTimeLeftSeconds = String(timeLeftSeconds).padStart(2, '0');
+
+            // Update displays
+            document.getElementById('timer').innerText = `${formattedMinutes}:${formattedSeconds}`;
+            document.getElementById('timeLeft').innerText = `${formattedTimeLeftMinutes}:${formattedTimeLeftSeconds}`;
+        }
+
+        function scrollToQuestion(questionNumber) {
+            const questionElement = document.getElementById(`question-${questionNumber}`);
+            if (questionElement) {
+                questionElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
-        }, 1000);
-    }
-    
-    function updateTimerDisplay() {
-        // Format for elapsed time
-        const formattedSeconds = String(seconds).padStart(2, '0');
-        const formattedMinutes = String(minutes).padStart(2, '0');
-        
-        // Format for time left
-        const timeLeftMinutes = Math.floor(timeLeft / 60);
-        const timeLeftSeconds = timeLeft % 60;
-        const formattedTimeLeftMinutes = String(timeLeftMinutes).padStart(2, '0');
-        const formattedTimeLeftSeconds = String(timeLeftSeconds).padStart(2, '0');
-        
-        // Update displays
-        document.getElementById('timer').innerText = `${formattedMinutes}:${formattedSeconds}`;
-        document.getElementById('timeLeft').innerText = `${formattedTimeLeftMinutes}:${formattedTimeLeftSeconds}`;
-    }
-    
-    function scrollToQuestion(questionNumber) {
-        const questionElement = document.getElementById(`question-${questionNumber}`);
-        if (questionElement) {
-            questionElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-    }
 
-    function markCompleted(questionNumber) {
-        const button = document.getElementById(`question-button-${questionNumber}`);
-        if (button) {
-            button.classList.add('completed');
+        function markCompleted(questionNumber) {
+            const button = document.getElementById(`question-button-${questionNumber}`);
+            if (button) {
+                button.classList.add('completed');
+            }
         }
-    }
 
-    // Function to handle saving radio button answers
-    async function saveRadioAnswer(event) {
-        const questionElement = event.target.closest('.question-card');
-        
-        if (!questionElement || !currentResultId) return;
-        
-        const questionId = questionElement.getAttribute('data-question-id');
-        const questionNumber = questionElement.getAttribute('data-question-number');
-        const answerId = event.target.value;
-        
-        // Visual feedback - mark as completed
-        markCompleted(parseInt(questionNumber));
-        
-        try {
-            // Try to update first
-            const updateResponse = await fetch('/user-answer/update', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    resultId: currentResultId,
-                    questionId: questionId,
-                    answerId: answerId
-                })
-            });
-            
-            // If update returns 404 (not found), create a new answer
-            if (!updateResponse.ok && updateResponse.status === 404) {
-                const addResponse = await fetch('/user-answer/add', {
-                    method: 'POST',
+        // Function to handle saving radio button answers
+        async function saveRadioAnswer(event) {
+            const questionElement = event.target.closest('.question-card');
+
+            if (!questionElement || !currentResultId) return;
+
+            const questionId = questionElement.getAttribute('data-question-id');
+            const questionNumber = questionElement.getAttribute('data-question-number');
+            const answerId = event.target.value;
+
+            // Visual feedback - mark as completed
+            markCompleted(parseInt(questionNumber));
+
+            try {
+                // Try to update first
+                const updateResponse = await fetch('/user-answer/update', {
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -285,66 +262,66 @@
                         answerId: answerId
                     })
                 });
-                
-                if (!addResponse.ok) {
-                    throw new Error('Failed to create answer');
-                }
-            } else if (!updateResponse.ok) {
-                throw new Error('Failed to update answer');
-            }
-            
-            console.log(`Successfully saved answer for question ${questionId}`);
-            
-        } catch (error) {
-            console.error('Error saving answer:', error);
-            
-            // Show error notification only if saving fails
-            Swal.fire({
-                title: 'Error',
-                text: 'Failed to save your answer. Please try again.',
-                icon: 'error',
-                toast: true,
-                position: 'top-end',
-                timer: 3000,
-                showConfirmButton: false
-            });
-        }
-    }
 
-    // Function to handle saving text input answers
-    async function saveTextAnswer(event) {
-        const questionElement = event.target.closest('.question-card');
-        
-        if (!questionElement || !currentResultId) return;
-        
-        const questionId = questionElement.getAttribute('data-question-id');
-        const questionNumber = questionElement.getAttribute('data-question-number');
-        const textAnswer = event.target.value.trim();
-        
-        // Only save if there's actual content
-        if (!textAnswer) return;
-        
-        // Visual feedback - mark as completed
-        markCompleted(parseInt(questionNumber));
-        
-        try {
-            // Try to update first
-            const updateResponse = await fetch('/user-answer/update-text', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    resultId: currentResultId,
-                    questionId: questionId,
-                    textAnswer: textAnswer
-                })
-            });
-            
-            // If update returns 404 (not found), create a new answer
-            if (!updateResponse.ok && updateResponse.status === 404) {
-                const addResponse = await fetch('/user-answer/add-text', {
-                    method: 'POST',
+                // If update returns 404 (not found), create a new answer
+                if (!updateResponse.ok && updateResponse.status === 404) {
+                    const addResponse = await fetch('/user-answer/add', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            resultId: currentResultId,
+                            questionId: questionId,
+                            answerId: answerId
+                        })
+                    });
+
+                    if (!addResponse.ok) {
+                        throw new Error('Failed to create answer');
+                    }
+                } else if (!updateResponse.ok) {
+                    throw new Error('Failed to update answer');
+                }
+
+                console.log(`Successfully saved answer for question ${questionId}`);
+
+            } catch (error) {
+                console.error('Error saving answer:', error);
+
+                // Show error notification only if saving fails
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Failed to save your answer. Please try again.',
+                    icon: 'error',
+                    toast: true,
+                    position: 'top-end',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            }
+        }
+
+        // Function to handle saving text input answers
+        async function saveTextAnswer(event) {
+            const questionElement = event.target.closest('.question-card');
+
+            if (!questionElement || !currentResultId) return;
+
+            const questionId = questionElement.getAttribute('data-question-id');
+            const questionNumber = questionElement.getAttribute('data-question-number');
+            const textAnswer = event.target.value.trim();
+
+            // Only save if there's actual content
+            if (!textAnswer) return;
+
+            // Visual feedback - mark as completed
+            markCompleted(parseInt(questionNumber));
+
+            try {
+                // Try to update first
+                const updateResponse = await fetch('/user-answer/update-text', {
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -354,59 +331,65 @@
                         textAnswer: textAnswer
                     })
                 });
-                
-                if (!addResponse.ok) {
-                    throw new Error('Failed to create text answer');
+
+                // If update returns 404 (not found), create a new answer
+                if (!updateResponse.ok && updateResponse.status === 404) {
+                    const addResponse = await fetch('/user-answer/add-text', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            resultId: currentResultId,
+                            questionId: questionId,
+                            textAnswer: textAnswer
+                        })
+                    });
+
+                    if (!addResponse.ok) {
+                        throw new Error('Failed to create text answer');
+                    }
+                } else if (!updateResponse.ok) {
+                    throw new Error('Failed to update text answer');
                 }
-            } else if (!updateResponse.ok) {
-                throw new Error('Failed to update text answer');
+
+                console.log(`Successfully saved text answer for question ${questionId}`);
+
+            } catch (error) {
+                console.error('Error saving text answer:', error);
             }
-            
-            console.log(`Successfully saved text answer for question ${questionId}`);
-            
-        } catch (error) {
-            console.error('Error saving text answer:', error);
         }
-    }
-    
-    // Function to handle saving multiple choice answers (checkboxes)
-    async function saveMultipleChoiceAnswers(event) {
-        const questionElement = event.target.closest('.question-card');
-        
-        if (!questionElement || !currentResultId) return;
-        
-        const questionId = questionElement.getAttribute('data-question-id');
-        const questionNumber = questionElement.getAttribute('data-question-number');
-        
-        // Get all checked options for this question
-        const checkedOptions = Array.from(
-            questionElement.querySelectorAll('input[type="checkbox"]:checked')
-        ).map(checkbox => checkbox.value);
-        
-        // Only save if at least one option is selected
-        if (checkedOptions.length === 0) return;
-        
-        // Visual feedback - mark as completed
-        markCompleted(parseInt(questionNumber));
-        
-        try {
-            // Try to update first
-            const updateResponse = await fetch('/user-answer/update-multiple', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    resultId: currentResultId,
-                    questionId: questionId,
-                    optionIds: checkedOptions
-                })
+
+        // Function to handle saving multiple choice answers (checkboxes)
+        async function saveMultipleChoiceAnswers(event) {
+            const questionElement = event.target.closest('.question-card');
+
+            if (!questionElement || !currentResultId) return;
+
+            const questionId = questionElement.getAttribute('data-question-id');
+            const questionNumber = questionElement.getAttribute('data-question-number');
+
+            // Get all checked options for this question
+            const checkedOptions = Array.from(
+                questionElement.querySelectorAll('input[type="checkbox"]:checked')
+            ).map(checkbox => checkbox.value);
+
+            // Debug info 
+            console.log('Saving multiple choice answer:', {
+                resultId: currentResultId,
+                questionId: questionId,
+                optionIds: checkedOptions
             });
-            
-            // If update returns 404 (not found), create a new answer
-            if (!updateResponse.ok && updateResponse.status === 404) {
-                const addResponse = await fetch('/user-answer/add-multiple', {
-                    method: 'POST',
+
+            // Visual feedback - mark as completed
+            if (checkedOptions.length > 0) {
+                markCompleted(parseInt(questionNumber));
+            }
+
+            try {
+                // Try to update first
+                const updateResponse = await fetch('/user-answer/update-multiple', {
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -416,106 +399,123 @@
                         optionIds: checkedOptions
                     })
                 });
-                
-                if (!addResponse.ok) {
-                    throw new Error('Failed to create multiple choice answer');
+
+                console.log('Update response status:', updateResponse.status);
+
+                // If update returns 404 (not found), create a new answer
+                if (!updateResponse.ok && updateResponse.status === 404) {
+                    const addResponse = await fetch('/user-answer/add-multiple', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            resultId: currentResultId,
+                            questionId: questionId,
+                            optionIds: checkedOptions
+                        })
+                    });
+
+                    console.log('Add response status:', addResponse.status);
+
+                    if (!addResponse.ok) {
+                        throw new Error('Failed to create multiple choice answer');
+                    }
+                } else if (!updateResponse.ok) {
+                    throw new Error('Failed to update multiple choice answer');
                 }
-            } else if (!updateResponse.ok) {
-                throw new Error('Failed to update multiple choice answer');
+
+                console.log(`Successfully saved multiple choice answer for question ${questionId}`);
+
+            } catch (error) {
+                console.error('Error saving multiple choice answer:', error);
+                Swal.fire({
+                    title: 'Lỗi',
+                    text: 'Không thể lưu câu trả lời. Vui lòng thử lại.',
+                    icon: 'error',
+                    toast: true,
+                    position: 'top-end',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
             }
-            
-            console.log(`Successfully saved multiple choice answer for question ${questionId}`);
-            
-        } catch (error) {
-            console.error('Error saving multiple choice answer:', error);
         }
-    }
-    
-    // Function to submit quiz automatically or manually
-    async function submitQuiz(message = 'Submit Quiz?') {
-        try {
-            // If it's auto-submission due to time expiry
-            if (message === 'Time is up!') {
+
+        // Function to submit quiz automatically or manually
+        async function submitQuiz(message = 'Submit Quiz?') {
+            try {
+                // If it's auto-submission due to time expiry
+                if (message === 'Time is up!') {
+                    Swal.fire({
+                        title: message,
+                        text: 'Your quiz is being submitted automatically.',
+                        icon: 'warning',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+
+                    // Mark the result as completed
+                    const response = await fetch(`/result/complete/${currentResultId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    return;
+                }
+
+                // For manual submission, show confirmation
                 Swal.fire({
                     title: message,
-                    text: 'Your quiz is being submitted automatically.',
-                    icon: 'warning',
-                    showConfirmButton: false,
-                    timer: 3000,
-                    timerProgressBar: true
-                });
-                
-                // Mark the result as completed
-                const response = await fetch(`/result/complete/${currentResultId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-                
-                if (!response.ok) {
-                    throw new Error('Failed to complete quiz');
-                }
-                
-                // Redirect after a short delay
-                setTimeout(() => {
-                    window.location.href = `/quiz/check-result/${currentResultId}`;
-                    
-                }, 3000);
-                
-                return;
-            }
-            
-            // For manual submission, show confirmation
-            Swal.fire({
-                title: message,
-                text: 'Are you sure you want to submit your answers?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Submit',
-                cancelButtonText: 'Cancel'
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    try {
-                        // Mark the result as completed
-                        const response = await fetch(`/result/complete/${currentResultId}`, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            }
-                           
-                        });
-                        
-                        if (!response.ok) {
-                            throw new Error('Failed to complete quiz');
-                        }
-                        
-                        // Redirect to results page
-                        window.location.href = `/quiz/check-result/${currentResultId}`;
-                        
-                    } catch (error) {
-                        console.error('Error submitting quiz:', error);
-                        Swal.fire({
-                            title: 'Error',
-                            text: 'Failed to submit quiz. Please try again.',
-                            icon: 'error'
-                        });
-                    }
-                }
-            });
-        } catch (error) {
-            console.error('Error in submit function:', error);
-        }
-    }
+                    text: 'Are you sure you want to submit your answers?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Submit',
+                    cancelButtonText: 'Cancel'
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        try {
+                            // Mark the result as completed
+                            const response = await fetch(`/result/complete/${currentResultId}`, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                }
 
-    // Initialize the quiz when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize timer based on start time
-        initializeTimer();
-        
-        // Get existing answers from server
-        const existingAnswers = {{{json existingAnswers}}};
-        
+                            });
+
+                            if (!response.ok) {
+                                throw new Error('Failed to complete quiz');
+                            }
+
+                            // Redirect to results page
+                            window.location.href = `/quiz/check-result/${currentResultId}`;
+
+                        } catch (error) {
+                            console.error('Error submitting quiz:', error);
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'Failed to submit quiz. Please try again.',
+                                icon: 'error'
+                            });
+                        }
+                    }
+                });
+            } catch (error) {
+                console.error('Error in submit function:', error);
+            }
+        }
+
+        // Initialize the quiz when page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize timer based on start time
+            initializeTimer();
+
+            // Get existing answers from server
+            const existingAnswers = {{{ json existingAnswers }}};
+
         // When starting a new quiz
         if (!existingAnswers || existingAnswers.length === 0) {
             // Show "new quiz" notification
@@ -545,7 +545,7 @@
                 position: 'top-end',
                 showConfirmButton: false
             });
-            
+
             // Restore previous answers
             existingAnswers.forEach(answer => {
                 if (answer.question_id) {
@@ -554,20 +554,46 @@
                         const questionNumber = questionElement.getAttribute('data-question-number');
                         if (questionNumber) {
                             markCompleted(parseInt(questionNumber));
-                            
+
                             // If single answer, select the right radio button
                             if (answer.option_id) {
-                                const radioButton = document.querySelector(`input[value="${answer.option_id}"]`);
+                                const radioButton = questionElement.querySelector(`input[type="radio"][value="${answer.option_id}"]`);
                                 if (radioButton) {
                                     radioButton.checked = true;
                                 }
                             }
-                            
+
                             // If text answer, populate the text field
                             if (answer.text_answer) {
-                                const textField = document.querySelector(`#question-${questionNumber} input[type="text"]`);
+                                const textField = questionElement.querySelector(`input[type="text"]`);
                                 if (textField) {
                                     textField.value = answer.text_answer;
+                                }
+                            }
+
+                            // If multiple choice answer, check the appropriate boxes
+                            if (answer.selected_options) {
+                                let selectedOptions = [];
+
+                                try {
+                                    // Parse JSON string if needed
+                                    if (typeof answer.selected_options === 'string') {
+                                        selectedOptions = JSON.parse(answer.selected_options);
+                                    } else if (Array.isArray(answer.selected_options)) {
+                                        selectedOptions = answer.selected_options;
+                                    }
+
+                                    // Check each option
+                                    if (selectedOptions.length > 0) {
+                                        selectedOptions.forEach(optionId => {
+                                            const checkbox = questionElement.querySelector(`input[type="checkbox"][value="${optionId}"]`);
+                                            if (checkbox) {
+                                                checkbox.checked = true;
+                                            }
+                                        });
+                                    }
+                                } catch (e) {
+                                    console.error('Error parsing selected options:', e);
                                 }
                             }
                         }
@@ -575,33 +601,35 @@
                 }
             });
         }
-        
+
         // Add event listeners for radio buttons
         const radioButtons = document.querySelectorAll('input[type="radio"]');
         radioButtons.forEach(radio => {
             radio.addEventListener('change', saveRadioAnswer);
         });
-        
+
         // Add event listeners for text inputs
         const textInputs = document.querySelectorAll('input[type="text"]');
         textInputs.forEach(input => {
             input.addEventListener('blur', saveTextAnswer);
         });
-        
+
         // Add event listeners for checkboxes
         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
         checkboxes.forEach(checkbox => {
             checkbox.addEventListener('change', saveMultipleChoiceAnswers);
         });
-        
+
         // Handle submit button
         document.querySelectorAll('.submit-button').forEach(button => {
-            button.addEventListener('click', function() {
+            button.addEventListener('click', function () {
                 if (!currentResultId) return;
                 submitQuiz();
             });
         });
     });
-</script>
+    </script>
 </body>
+
 </html>
+```
