@@ -36,7 +36,7 @@ router.get('/profile',check, async (req, res) => {
         res.render('userOverviewPage', {
             user: user,
             account: req.session.authUser,
-            avatar: avatar,
+            avatar: avatar ? avatar : null,
             quizHistory: historyData.results,
             pagination: historyData.pagination,
            // layout: false

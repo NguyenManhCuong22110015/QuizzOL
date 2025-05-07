@@ -511,7 +511,7 @@ export default {
     }
     catch(error) {
       console.error('Error in getAvatarByUserId:', error);
-      throw error;
+      return null;
     }
   },
   async getAvatarByAccountId(accountId) {
