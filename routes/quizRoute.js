@@ -8,6 +8,7 @@ import pkg from 'passport';
 import check from '../middlewares/auth.mdw.js'
 import resultService from '../services/resultService.js'
 import tagService from '../services/tagService.js';
+
 const { session } = pkg;
 const router = new Router()
 
@@ -43,7 +44,7 @@ router.post('/toggle-publish/:id', async (req, res) => {
 router.get('/quizzes',check, async (req, res) => {
     try {
         const userId = req.session.authUser?.user || req.user?.id || 1;
-        const quizzes = await quizService.getQuizzesWithDetails(userId);
+        const quizzes = await quizService.getQuizzesWithDetails();
         
         res.render('quizzes_dataFilled', {
             layout: 'student',
@@ -72,6 +73,29 @@ router.get('/question/:id', async (req, res) => {
    
 });
 
+
+
+router.put('/quizzes/:id/update-media', async (req, res) => {
+    try {
+        const quizId = req.params.id;
+        const { image, public_id } = req.body;
+       
+        if (!image) {
+            return res.status(400).json({ error: 'No media ID provided' });
+        }
+        
+        await quizService.updateImageQuiz(quizId, image, public_id);
+        
+        res.json({ 
+            success: true, 
+            message: 'Quiz media updated successfully'
+        });
+        
+    } catch (error) {
+        console.error('Error updating quiz media:', error);
+        res.status(500).json({ error: 'Failed to update quiz media' });
+    }
+});
 
 
 

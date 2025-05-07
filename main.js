@@ -348,6 +348,9 @@ app.use("/question", questionRoute);
 app.use("/comment", commentRoute);
 app.use("/room", roomRouter);
 app.use("/chatbot", chatbotRouter);
+
+
+
 app.get("/", (req, res) => {
   res.send("Hello word");
 });
