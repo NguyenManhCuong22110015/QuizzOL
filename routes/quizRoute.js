@@ -11,11 +11,39 @@ import tagService from '../services/tagService.js';
 const { session } = pkg;
 const router = new Router()
 
-
+router.get('/search', (req, res) => {
+    if (typeof quizController.searchQuizzes === 'function') {
+        return quizController.searchQuizzes(req, res);
+    } else {
+        console.error('quizController.searchQuizzes is not a function');
+        return res.status(500).json({ error: 'Search functionality unavailable' });
+    }
+});
+router.post('/toggle-publish/:id', async (req, res) => {
+    try {
+        const quizId = req.params.id;
+        // Add fallback in case req.body is undefined
+        const published = req.body && req.body.published !== undefined ? req.body.published : false;
+        
+        // Update the quiz in the database
+        await quizService.updateQuiz(quizId, { published });
+        
+        res.json({ 
+            success: true, 
+            message: published ? 'Quiz published successfully' : 'Quiz unpublished successfully' 
+        });
+    } catch (error) {
+        console.error('Error toggling quiz publish status:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Failed to update quiz status'
+        });
+    }
+});
 router.get('/quizzes', async (req, res) => {
     try {        
        
-            quizzes = [
+            const quizzes = [
               {
                 "id": 1,
                 "rowNumber": 1,
@@ -161,7 +189,7 @@ router.get('/quizzes/:id', async (req, res) => {
         });
     } catch (error) {
         console.error('Error rendering quiz details:', error);
-        res.status(500, { message: 'Failed to render quiz details' });
+        res.status(500).render('error', { message: 'Failed to render quiz details' });
     }
 });
 
@@ -298,7 +326,14 @@ router.get('/do-test/:id',check, async (req, res) => {
 });
 
 
-router.get('/check-result/:id', quizController.checkResult)
+router.get('/check-result/:id', (req, res) => {
+  if (typeof quizController.checkResult === 'function') {
+    return quizController.checkResult(req, res);
+  } else {
+    console.error('quizController.checkResult is not a function');
+    return res.status(500).json({ error: 'Check result functionality unavailable' });
+  }
+});
 
 router.get('/all-quiz-by-category', async (req, res) => {
 

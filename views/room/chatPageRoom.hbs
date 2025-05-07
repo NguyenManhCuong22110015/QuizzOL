@@ -8,7 +8,6 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Custom styles -->
   <style>
     body {
       background-color: #f5f7fa;
@@ -119,7 +118,7 @@
             <div class="card-header bg-primary text-white py-3">
               <div class="d-flex justify-content-between align-items-center">
                 <h5 class="mb-0 text-truncate">
-                  Room Members <span class="badge bg-light text-dark member-count">0</span>
+                  Room Members <span class="badge bg-light text-dark member-count" id="memberCount">0</span>
                 </h5>
                 <button class="btn btn-light btn-sm rounded-circle p-1" id="manageMembers">
                   <i class="fas fa-users-gear"></i>
@@ -289,7 +288,6 @@
       </div>
     </div>
     
-    <!-- Add Quiz Modal -->
     <div class="modal fade" id="addQuizModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -496,378 +494,294 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        // DOM Elements - only the essential ones
-        const chatMessages = document.getElementById('chatMessages');
-        const welcomeMessage = document.getElementById('welcomeMessage');
-        const messageForm = document.getElementById('messageForm');
-        const messageInput = document.getElementById('messageInput');
-        const roomName = document.getElementById('roomName');
-        const roomAvatar = document.getElementById('roomAvatar');
-        
-        // Modals
-        const choiceNameModalElement = document.getElementById('choiceNameModal');
-        const choiceNameModal = choiceNameModalElement ? new bootstrap.Modal(choiceNameModalElement) : null;
-        
-        const addQuizModalElement = document.getElementById('addQuizModal');
-        const addQuizModal = addQuizModalElement ? new bootstrap.Modal(addQuizModalElement) : null;
-
-        const viewMembersModalElement = document.getElementById('viewMembersModal');
-        const viewMembersModal = viewMembersModalElement ? new bootstrap.Modal(viewMembersModalElement) : null;
-
-        const changeRoomNameModalElement = document.getElementById('changeRoomNameModal');
-        const changeRoomNameModal = changeRoomNameModalElement ? new bootstrap.Modal(changeRoomNameModalElement) : null;
-
-        const inviteUserModalElement = document.getElementById('inviteUserModal');
-        const inviteUserModal = inviteUserModalElement ? new bootstrap.Modal(inviteUserModalElement) : null;
-
-        const playGameModalElement = document.getElementById('playGameModal');
-        const playGameModal = playGameModalElement ? new bootstrap.Modal(playGameModalElement) : null;
-        
-        // Messages array
-        let messages = [];
-        
-        // Get room ID
-        const roomId = window.location.pathname.split('/').pop() || 'demo-room';
-        
-        // Room info
-        const room = { name: 'Demo Quiz Room', id: roomId };
-        
-        // Set room info
-        if (roomName) {
-          roomName.textContent = room.name;
-          roomName.title = room.name;
-        }
-        if (roomAvatar) {
-          roomAvatar.textContent = room.name.charAt(0).toUpperCase();
-        }
-
-        // Username management with localStorage - CHANGED TO GLOBAL KEYS
-        const USERNAME_KEY = 'chat_username_global'; // Changed to global key
-        const USERNAME_EXPIRY_KEY = 'chat_username_expiry_global'; // Changed to global key
-        
-        let currentUsername = '';
-        
-        // Save username to localStorage with expiration
-        function saveUsernameToLocalStorage(username) {
-          const expiryTime = Date.now() + (60 * 60 * 1000); // 1 hour
-          localStorage.setItem(USERNAME_KEY, username);
-          localStorage.setItem(USERNAME_EXPIRY_KEY, expiryTime.toString());
-        }
-        
-        // Get username from localStorage if not expired
-        function getUsernameFromLocalStorage() {
-          const username = localStorage.getItem(USERNAME_KEY);
-          const expiry = localStorage.getItem(USERNAME_EXPIRY_KEY);
+       let user;
+      
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get room ID from URL
+    const urlParts = window.location.pathname.split('/');
+    const roomId = urlParts[urlParts.length - 1];
+    
+    user = {{{user}}};
+    
+    console.log("Username from server:", user.username);
+    
+    if (!user.username || user.username === "null" || user.username === "") {
+      console.log("No username provided, redirecting to login");
+      window.location.href = '/auth/login?returnUrl=' + encodeURIComponent(window.location.pathname);
+      return;
+    }
+    
+    // No need for username choice modal since we're using the authenticated user's username
+    const choiceNameModal = document.getElementById('choiceNameModal');
+    if (choiceNameModal) {
+      choiceNameModal.remove();
+    }
+    
+    // Connect to WebSocket and join room
+    joinRoom(user.username, roomId);
+  });
+  
+  function joinRoom(username, roomId) {
+    console.log(`Joining room ${roomId} as ${username}`);
+    
+    // Initialize socket connection
+    const socket = new WebSocket(`${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//{{WEBSOCKET_URL}}`);
+    
+    socket.onopen = function() {
+      console.log("WebSocket connection established");
+      
+      // Join the room once connection is established
+      socket.send(JSON.stringify({
+        type: "join_room",
+        roomId: roomId,
+        username: username,
+        avatar: user.avatar
+      }));
+      
+      // Update UI elements
+      if (document.getElementById('currentUserDisplay')) {
+        document.getElementById('currentUserDisplay').textContent = username;
+      }
+      
+      // Update room link for invitation
+      const roomLink = window.location.origin + window.location.pathname;
+      if (document.getElementById('roomLink')) {
+        document.getElementById('roomLink').value = roomLink;
+      }
+    };
+    
+    socket.onmessage = function(event) {
+      const data = JSON.parse(event.data);
+      console.log("Received message:", data);
+      
+      // Handle different message types
+      switch(data.type) {
+        case "playerList":
+        console.log("Updating player list with data:", data.players);
+          updateMembersList(data.players);
+          document.querySelectorAll('.member-count').forEach(el => {
+            el.textContent = data.players.length;
+          });
+          break;
           
-          if (!username || !expiry) return null;
+        case "message":
+          addMessageToChat(data);
+          break;
           
-          if (Date.now() > parseInt(expiry)) {
-            localStorage.removeItem(USERNAME_KEY);
-            localStorage.removeItem(USERNAME_EXPIRY_KEY);
-            return null;
+        case "start_game":
+          console.log("Game is starting");
+          // Show game modal
+          const playGameModal = new bootstrap.Modal(document.getElementById('playGameModal'));
+          playGameModal.show();
+          break;
+          
+        case "question":
+          displayQuestion(data.question, data.questionNumber, data.totalQuestions);
+          break;
+          
+        case "all_answers":
+          displayAnswerResults(data.answers, data.correctAnswer);
+          break;
+          
+        case "end_game":
+          displayFinalResults(data.results);
+          break;
+          
+        case "error":
+          console.error("Error from server:", data.message);
+          alert(data.message);
+          break;
+      }
+    };
+    
+    socket.onerror = function(error) {
+      console.error("WebSocket error:", error);
+    };
+    
+    socket.onclose = function() {
+      console.log("WebSocket connection closed");
+    };
+    
+    // Handle sending messages
+    document.getElementById('messageForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const messageInput = document.getElementById('messageInput');
+      const message = messageInput.value.trim();
+      
+      if (message && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({
+          type: "message",
+          roomId: roomId,
+          username: username,
+          avatar: user.avatar,
+          message: message
+        }));
+        messageInput.value = '';
+      }
+    });
+    
+    // Handle starting a game
+    document.getElementById('playQuizBtn').addEventListener('click', function() {
+      if (socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({
+          type: "start_game",
+          roomId: roomId
+        }));
+      }
+    });
+    
+    // Mobile play button
+    document.getElementById('mobilePlay').addEventListener('click', function() {
+      if (socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify({
+          type: "start_game",
+          roomId: roomId
+        }));
+      }
+    });
+  }
+  
+  function addMessageToChat(data) {
+    console.log("Adding message to chat:", data);
+    const chatMessages = document.getElementById('chatMessages');
+    const welcomeMessage = document.getElementById('welcomeMessage');
+    
+    // Hide welcome message if it exists
+    if (welcomeMessage) {
+      welcomeMessage.style.display = 'none';
+    }
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `d-flex mb-3 ${data.username === user.username ? 'justify-content-end' : 'justify-content-start'}`;
+    
+    const messageContent = `
+      ${data.username !== user.username ? 
+        data.avatar ? 
+          `<img src="${data.avatar}" class="message-avatar me-2" alt="${data.username}">` :
+          `<div class="message-avatar-placeholder me-2">${data.username.charAt(0)}</div>`
+        : ''}
+      <div class="message-content-wrapper">
+        ${data.username !== user.username ? `
+          <div class="message-username">${data.username}</div>
+        ` : ''}
+        <div class="d-flex align-items-end">
+          <div class="message-bubble ${data.username === user.username ? 'current-user-bubble' : 'other-user-bubble'}">
+            ${data.message}
+          </div>
+          <span class="message-time">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+        </div>
+      </div>
+      ${data.username === user.username ? 
+        data.avatar ? 
+          `<img src="${data.avatar}" class="message-avatar ms-2" alt="${data.username}">` :
+          `<div class="message-avatar-placeholder ms-2">${data.username.charAt(0)}</div>`
+        : ''}
+    `;
+    
+    messageDiv.innerHTML = messageContent;
+    chatMessages.appendChild(messageDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+  
+  function updateMembersList(members) {
+    const membersList = document.getElementById('membersList');
+    const modalMembersList = document.getElementById('modalMembersList');
+    
+    if (membersList) {
+      membersList.innerHTML = '';
+      
+      members.forEach(member => {
+        const memberItem = document.createElement('li');
+        memberItem.className = 'list-group-item d-flex align-items-center';
+        
+       memberItem.innerHTML = `
+          ${member.avatar ? 
+            `<img src="${member.avatar}" class="member-avatar me-2" alt="${member.username}">` :
+            `<div class="member-avatar me-2">${member.username.charAt(0)}</div>`
           }
-          
-          return username;
-        }
+          <div class="member-name flex-grow-1">${member.username}</div>
+        `;
         
-        // Function to add message to chat
-        function addMessage(messageData) {
-          if (!chatMessages) return;
-          
-          messages.push(messageData);
-          
-          const messageElement = document.createElement('div');
-          const isCurrentUser = messageData.username === currentUsername;
-          
-          messageElement.className = `d-flex mb-3 ${isCurrentUser ? 'justify-content-end' : ''}`;
-          
-          if (messageData.username === 'System') {
-            // System message
-            messageElement.className = 'd-flex justify-content-center mb-3';
-            messageElement.innerHTML = `
-              <div class="bg-light rounded-pill px-3 py-2">
-                <small class="text-muted">${messageData.message}</small>
-              </div>
-            `;
-          } else {
-            // User message
-            const initial = messageData.username.charAt(0).toUpperCase();
-            messageElement.innerHTML = `
-              ${!isCurrentUser ? `<div class="message-avatar-placeholder me-2">${initial}</div>` : ''}
-              <div class="message-content-wrapper">
-                ${!isCurrentUser ? `<div class="message-username">${messageData.username}</div>` : ''}
-                <div class="d-flex align-items-end ${isCurrentUser ? 'justify-content-end' : ''}">
-                  <div class="message-bubble ${isCurrentUser ? 'current-user-bubble' : 'other-user-bubble'}">
-                    ${messageData.message}
-                  </div>
-                  <small class="message-time">${new Date(messageData.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</small>
-                </div>
-              </div>
-              ${isCurrentUser ? `<div class="message-avatar-placeholder ms-2">${initial}</div>` : ''}
-            `;
-          }
-          
-          // Hide welcome message
-          if (welcomeMessage && messages.length > 0) {
-            welcomeMessage.style.display = 'none';
-          }
-          
-          chatMessages.appendChild(messageElement);
-          chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-        
-        // Get username (localStorage or server)
-        currentUsername = getUsernameFromLocalStorage();
-        
-        // Check server provided username
-        const serverProvidedUsername = '{{username}}';
-        if (!currentUsername && serverProvidedUsername && serverProvidedUsername !== '{{username}}') {
-          currentUsername = serverProvidedUsername;
-          saveUsernameToLocalStorage(currentUsername);
-        }
-        
-        // Username required to enter chat
-        if (!currentUsername && choiceNameModal) {
-          // Configure modal to be non-dismissible
-          choiceNameModalElement.setAttribute('data-bs-backdrop', 'static');
-          choiceNameModalElement.setAttribute('data-bs-keyboard', 'false');
-          
-          // Show the modal
-          setTimeout(() => {
-            choiceNameModal.show();
-          }, 500);
-        } else {
-          // Add welcome message if we have username
-          addMessage({
-            username: 'System',
-            message: `Welcome to the room, ${currentUsername}!`,
-            userAvatar: '',
-            timestamp: new Date().toISOString()
-          });
-        }
-        
-        // Handle username form submission
-        const usernameForm = document.getElementById('usernameForm');
-        if (usernameForm) {
-          usernameForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const username = document.getElementById('username').value.trim();
-            
-            if (username) {
-              currentUsername = username;
-              saveUsernameToLocalStorage(username); // Save to global storage
-              
-              if (choiceNameModal) choiceNameModal.hide();
-              
-              // Add welcome message
-              addMessage({
-                username: 'System',
-                message: `Welcome to the room, ${username}!`,
-                userAvatar: '',
-                timestamp: new Date().toISOString()
-              });
-            } else {
-              alert('Please enter a valid username');
-            }
-          });
-        }
-        
-        // ===== FIX FOR SENDING MESSAGES =====
-        if (messageForm) {
-          messageForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            if (!currentUsername) {
-              if (choiceNameModal) choiceNameModal.show();
-              return;
-            }
-            
-            const messageText = messageInput.value.trim();
-            if (messageText) {
-              // Add the message to chat
-              addMessage({
-                username: currentUsername,
-                message: messageText,
-                timestamp: new Date().toISOString()
-              });
-              
-              // Clear input
-              messageInput.value = '';
-            }
-          });
-        }
-        
-        // ===== FIX FOR BUTTON HANDLERS =====
-        // Add Quiz Button
-        const addQuizBtn = document.getElementById('addQuizBtn');
-        if (addQuizBtn && addQuizModal) {
-          addQuizBtn.addEventListener('click', function() {
-            addQuizModal.show();
-          });
-        }
-        
-        // Mobile Add Quiz
-        const mobileAddQuiz = document.getElementById('mobileAddQuiz');
-        if (mobileAddQuiz && addQuizModal) {
-          mobileAddQuiz.addEventListener('click', function() {
-            addQuizModal.show();
-          });
-        }
-        
-        // View/Manage Members
-        const manageMembers = document.getElementById('manageMembers');
-        const manageMembersBtn = document.getElementById('manageMembersBtn');
-        const mobileManageMembers = document.getElementById('mobileManageMembers');
-        
-        if (manageMembers && viewMembersModal) {
-          manageMembers.addEventListener('click', function() {
-            viewMembersModal.show();
-          });
-        }
-        
-        if (manageMembersBtn && viewMembersModal) {
-          manageMembersBtn.addEventListener('click', function() {
-            viewMembersModal.show();
-          });
-        }
-        
-        if (mobileManageMembers && viewMembersModal) {
-          mobileManageMembers.addEventListener('click', function() {
-            viewMembersModal.show();
-          });
-        }
-        
-        // Change Room Name
-        const changeRoomNameBtn = document.getElementById('changeRoomNameBtn');
-        if (changeRoomNameBtn && changeRoomNameModal) {
-          changeRoomNameBtn.addEventListener('click', function() {
-            changeRoomNameModal.show();
-          });
-        }
-        
-        // Invite Users
-        const inviteBtn = document.getElementById('inviteBtn');
-        const mobileInvite = document.getElementById('mobileInvite');
-        const copyRoomLinkBtn = document.getElementById('copyRoomLinkBtn');
-        
-        if (inviteBtn && inviteUserModal) {
-          inviteBtn.addEventListener('click', function() {
-            // Set room link
-            const roomLink = document.getElementById('roomLink');
-            if (roomLink) roomLink.value = window.location.href;
-            inviteUserModal.show();
-          });
-        }
-        
-        if (mobileInvite && inviteUserModal) {
-          mobileInvite.addEventListener('click', function() {
-            // Set room link
-            const roomLink = document.getElementById('roomLink');
-            if (roomLink) roomLink.value = window.location.href;
-            inviteUserModal.show();
-          });
-        }
-        
-        if (copyRoomLinkBtn) {
-          copyRoomLinkBtn.addEventListener('click', function() {
-            navigator.clipboard.writeText(window.location.href)
-              .then(() => alert('Room link copied to clipboard!'));
-          });
-        }
-        
-        // Copy link button
-        const copyLink = document.getElementById('copyLink');
-        if (copyLink) {
-          copyLink.addEventListener('click', function() {
-            const roomLink = document.getElementById('roomLink');
-            if (roomLink) {
-              roomLink.select();
-              document.execCommand('copy');
-              alert('Link copied to clipboard!');
-            }
-          });
-        }
-        
-        // Play Quiz
-        const playQuizBtn = document.getElementById('playQuizBtn');
-        const mobilePlay = document.getElementById('mobilePlay');
-        
-        if (playQuizBtn && playGameModal) {
-          playQuizBtn.addEventListener('click', function() {
-            playGameModal.show();
-          });
-        }
-        
-        if (mobilePlay && playGameModal) {
-          mobilePlay.addEventListener('click', function() {
-            playGameModal.show();
-          });
-        }
-        
-        // Room name form
-        const roomNameForm = document.getElementById('roomNameForm');
-        if (roomNameForm) {
-          roomNameForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const newRoomNameInput = document.getElementById('newRoomName');
-            if (newRoomNameInput && newRoomNameInput.value.trim()) {
-              const newName = newRoomNameInput.value.trim();
-              if (roomName) roomName.textContent = newName;
-              if (roomName) roomName.title = newName;
-              if (roomAvatar) roomAvatar.textContent = newName.charAt(0).toUpperCase();
-              
-              if (changeRoomNameModal) changeRoomNameModal.hide();
-              
-              addMessage({
-                username: 'System',
-                message: `Room name changed to "${newName}"`,
-                timestamp: new Date().toISOString()
-              });
-            }
-          });
-        }
-        
-        // Quiz form
-        const quizForm = document.getElementById('quizForm');
-        if (quizForm) {
-          quizForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const questionText = document.getElementById('questionText');
-            if (questionText && questionText.value.trim()) {
-              if (addQuizModal) addQuizModal.hide();
-              
-              addMessage({
-                username: 'System',
-                message: `New quiz question added by ${currentUsername}`,
-                timestamp: new Date().toISOString()
-              });
-              
-              // Reset form
-              quizForm.reset();
-            }
-          });
-        }
-        
-        // Share button
-        const shareBtn = document.getElementById('shareBtn');
-        if (shareBtn) {
-          shareBtn.addEventListener('click', function() {
-            if (navigator.share) {
-              navigator.share({
-                title: 'Join my chat room',
-                text: 'Join me in this chat room!',
-                url: window.location.href
-              })
-              .catch(err => console.error('Error sharing:', err));
-            } else {
-              alert('Web Share API not supported in your browser. Copy the link manually.');
-            }
-          });
-        }
+        membersList.appendChild(memberItem);
       });
+    }
+    
+    if (modalMembersList) {
+      modalMembersList.innerHTML = '';
+      
+      members.forEach(username => {
+        const memberItem = document.createElement('li');
+        memberItem.className = 'list-group-item d-flex align-items-center';
+        
+        memberItem.innerHTML = `
+          <div class="member-avatar me-2">${username.charAt(0)}</div>
+          <div class="member-name flex-grow-1">${username}</div>
+        `;
+        
+        modalMembersList.appendChild(memberItem);
+      });
+    }
+  }
+  
+  function displayQuestion(question, currentNumber, totalQuestions) {
+    // Update question number display
+    document.getElementById('currentQuestionNumber').textContent = currentNumber;
+    document.getElementById('totalQuestions').textContent = totalQuestions;
+    
+    // Update question text
+    document.getElementById('questionText').textContent = question.text;
+    
+    // Clear and populate answer options
+    const answersContainer = document.getElementById('answerOptions');
+    answersContainer.innerHTML = '';
+    
+    question.options.forEach((option, index) => {
+      const optionCol = document.createElement('div');
+      optionCol.className = 'col-md-6';
+      
+      const optionBtn = document.createElement('button');
+      optionBtn.className = 'btn btn-outline-primary w-100 p-3 h-100 d-flex align-items-center';
+      optionBtn.textContent = option.text;
+      optionBtn.dataset.index = index;
+      
+      optionBtn.addEventListener('click', function() {
+        // Disable all buttons
+        document.querySelectorAll('#answerOptions button').forEach(btn => {
+          btn.disabled = true;
+        });
+        
+        // Highlight selected answer
+        this.classList.add('btn-primary');
+        this.classList.remove('btn-outline-primary');
+        
+        // Submit answer
+        socket.send(JSON.stringify({
+          type: 'submit_answer',
+          answer: parseInt(this.dataset.index),
+          username: user.username
+        }));
+      });
+      
+      optionCol.appendChild(optionBtn);
+      answersContainer.appendChild(optionCol);
+    });
+    
+    // Show question section, hide results
+    document.getElementById('questionSection').style.display = 'block';
+    document.getElementById('resultsSection').style.display = 'none';
+    document.getElementById('finalResultsSection').style.display = 'none';
+  }
+  
+  function displayAnswerResults(answers, correctAnswerIndex) {
+    // Implementation details for showing answer results
+  }
+  
+  function displayFinalResults(results) {
+    // Implementation details for showing final game results
+  }
     </script>
+     
+
   </div>
 </body>
 </html>

@@ -2,6 +2,7 @@ import resultService from "../services/resultService.js";
 import userService from "../services/userService.js";
 import questionService from "../services/questionService.js";
 import optionService from "../services/optionService.js";
+import quizService from '../services/quizService.js';
 import moment from "moment";
 
 export default{
@@ -110,6 +111,37 @@ export default{
                 console.error('Error creating quiz:', error);
                 res.status(500).json({ error: 'Failed to create quiz' });
             }
+    },
+    searchQuizzes: async (req, res) => {
+        try {
+            const searchTerm = req.query.q || '';
+            
+            if (!searchTerm.trim()) {
+                return res.render('search-results', { 
+                    quizzes: [],
+                    searchTerm: '',
+                    noResults: true,
+                    isEmpty: true,
+                    title: 'Kết quả tìm kiếm'
+                });
+            }
+            
+            const quizzes = await quizService.searchQuizzes(searchTerm);
+            
+            res.render('search-results', { 
+                quizzes, 
+                searchTerm,
+                noResults: quizzes.length === 0,
+                isEmpty: false,
+                title: `Kết quả tìm kiếm: ${searchTerm}`
+            });
+        } catch (error) {
+            console.error('Error searching quizzes:', error);
+            res.status(500).render('error', { 
+                message: 'Đã xảy ra lỗi khi tìm kiếm quiz',
+                title: 'Lỗi'
+            });
         }
+    }
     
 }

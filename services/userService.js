@@ -514,6 +514,34 @@ export default {
       console.error('Error in getAvatarByUserId:', error);
       throw error;
     }
-  }
+  },
+  async getAvatarByAccountId(accountId) {
+    try {
+      const account = await db('account')
+        .where({ id: accountId })
+        .first();
+        
+      if (!account) {
+        return null;
+      }
+      
+      const user = await db('user')
+        .where({ id: account.user })
+        .first();
+        
+      if (!user) {
+        return null;
+      }
+      
+      const avatar = await db('media')
+        .where('id', user.avata)
+        .first();
+        
+      return avatar.url;
+    } catch (error) {
+      console.error('Error in getAvatarByAccountId:', error);
+      throw error;
+    }
+  },
 
 };

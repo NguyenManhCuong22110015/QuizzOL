@@ -1,6 +1,8 @@
 import {Router} from 'express'
 import roomService from "../services/roomService.js"
 import  userSerive from "../services/userService.js"
+import dotenv from 'dotenv';
+dotenv.config();
 const router = new Router()
 
 router.get('/list', async (req, res) => {
@@ -25,14 +27,25 @@ router.get('/chat-page/:roomId',async (req, res) => {
     
     // Get username from session if user is logged in
     let username = null;
+    let avatar = null;
+    let user = null;
     if (req.session && req.session.authUser) {
         
         username = await userSerive.getUsernameByAccountId(req.session.authUser.id);
+        avatar = await userSerive.getAvatarByAccountId(req.session.authUser.id);
+        user = {
+            id: req.session.authUser.id,
+            username: username,
+            avatar: avatar,
+        }
     }
     console.log('Username:', username);
     res.render('room/chatPageRoom', { 
         roomId: roomId,
-        username: username
+        user: JSON.stringify(user),
+        username: username, 
+        WEBSOCKET_URL: process.env.WEBSOCKET_URL,
+       
     });
   });
   
