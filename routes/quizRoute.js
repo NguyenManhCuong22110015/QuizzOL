@@ -7,7 +7,7 @@ import quizController from '../controllers/quizController.js'
 import pkg from 'passport';
 import check from '../middlewares/auth.mdw.js'
 import resultService from '../services/resultService.js'
-
+import tagService from '../services/tagService.js';
 const { session } = pkg;
 const router = new Router()
 
@@ -99,18 +99,18 @@ router.post('/quizzes', async (req, res) => {
             return res.status(400).json({ error: 'Missing required quiz fields' });
         }
 
-        // Ensure categoryId is an integer
-        const categoryId = parseInt(data.categoryId, 10);
-        if (isNaN(categoryId)) {
-            return res.status(400).json({ error: 'Invalid category ID format' });
+        // Handle tags
+        let tagIds = [];
+        if (data.tags) {
+            tagIds = await tagService.findOrCreateTags(data.tags);
         }
 
         const quiz = {
             title: data.quizTitle,
             description: data.quizDescription,
             createdBy: userId,
-            category: categoryId,
-            tag: data.tags || null,
+            category: parseInt(data.categoryId, 10),
+            tag: tagIds.length > 0 ? tagIds.join(',') : null,
             time: new Date(),
             media: data.quizMedia || null
         };
@@ -121,7 +121,6 @@ router.post('/quizzes', async (req, res) => {
             return res.status(500).json({ error: 'Failed to create quiz' });
         }
 
-        // Send success response and redirect URL
         res.json({
             success: true,
             message: 'Quiz created successfully',
@@ -168,11 +167,45 @@ router.get('/quizzes/:id', async (req, res) => {
 
 
 router.put('/quizzes/:id', async (req, res) => {
-    const quizId = req.params.id
-    const quiz = req.body
-    const data = await quizService.updateQuiz(quizId, quiz) || 0
-    res.json(data)
-})
+    try {
+        const quizId = parseInt(req.params.id);
+        if (!quizId) {
+            return res.status(400).json({ error: 'Invalid quiz ID' });
+        }
+
+        const quizData = req.body;
+        if (!quizData || Object.keys(quizData).length === 0) {
+            return res.status(400).json({ error: 'Quiz data is required' });
+        }
+
+        // Handle tags
+        let tagIds = [];
+        if (quizData.tag) {
+            tagIds = await tagService.findOrCreateTags(quizData.tag);
+        }
+
+        const dataToUpdate = {
+            title: quizData.quizTitle,
+            description: quizData.quizDescription,
+            category: parseInt(quizData.categoryId),
+            tag: tagIds.length > 0 ? tagIds.join(',') : null
+        };
+
+        const updatedQuiz = await quizService.updateQuiz(quizId, dataToUpdate);
+
+        res.json({
+            success: true,
+            message: 'Quiz updated successfully',
+            data: updatedQuiz
+        });
+    } catch (error) {
+        console.error('Error updating quiz:', error);
+        res.status(500).json({ 
+            error: 'Failed to update quiz',
+            message: error.message 
+        });
+    }
+});
 
 
 router.delete('/quizzes/:id', async (req, res) => {

@@ -478,40 +478,63 @@
     
 
 
-         editQuizForm.addEventListener('submit', async function(e) {
+        editQuizForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             const id = document.getElementById('editQuizId').value;
-            if (!id) { showToast('Cannot update quiz: Missing ID.', true); return; }
-            const formData = new FormData(this);
+            if (!id) { 
+                showToast('Cannot update quiz: Missing ID.', true); 
+                return; 
+            }
+
             const submitButton = editQuizForm.querySelector('.btn-submit');
             if (submitButton) submitButton.disabled = true;
             showToast('Updating quiz...');
 
             try {
-                // *** IMPORTANT: Verify this URL matches your backend route ***
+                const formData = {
+                    quizTitle: document.getElementById('editQuizTitle').value.trim(),
+                    quizDescription: document.getElementById('editQuizDescription').value.trim(),
+                    categoryId: document.getElementById('editQuizCategory').value,
+                    tag: document.getElementById('editQuizTags').value.trim()
+                };
+
                 const response = await fetch(`/quiz/quizzes/${id}`, {
                     method: 'PUT',
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
                 });
+
                 if (response.ok) {
                     const result = await response.json();
+                    
+                    // Get category text from selected option
                     const categorySelect = document.getElementById('editQuizCategory');
-                    const selectedCategoryValue = formData.get('categoryId');
-                    let categoryText = selectedCategoryValue;
-                    if (categorySelect && selectedCategoryValue) {
-                        const selectedOption = categorySelect.querySelector(`option[value="${selectedCategoryValue}"]`);
-                        if (selectedOption) categoryText = selectedOption.text;
-                    }
-                    // Update table row with potentially new data
-                    updateQuizInTable(id, formData.get('quizTitle'), formData.get('quizDescription'), categoryText, formData.get('tag'));
+                    const selectedOption = categorySelect.options[categorySelect.selectedIndex];
+                    const categoryText = selectedOption ? selectedOption.text : '';
+
+                    // Update the table row
+                    updateQuizInTable(
+                        id, 
+                        formData.quizTitle, 
+                        formData.quizDescription, 
+                        categoryText, 
+                        formData.tag
+                    );
+
                     closeModals();
                     showToast(result.message || 'Quiz updated successfully!');
                 } else {
-                     const errorData = await response.json().catch(() => ({ error: 'Update failed.' }));
-                     showToast(`Error: ${errorData.error || response.statusText}`, true);
+                    const errorData = await response.json().catch(() => ({ error: 'Update failed.' }));
+                    showToast(`Error: ${errorData.error || response.statusText}`, true);
                 }
-            } catch (error) { showToast('An error occurred.', true); }
-            finally { if (submitButton) submitButton.disabled = false; }
+            } catch (error) { 
+                console.error('Error updating quiz:', error);
+                showToast('An error occurred while updating the quiz.', true);
+            } finally { 
+                if (submitButton) submitButton.disabled = false; 
+            }
         });
         console.log("Edit quiz form submit listener attached.");
     
