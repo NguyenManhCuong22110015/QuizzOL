@@ -149,10 +149,18 @@
                 <div class="form-group">
                     <label for="editQuizCategory">Category</label>
                     <select id="editQuizCategory" name="categoryId" required>
-                         <option value="">Select a category</option>
-                         <option value="1">Academic</option>
-                         <option value="2">Entertainment</option>
-                         </select>
+                        <option value="">Select a category</option>
+                        <option value="1">Academic</option>
+                        <option value="2">Entertainment</option>
+                        <option value="3">Professional</option>
+                        <option value="4">Personality</option>
+                        <option value="5">Knowledge</option>
+                        <option value="6">Education</option>
+                        <option value="7">Language</option>
+                        <option value="8">Technical</option>
+                        <option value="9">Health</option>
+                        <option value="10">Trivia</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="editQuizTags">Tags</label>
@@ -477,44 +485,62 @@
       
     
 
-
-         editQuizForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const id = document.getElementById('editQuizId').value;
-            if (!id) { showToast('Cannot update quiz: Missing ID.', true); return; }
-            const formData = new FormData(this);
-            const submitButton = editQuizForm.querySelector('.btn-submit');
-            if (submitButton) submitButton.disabled = true;
-            showToast('Updating quiz...');
-
-            try {
-                // *** IMPORTANT: Verify this URL matches your backend route ***
-                const response = await fetch(`/quiz/quizzes/${id}`, {
-                    method: 'PUT',
-                    body: formData
-                });
-                if (response.ok) {
-                    const result = await response.json();
-                    const categorySelect = document.getElementById('editQuizCategory');
-                    const selectedCategoryValue = formData.get('categoryId');
-                    let categoryText = selectedCategoryValue;
-                    if (categorySelect && selectedCategoryValue) {
-                        const selectedOption = categorySelect.querySelector(`option[value="${selectedCategoryValue}"]`);
-                        if (selectedOption) categoryText = selectedOption.text;
-                    }
-                    // Update table row with potentially new data
-                    updateQuizInTable(id, formData.get('quizTitle'), formData.get('quizDescription'), categoryText, formData.get('tag'));
-                    closeModals();
-                    showToast(result.message || 'Quiz updated successfully!');
-                } else {
-                     const errorData = await response.json().catch(() => ({ error: 'Update failed.' }));
-                     showToast(`Error: ${errorData.error || response.statusText}`, true);
-                }
-            } catch (error) { showToast('An error occurred.', true); }
-            finally { if (submitButton) submitButton.disabled = false; }
-        });
-        console.log("Edit quiz form submit listener attached.");
+editQuizForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const id = document.getElementById('editQuizId').value;
     
+    try {
+        const formData = {
+            quizTitle: document.getElementById('editQuizTitle').value.trim(),
+            quizDescription: document.getElementById('editQuizDescription').value.trim(),
+            categoryId: document.getElementById('editQuizCategory').value,
+            tag: document.getElementById('editQuizTags').value.trim()
+        };
+
+        const response = await fetch(`/quiz/quizzes/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to update quiz');
+        }
+
+        const result = await response.json();
+        
+        // Update the table row with new data
+        const row = document.getElementById(`quiz-${id}`);
+        if (row) {
+            const categorySelect = document.getElementById('editQuizCategory');
+            const categoryName = categorySelect.options[categorySelect.selectedIndex].text;
+            
+            row.querySelector('.quiz-title').textContent = formData.quizTitle;
+            row.querySelector('.quiz-description').textContent = formData.quizDescription;
+            row.querySelector('.quiz-category').textContent = categoryName;
+            row.querySelector('.quiz-tags').textContent = formData.tag;
+            row.querySelector('.badge-updated').outerHTML = '<span class="badge-updated today">Just now</span>';
+            
+            // Update data attributes for future edits
+            const editButton = row.querySelector('.btn-edit');
+            if (editButton) {
+                editButton.dataset.title = formData.quizTitle;
+                editButton.dataset.desc = formData.quizDescription;
+                editButton.dataset.category = categoryName;
+                editButton.dataset.tags = formData.tag;
+            }
+        }
+
+        showToast('Quiz updated successfully');
+        closeModals();
+    } catch (error) {
+        console.error('Error updating quiz:', error);
+        showToast(error.message || 'Failed to update quiz', true);
+    }
+});  
 
  
         confirmDeleteBtn.addEventListener('click', async function() {

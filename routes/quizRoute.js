@@ -7,7 +7,7 @@ import quizController from '../controllers/quizController.js'
 import pkg from 'passport';
 import check from '../middlewares/auth.mdw.js'
 import resultService from '../services/resultService.js'
-
+import tagService from '../services/tagService.js';
 const { session } = pkg;
 const router = new Router()
 
@@ -41,77 +41,18 @@ router.post('/toggle-publish/:id', async (req, res) => {
     }
 });
 router.get('/quizzes', async (req, res) => {
-    try {        
-       
-            const quizzes = [
-              {
-                "id": 1,
-                "rowNumber": 1,
-                "title": "Táo Quân Fun Facts",
-                "description": "How much do you know about the Year End Show?",
-                "categoryName": "Entertainment",
-                "tagsString": "comedy, television, tet",
-                "imageUrl": "/api/placeholder/40/40",
-                "formattedCreatedAt": "18/03/25",
-                "relativeUpdatedAt": "2 days ago"
-              },
-              {
-                "id": 2,
-                "rowNumber": 2,
-                "title": "Basic Math Challenge",
-                "description": "Test your fundamental math skills.",
-                "categoryName": "Academic",
-                "tagsString": "math, numbers, arithmetic",
-                "imageUrl": "https://placehold.co/40x40/e1e1e1/909090?text=M",
-                "formattedCreatedAt": "19/03/25",
-                "relativeUpdatedAt": "a few seconds ago"
-              },
-              {
-                "id": 3,
-                "rowNumber": 3,
-                "title": "World Geography Quiz",
-                "description": "Explore countries, capitals, and landmarks.",
-                "categoryName": "Knowledge",
-                "tagsString": "geography, world, travel",
-                "imageUrl": "/images/quiz/geo_thumb.jpg", // Example custom image path
-                "formattedCreatedAt": "10/02/25",
-                "relativeUpdatedAt": "about a month ago"
-              },
-              {
-                "id": 4,
-                "rowNumber": 4,
-                "title": "Programming Concepts",
-                "description": "Basic concepts for aspiring coders.",
-                "categoryName": "Technical",
-                "tagsString": "programming, coding, computer science",
-                "imageUrl": "/api/placeholder/40/40",
-                "formattedCreatedAt": "20/03/25",
-                "relativeUpdatedAt": "10 minutes ago"
-              },
-              {
-                "id": 5,
-                "rowNumber": 5,
-                "title": "Vietnamese Literature",
-                "description": "Authors and works in Vietnamese literature.",
-                "categoryName": "Education",
-                "tagsString": "literature, vietnam, authors",
-                "imageUrl": "https://placehold.co/40x40/77aa77/ffffff?text=VL",
-                "formattedCreatedAt": "01/01/25",
-                "relativeUpdatedAt": "3 months ago"
-              }
-            ];
-    
+    try {
+        const quizzes = await quizService.getQuizzesWithDetails();
+        
         res.render('quizzes_dataFilled', {
             layout: 'student',
             quizzes: quizzes
         });
-    } 
-    catch (error) {
-        console.error(`Error rendering test view for addQuestionStudent_dataFilled:`, error);
-        res.status(500).render('error', { message: 'Failed to load test view.' });        
+    } catch (error) {
+        console.error('Error fetching quizzes:', error);
+        res.status(500).render('error', { message: 'Failed to load quizzes.' });
     }
 });
-
 
 router.post('/quizzes', async (req, res) => {
     try {
@@ -127,18 +68,18 @@ router.post('/quizzes', async (req, res) => {
             return res.status(400).json({ error: 'Missing required quiz fields' });
         }
 
-        // Ensure categoryId is an integer
-        const categoryId = parseInt(data.categoryId, 10);
-        if (isNaN(categoryId)) {
-            return res.status(400).json({ error: 'Invalid category ID format' });
+        // Handle tags
+        let tagIds = [];
+        if (data.tags) {
+            tagIds = await tagService.findOrCreateTags(data.tags);
         }
 
         const quiz = {
             title: data.quizTitle,
             description: data.quizDescription,
             createdBy: userId,
-            category: categoryId,
-            tag: data.tags || null,
+            category: parseInt(data.categoryId, 10),
+            tag: tagIds.length > 0 ? tagIds.join(',') : null,
             time: new Date(),
             media: data.quizMedia || null
         };
@@ -149,7 +90,6 @@ router.post('/quizzes', async (req, res) => {
             return res.status(500).json({ error: 'Failed to create quiz' });
         }
 
-        // Send success response and redirect URL
         res.json({
             success: true,
             message: 'Quiz created successfully',
@@ -194,20 +134,70 @@ router.get('/quizzes/:id', async (req, res) => {
     }
 });
 
-
 router.put('/quizzes/:id', async (req, res) => {
-    const quizId = req.params.id
-    const quiz = req.body
-    const data = await quizService.updateQuiz(quizId, quiz) || 0
-    res.json(data)
-})
+    try {
+        const quizId = parseInt(req.params.id);
+        if (!quizId) {
+            return res.status(400).json({ error: 'Invalid quiz ID' });
+        }
+
+        // Log the incoming request body for debugging
+        console.log('Received quiz data:', req.body);
+
+        const { quizTitle, quizDescription, categoryId, tag } = req.body;
+
+        // Validate required fields
+        if (!quizTitle || !categoryId) {
+            return res.status(400).json({ error: 'Quiz title and category are required' });
+        }
+
+        // Handle tags
+        let tagIds = [];
+        if (tag) {
+            tagIds = await tagService.findOrCreateTags(tag);
+        }
+
+        const dataToUpdate = {
+            title: quizTitle,
+            description: quizDescription,
+            category: parseInt(categoryId),
+            tag: tagIds.length > 0 ? tagIds.join(',') : null
+        };
+
+        const updatedQuiz = await quizService.updateQuiz(quizId, dataToUpdate);
+
+        res.json({
+            success: true,
+            message: 'Quiz updated successfully',
+            data: updatedQuiz
+        });
+    } catch (error) {
+        console.error('Error updating quiz:', error);
+        res.status(500).json({ 
+            error: 'Failed to update quiz',
+            message: error.message 
+        });
+    }
+});
 
 
 router.delete('/quizzes/:id', async (req, res) => {
-    const quizId = req.params.id
-    const data = await quizService.deleteQuiz(quizId) || 0
-    res.json(data)
-})
+    try {
+        const quizId = req.params.id;
+        const result = await quizService.deleteQuiz(quizId);
+        res.json({
+            success: true,
+            message: result.message || 'Quiz deleted successfully'
+        });
+    } catch (error) {
+        console.error('Error deleting quiz:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to delete quiz',
+            message: error.message
+        });
+    }
+});
 
 
 
@@ -371,5 +361,25 @@ router.get("/1/question", async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch quizzes' });
     }
 })
+
+router.get('/question/:id/add-question', async (req, res) => {
+    try {
+        const quizId = req.params.id;
+        const quiz = await quizService.getQuizById(quizId);
+        
+        if (!quiz) {
+            return res.status(404).render('error', { message: 'Quiz not found' });
+        }
+
+        res.render('addQuestionStudent_dataFilled', {
+            quiz: quiz,
+            quizTitle: quiz.title, // Pass quiz title explicitly
+            layout: false
+        });
+    } catch (error) {
+        console.error('Error loading add question page:', error);
+        res.status(500).render('error', { message: 'Failed to load question page' });
+    }
+});
 
 export default router

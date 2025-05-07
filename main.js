@@ -28,15 +28,15 @@ import commentRoute from "./routes/commentRoute.js";
 import roomRouter from "./routes/roomRoute.js";
 import chatbotRouter from "./routes/chatbotRouter.js";
 import initWebSocket from "./services/webSocketService.js";
-import quizRouter from './routes/quizRoute.js';
 import cors from "cors";
-import quizRoutes from "./routes/quizRoute.js";
+
+
+// import halenTestRoute from "./routes/halenTestRoute.js";
 dotenv.config();
 const app = express();
 app.set("trust proxy", 1);
 app.use(flash());
-app.use('/quiz', quizRouter);
-app.use('/quiz', quizRoutes);
+
 app.engine(
   "hbs",
   engine({
@@ -305,6 +305,10 @@ app.use(express.json());
 //   app.use(githubPassport.initialize());
 // app.use(githubPassport.session());
 
+// app.use('/quiz', quizRouter);
+// app.use('/quiz', quizRoutes);
+
+//duplicated routes
 app.use("/quiz", quizRoute);
 app.use("/auth", authLoginRoute);
 app.use("/flashCard", flashCardRoute);
