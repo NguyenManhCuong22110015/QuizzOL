@@ -260,8 +260,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Define webSocket server
 
-const server = http.createServer(app);
-const wss = initWebSocket(server);
+
 
 
 
@@ -346,11 +345,14 @@ app.get("/", (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-const WS_PORT = process.env.WS_PORT || 3001;
 
-app.listen(PORT, () => {
-  console.log("App is running");
-});
-server.listen(WS_PORT, () => {
-  console.log("App is running with WebSocket support on port", WS_PORT);
+// Create a single HTTP server with Express
+const httpServer = http.createServer(app);
+
+// Initialize WebSocket on the same server instance
+initWebSocket(httpServer);
+
+// Only start one server that handles both HTTP and WebSocket
+httpServer.listen(PORT, () => {
+  console.log(`App is running on port ${PORT} with HTTP and WebSocket support`);
 });
