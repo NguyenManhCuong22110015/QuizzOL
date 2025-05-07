@@ -23,8 +23,112 @@ export default {
     },
 
     // Delete a quiz by ID
-    deleteQuiz(quizId) {
-        return db('quiz').where('id', quizId).del();
+    async deleteQuiz(quizId) {
+        return await db.transaction(async (trx) => {
+            try {
+                // Get all question IDs associated with this quiz
+                const questionIds = await trx('quiz_question')
+                    .where('quiz_id', quizId)
+                    .pluck('question_id');
+
+                // Get all result IDs for this quiz
+                const resultIds = await trx('result')
+                    .where('quiz', quizId)
+                    .pluck('id');
+
+                // Get all room IDs using this quiz
+                const roomIds = await trx('room')
+                    .where('quiz', quizId)
+                    .pluck('id');
+
+                // 1. First delete rank entries that reference results
+                if (resultIds.length > 0) {
+                    await trx('rank')
+                        .whereIn('result', resultIds)
+                        .del();
+                }
+
+                // 2. Delete user answers for these questions
+                if (questionIds.length > 0) {
+                    await trx('useranswer')
+                        .whereIn('question_id', questionIds)
+                        .del();
+                }
+
+                // 3. Delete quiz-question mappings
+                await trx('quiz_question')
+                    .where('quiz_id', quizId)
+                    .del();
+
+                // 4. Delete questions that are only used by this quiz
+                for (const questionId of questionIds) {
+                    const usageCount = await trx('quiz_question')
+                        .where('question_id', questionId)
+                        .count('* as count')
+                        .first();
+                    
+                    if (usageCount.count === 0) {
+                        // Delete options for this question
+                        await trx('option')
+                            .where('question_id', questionId)
+                            .del();
+                        
+                        // Delete the question itself
+                        await trx('question')
+                            .where('id', questionId)
+                            .del();
+                    }
+                }
+
+                // 5. Delete quiz tags
+                await trx('quiz_tag')
+                    .where('quiz_id', quizId)
+                    .del();
+
+                // 6. Delete results (now safe since ranks are deleted)
+                await trx('result')
+                    .where('quiz', quizId)
+                    .del();
+
+                // 7. Delete ratings
+                await trx('rate')
+                    .where('quiz', quizId)
+                    .del();
+
+                // 8. Delete reports
+                await trx('report')
+                    .where('quiz', quizId)
+                    .del();
+
+                // 9. Delete room_user entries first
+                if (roomIds.length > 0) {
+                    await trx('room_user')
+                        .whereIn('room_id', roomIds)
+                        .del();
+                }
+
+                // 10. Now safe to delete rooms
+                await trx('room')
+                    .where('quiz', quizId)
+                    .del();
+
+                // 11. Delete comments
+                await trx('comment')
+                    .where('quiz', quizId)
+                    .del();
+
+                // Finally, delete the quiz itself
+                await trx('quiz')
+                    .where('id', quizId)
+                    .del();
+
+                return { success: true, message: 'Quiz and all related data deleted successfully' };
+
+            } catch (error) {
+                console.error('Error in deleteQuiz transaction:', error);
+                throw error;
+            }
+        });
     },
 
     async getQuizzesByCategoryId(categoryId) {

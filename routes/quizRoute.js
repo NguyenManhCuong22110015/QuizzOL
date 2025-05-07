@@ -193,7 +193,6 @@ router.get('/quizzes/:id', async (req, res) => {
     }
 });
 
-
 router.put('/quizzes/:id', async (req, res) => {
     try {
         const quizId = parseInt(req.params.id);
@@ -201,21 +200,26 @@ router.put('/quizzes/:id', async (req, res) => {
             return res.status(400).json({ error: 'Invalid quiz ID' });
         }
 
-        const quizData = req.body;
-        if (!quizData || Object.keys(quizData).length === 0) {
-            return res.status(400).json({ error: 'Quiz data is required' });
+        // Log the incoming request body for debugging
+        console.log('Received quiz data:', req.body);
+
+        const { quizTitle, quizDescription, categoryId, tag } = req.body;
+
+        // Validate required fields
+        if (!quizTitle || !categoryId) {
+            return res.status(400).json({ error: 'Quiz title and category are required' });
         }
 
         // Handle tags
         let tagIds = [];
-        if (quizData.tag) {
-            tagIds = await tagService.findOrCreateTags(quizData.tag);
+        if (tag) {
+            tagIds = await tagService.findOrCreateTags(tag);
         }
 
         const dataToUpdate = {
-            title: quizData.quizTitle,
-            description: quizData.quizDescription,
-            category: parseInt(quizData.categoryId),
+            title: quizTitle,
+            description: quizDescription,
+            category: parseInt(categoryId),
             tag: tagIds.length > 0 ? tagIds.join(',') : null
         };
 
@@ -237,10 +241,22 @@ router.put('/quizzes/:id', async (req, res) => {
 
 
 router.delete('/quizzes/:id', async (req, res) => {
-    const quizId = req.params.id
-    const data = await quizService.deleteQuiz(quizId) || 0
-    res.json(data)
-})
+    try {
+        const quizId = req.params.id;
+        const result = await quizService.deleteQuiz(quizId);
+        res.json({
+            success: true,
+            message: result.message || 'Quiz deleted successfully'
+        });
+    } catch (error) {
+        console.error('Error deleting quiz:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to delete quiz',
+            message: error.message
+        });
+    }
+});
 
 
 
@@ -404,5 +420,25 @@ router.get("/1/question", async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch quizzes' });
     }
 })
+
+router.get('/question/:id/add-question', async (req, res) => {
+    try {
+        const quizId = req.params.id;
+        const quiz = await quizService.getQuizById(quizId);
+        
+        if (!quiz) {
+            return res.status(404).render('error', { message: 'Quiz not found' });
+        }
+
+        res.render('addQuestionStudent_dataFilled', {
+            quiz: quiz,
+            quizTitle: quiz.title, // Pass quiz title explicitly
+            layout: false
+        });
+    } catch (error) {
+        console.error('Error loading add question page:', error);
+        res.status(500).render('error', { message: 'Failed to load question page' });
+    }
+});
 
 export default router
