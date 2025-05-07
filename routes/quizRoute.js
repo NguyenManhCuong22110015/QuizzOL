@@ -41,77 +41,18 @@ router.post('/toggle-publish/:id', async (req, res) => {
     }
 });
 router.get('/quizzes', async (req, res) => {
-    try {        
-       
-            const quizzes = [
-              {
-                "id": 1,
-                "rowNumber": 1,
-                "title": "Táo Quân Fun Facts",
-                "description": "How much do you know about the Year End Show?",
-                "categoryName": "Entertainment",
-                "tagsString": "comedy, television, tet",
-                "imageUrl": "/api/placeholder/40/40",
-                "formattedCreatedAt": "18/03/25",
-                "relativeUpdatedAt": "2 days ago"
-              },
-              {
-                "id": 2,
-                "rowNumber": 2,
-                "title": "Basic Math Challenge",
-                "description": "Test your fundamental math skills.",
-                "categoryName": "Academic",
-                "tagsString": "math, numbers, arithmetic",
-                "imageUrl": "https://placehold.co/40x40/e1e1e1/909090?text=M",
-                "formattedCreatedAt": "19/03/25",
-                "relativeUpdatedAt": "a few seconds ago"
-              },
-              {
-                "id": 3,
-                "rowNumber": 3,
-                "title": "World Geography Quiz",
-                "description": "Explore countries, capitals, and landmarks.",
-                "categoryName": "Knowledge",
-                "tagsString": "geography, world, travel",
-                "imageUrl": "/images/quiz/geo_thumb.jpg", // Example custom image path
-                "formattedCreatedAt": "10/02/25",
-                "relativeUpdatedAt": "about a month ago"
-              },
-              {
-                "id": 4,
-                "rowNumber": 4,
-                "title": "Programming Concepts",
-                "description": "Basic concepts for aspiring coders.",
-                "categoryName": "Technical",
-                "tagsString": "programming, coding, computer science",
-                "imageUrl": "/api/placeholder/40/40",
-                "formattedCreatedAt": "20/03/25",
-                "relativeUpdatedAt": "10 minutes ago"
-              },
-              {
-                "id": 5,
-                "rowNumber": 5,
-                "title": "Vietnamese Literature",
-                "description": "Authors and works in Vietnamese literature.",
-                "categoryName": "Education",
-                "tagsString": "literature, vietnam, authors",
-                "imageUrl": "https://placehold.co/40x40/77aa77/ffffff?text=VL",
-                "formattedCreatedAt": "01/01/25",
-                "relativeUpdatedAt": "3 months ago"
-              }
-            ];
-    
+    try {
+        const quizzes = await quizService.getQuizzesWithDetails();
+        
         res.render('quizzes_dataFilled', {
             layout: 'student',
             quizzes: quizzes
         });
-    } 
-    catch (error) {
-        console.error(`Error rendering test view for addQuestionStudent_dataFilled:`, error);
-        res.status(500).render('error', { message: 'Failed to load test view.' });        
+    } catch (error) {
+        console.error('Error fetching quizzes:', error);
+        res.status(500).render('error', { message: 'Failed to load quizzes.' });
     }
 });
-
 
 router.post('/quizzes', async (req, res) => {
     try {

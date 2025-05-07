@@ -452,5 +452,56 @@ export default {
         // or return a specific error object or null.
         throw error;
     }
+    },
+
+    async getQuizzesWithDetails() {
+        try {
+            // Get quizzes with related data
+            const quizzes = await db('quiz')
+                .select(
+                    'quiz.id',
+                    'quiz.title',
+                    'quiz.description',
+                    'quiz.time as created_at',
+                    'quiz.media',
+                    'category.name as categoryName',
+                    db.raw('GROUP_CONCAT(DISTINCT tag.name) as tagsString')
+                )
+                .leftJoin('category', 'quiz.category', 'category.id')
+                .leftJoin('quiz_tag', 'quiz.id', 'quiz_tag.quiz_id')
+                .leftJoin('tag', 'quiz_tag.tag_id', 'tag.id')
+                .groupBy('quiz.id');
+
+            // Format each quiz
+            const formattedQuizzes = quizzes.map((quiz, index) => {
+                const createdDate = new Date(quiz.created_at);
+                const now = new Date();
+                const diffTime = Math.abs(now - createdDate);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                return {
+                    id: quiz.id,
+                    rowNumber: index + 1,
+                    title: quiz.title,
+                    description: quiz.description,
+                    categoryName: quiz.categoryName || 'Uncategorized',
+                    tagsString: quiz.tagsString || '',
+                    imageUrl: quiz.media ? `/media/${quiz.media}` : 'https://placehold.co/40x40/e1e1e1/909090?text=Q',
+                    formattedCreatedAt: createdDate.toLocaleDateString('en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: '2-digit'
+                    }),
+                    relativeUpdatedAt: diffDays === 0 ? 'today' : 
+                                     diffDays === 1 ? 'yesterday' :
+                                     `${diffDays} days ago`
+                };
+            });
+
+            return formattedQuizzes;
+        } catch (error) {
+            console.error('Error in getQuizzesWithDetails:', error);
+            throw error;
+        }
     }
 };
