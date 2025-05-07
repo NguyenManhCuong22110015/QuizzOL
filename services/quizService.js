@@ -454,10 +454,11 @@ export default {
     }
     },
 
-    async getQuizzesWithDetails() {
+    async getQuizzesWithDetails(userId) {
         try {
             // Get quizzes with related data
             const quizzes = await db('quiz')
+            .where('quiz.createdBy', userId)
                 .select(
                     'quiz.id',
                     'quiz.title',

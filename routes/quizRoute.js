@@ -40,9 +40,10 @@ router.post('/toggle-publish/:id', async (req, res) => {
         });
     }
 });
-router.get('/quizzes', async (req, res) => {
+router.get('/quizzes',check, async (req, res) => {
     try {
-        const quizzes = await quizService.getQuizzesWithDetails();
+        const userId = req.session.authUser?.user || req.user?.id || 1;
+        const quizzes = await quizService.getQuizzesWithDetails(userId);
         
         res.render('quizzes_dataFilled', {
             layout: 'student',
