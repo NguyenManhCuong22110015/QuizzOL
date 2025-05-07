@@ -37,11 +37,11 @@
           <a class="nav-link" href="/room/list">Rooms</a>
         </li>
       </ul>
-      <form class="d-flex me-2" action="/search" method="GET">
+      <form class="d-flex me-2" action="/quiz/search" method="GET">
         <input
           class="form-control me-2"
           type="search"
-          name="query"
+          name="q"
           placeholder="Search quizzes..."
           aria-label="Search"
         />
@@ -74,7 +74,7 @@
                 
                 <ul class="dropdown-menu" aria-labelledby="profileDropdownBtn">
                   <li><a class="dropdown-item" href="/user/overview"><i class="fas fa-user-circle mr-2"></i> Profile</a></li>
-                  <li><a class="dropdown-item" href="/my-quizzes"><i class="fas fa-list mr-2"></i> My Quizzes</a></li>
+                  <li><a class="dropdown-item" href="/quiz/quizzes"><i class="fas fa-list mr-2"></i> My Quizzes</a></li>
                   <li><a class="dropdown-item" href="/settings"><i class="fas fa-cog mr-2"></i> Settings</a></li>
                   <li><hr class="dropdown-divider"></li>
                   <li><a class="dropdown-item" href="/auth/logout"><i class="fas fa-sign-out-alt mr-2"></i> Logout</a></li>

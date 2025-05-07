@@ -27,8 +27,11 @@ import commentRoute from "./routes/commentRoute.js";
 import roomRouter from "./routes/roomRoute.js";
 import chatbotRouter from "./routes/chatbotRouter.js";
 import initWebSocket from "./services/webSocketService.js";
+import cors from "cors";
+
 import { pool } from './configs/db.js';
 
+// import halenTestRoute from "./routes/halenTestRoute.js";
 dotenv.config();
 const app = express();
 app.set("trust proxy", 1);
@@ -321,6 +324,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 
+// app.use('/quiz', quizRouter);
+// app.use('/quiz', quizRoutes);
+
+//duplicated routes
 app.use("/quiz", quizRoute);
 app.use("/auth", authLoginRoute);
 app.use("/flashCard", flashCardRoute);
@@ -334,6 +341,7 @@ app.use("/student", studentRoute);
 app.use("/user-answer", userAnswerRoute);  
 // Comment dòng sử dụng halenTestRoute
 // app.use("/halenTest", halenTestRoute);
+app.use(cors());
 app.use("/user-answer", userAnswerRoute);
 app.use("/result", resultRoute);
 app.use("/question", questionRoute);

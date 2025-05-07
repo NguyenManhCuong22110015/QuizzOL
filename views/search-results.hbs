@@ -1,0 +1,130 @@
+<div class="container mt-5">
+    <!-- Search header section -->
+    <div class="search-header mb-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+                <li class="breadcrumb-item active">Tìm kiếm</li>
+            </ol>
+        </nav>
+        
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <h2 class="mb-3">Kết quả tìm kiếm: <span class="text-primary">"{{searchTerm}}"</span></h2>
+            <form class="d-flex search-inline" action="/quiz/search" method="GET">
+                <input class="form-control me-2" type="search" name="q" value="{{searchTerm}}" placeholder="Tìm kiếm quiz khác..." aria-label="Search">
+                <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>
+            </form>
+        </div>
+    </div>
+    
+    {{#if noResults}}
+        <div class="no-results text-center py-5">
+            {{#if isEmpty}}
+                <div class="empty-search mb-4">
+                    <i class="fas fa-search fa-4x text-muted mb-3"></i>
+                    <h4>Vui lòng nhập từ khóa để tìm kiếm</h4>
+                    <p class="text-muted">Bạn có thể tìm kiếm theo tiêu đề hoặc mô tả của quiz</p>
+                </div>
+            {{else}}
+                <div class="no-match mb-4">
+                    <i class="fas fa-exclamation-circle fa-4x text-warning mb-3"></i>
+                    <h4>Không tìm thấy quiz nào khớp với từ khóa "{{searchTerm}}"</h4>
+                    <p class="text-muted">Hãy thử với từ khóa khác hoặc kiểm tra lại chính tả</p>
+                </div>
+                
+                <div class="mt-4">
+                    <h5>Bạn có thể thích</h5>
+                    <div class="row mt-3 justify-content-center">
+                        <div class="col-md-3">
+                            <a href="/quiz/all-quiz-by-category" class="btn btn-outline-primary btn-block w-100">
+                                <i class="fas fa-th-large me-2"></i>Xem theo danh mục
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="/quiz/popular" class="btn btn-outline-success btn-block w-100">
+                                <i class="fas fa-fire me-2"></i>Quiz phổ biến
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {{/if}}
+        </div>
+    {{else}}
+        <div class="mb-3">
+            <p class="text-muted">Tìm thấy {{quizzes.length}} kết quả</p>
+        </div>
+        
+        <div class="row">
+            {{#each quizzes}}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm quiz-card">
+                        <div class="card-img-container">
+                            <img src="{{imageUrl}}" class="card-img-top" alt="{{title}}">
+                            <div class="overlay">
+                                <span class="badge bg-primary">{{numberOfQuestions}} câu hỏi</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">{{title}}</h5>
+                            <p class="card-text text-truncate-2">{{description}}</p>
+                        </div>
+                        <div class="card-footer bg-white border-top-0 d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                <i class="fas fa-layer-group me-1"></i> {{category}}
+                            </small>
+                            <a href="/quiz/quizzes/{{id}}" class="btn btn-primary">Xem quiz</a>
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </div>
+    {{/if}}
+</div>
+
+<style>
+.text-truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.quiz-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 8px;
+}
+
+.quiz-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+.card-img-container {
+    position: relative;
+    overflow: hidden;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.card-img-top {
+    height: 180px;
+    object-fit: cover;
+}
+
+.overlay {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.search-inline {
+    max-width: 350px;
+}
+
+.no-results {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    padding: 40px;
+}
+</style>

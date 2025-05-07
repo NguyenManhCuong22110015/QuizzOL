@@ -1,0 +1,446 @@
+{{#section 'css'}}
+<link rel="stylesheet" href="/css/admin.css">
+{{/section}}
+
+<div class="content-wrapper">
+    <div class="page-header">
+        <div class="page-title">
+            <h1>{{pageTitle}}</h1>
+            <p>Manage your quizzes and questions</p>
+        </div>
+        <a href="/quiz/{{this.quizId}}/add-question" class="btn-add-quiz" id="addQuizBtn">
+            <i class="fas fa-plus"></i>
+            Add Question
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="quiz-table">
+            <thead>
+                <tr>
+                    <th class="column-small">#</th>
+                    <th>Content</th>
+                   
+                    <th>type</th>
+                    <th>points:</th>
+                    {{!-- Removed Image Header --}}
+                    <th>explanation at</th>
+                    
+                </tr>
+            </thead>
+            <tbody id="quizTableBody">
+                {{#if questions}}
+                    {{#each questions}}
+                        <tr id="quiz-{{this.id}}">
+                            <td>{{this.rowNumber}}</td>
+                            <td class="quiz-title">{{this.content}}</td>
+                           
+                            <td class="quiz-category">{{this.type}}</td>
+                            <td class="quiz-tags">{{this.points:}}</td>
+                            {{!-- Removed Image Data Cell --}}
+                            
+                            <td class="quiz-tags">{{this.explanation:}}</td>
+                            <td class="actions-cell">
+                                <button class="btn-edit"
+                                        data-id="{{this.id}}"
+                                        data-title="{{this.title}}"
+                                        data-desc="{{this.description}}"
+                                        data-category="{{this.categoryName}}"
+                                        data-tags="{{this.tagsString}}">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn-delete" data-id="{{this.id}}" data-title="{{this.title}}">
+                                    Delete
+                                </button>
+                            </td>
+                            
+                        </tr>
+                    {{/each}}
+                {{else}}
+                    {{!-- Adjusted colspan from 10 to 9 --}}
+                    <tr>
+                        <td colspan="9" style="text-align: center; padding: 20px;">No quizzes found.</td>
+                    </tr>
+                {{/if}}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+<div id="editQuizModal" class="modal">
+     <div class="modal-content">
+        <div class="modal-header">
+            <h2>Edit Quiz</h2>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="editQuizForm">
+                 <input type="hidden" id="editQuizId" name="quizId">
+                <div class="form-group">
+                    <label for="editQuizTitle">Title</label>
+                    <input type="text" id="editQuizTitle" name="quizTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="editQuizDescription">Description</label>
+                    <textarea id="editQuizDescription" name="quizDescription" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="editQuizCategory">Category</label>
+                    <select id="editQuizCategory" name="categoryId" required>
+                        <option value="">Select a category</option>
+                        <option value="1">Academic</option>
+                        <option value="2">Entertainment</option>
+                        <option value="3">Professional</option>
+                        <option value="4">Personality</option>
+                        <option value="5">Knowledge</option>
+                        <option value="6">Education</option>
+                        <option value="7">Language</option>
+                        <option value="8">Technical</option>
+                        <option value="9">Health</option>
+                        <option value="10">Trivia</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editQuizTags">Tags</label>
+                    <input type="text" id="editQuizTags" name="tag" placeholder="Enter tags separated by commas">
+                </div>
+                <div class="form-group">
+                    <label for="editQuizImage">Image</label>
+                    <div class="image-upload-container">
+                        <input type="file" id="editQuizImage" name="quizMedia" accept="image/*">
+                        <div class="image-preview" id="editImagePreview">
+                            <img id="currentQuizImage" src="https://placehold.co/100x100/e1e1e1/909090?text=Current" alt="Current quiz image" class="preview-image">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel">Cancel</button>
+                    <button type="submit" class="btn-submit">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="deleteQuizModal" class="modal">
+     <div class="modal-content">
+        <div class="modal-header">
+            <h2>Delete Quiz</h2>
+            <span class="close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete the quiz "<span id="deleteQuizTitle"></span>"?</p>
+            <p class="warning-text">This action cannot be undone.</p>
+            <div class="form-actions">
+                <button type="button" class="btn-cancel">Cancel</button>
+                <button type="button" id="confirmDelete" class="btn-delete-confirm">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="toastNotification" class="toast">
+    <div class="toast-content">
+        <i class="fas fa-check-circle"></i>
+        <div class="toast-message">
+            <span id="toastMessage">Action completed successfully!</span>
+        </div>
+    </div>
+    <div class="toast-progress"></div>
+</div>
+
+
+{{#section 'scripts'}}
+<script>
+
+
+    // --- DOM Element References ---
+ // --- DOM Element References ---
+const addQuizBtn = document.getElementById('addQuizBtn');
+const editQuizModalEl = document.getElementById('editQuizModal');
+const deleteQuizModalEl = document.getElementById('deleteQuizModal');
+const toastNotificationEl = document.getElementById('toastNotification');
+const editQuizForm = document.getElementById('editQuizForm');
+const deleteQuizTitle = document.getElementById('deleteQuizTitle');
+const confirmDeleteBtn = document.getElementById('confirmDelete');
+const quizTableBody = document.getElementById('quizTableBody');
+const modalCloseButtons = document.querySelectorAll('.modal .close');
+const modalCancelButtons = document.querySelectorAll('.modal .btn-cancel');
+const toastMessage = document.getElementById('toastMessage');
+const editImagePreview = document.getElementById('editImagePreview');
+const editQuizImageInput = document.getElementById('editQuizImage');
+
+// --- State Variable ---
+let currentQuizIdToDelete = null;
+
+// --- Helper Functions (Define BEFORE use) ---
+
+function showToast(message, isError = false) {
+    if (!toastNotificationEl || !toastMessage) {
+        console.warn('Toast elements not found, logging message:', message);
+        alert(message); // Fallback
+        return;
+    }
+    toastMessage.innerText = message;
+    const icon = toastNotificationEl.querySelector('i');
+    if (isError) {
+        toastNotificationEl.style.backgroundColor = '#d9534f';
+        if(icon) icon.className = 'fas fa-exclamation-circle text-white';
+    } else {
+        toastNotificationEl.style.backgroundColor = '#333';
+        if(icon) icon.className = 'fas fa-check-circle text-success';
+    }
+    toastNotificationEl.classList.add('show');
+    const progress = toastNotificationEl.querySelector('.toast-progress');
+    if (progress) {
+        progress.style.animation = 'none';
+        progress.offsetHeight; /* trigger reflow */
+        progress.style.animation = '';
+    }
+    setTimeout(() => {
+        toastNotificationEl.classList.remove('show');
+    }, 3000);
+}
+
+function closeModals() {
+    console.log("Closing modals...");
+    [editQuizModalEl, deleteQuizModalEl].forEach(modal => {
+        if (modal) modal.classList.remove('show');
+    });
+}
+
+function handleImagePreview(input, previewElement) {
+    if(previewElement) previewElement.innerHTML = '';
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = "Image preview";
+            img.className = "preview-image"; // Make sure this class styles the image appropriately
+            if(previewElement) previewElement.appendChild(img);
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function openEditQuiz(id) {
+    const row = document.getElementById(`quiz-${id}`);
+    if (!row || !editQuizModalEl) return;
+
+    const editButton = row.querySelector('.btn-edit');
+    const title = editButton?.dataset.title || '';
+    const description = editButton?.dataset.desc || '';
+    const categoryName = editButton?.dataset.category || '';
+    const tags = editButton?.dataset.tags || '';
+    const currentImageUrl = row.querySelector('.quiz-thumbnail')?.src || 'https://placehold.co/100x100/e1e1e1/909090?text=No+Img';
+
+    document.getElementById('editQuizId').value = id;
+    document.getElementById('editQuizTitle').value = title;
+    document.getElementById('editQuizDescription').value = description;
+    document.getElementById('editQuizTags').value = tags;
+
+    const categorySelect = document.getElementById('editQuizCategory');
+    if (categorySelect) {
+        const option = Array.from(categorySelect.options).find(opt => opt.text === categoryName);
+        categorySelect.value = option ? option.value : '';
+    }
+
+    const currentImageElement = document.getElementById('currentQuizImage');
+    if (currentImageElement) currentImageElement.src = currentImageUrl;
+
+    editQuizModalEl.classList.add('show');  
+}
+
+function openDeleteQuiz(id) {
+    const row = document.getElementById(`quiz-${id}`);
+    if (!row || !deleteQuizModalEl) return;
+    currentQuizIdToDelete = id;
+    console.log(`Opening delete modal for quiz ID: ${id}`);
+    const title = row.querySelector('.quiz-title')?.innerText || 'this quiz';
+    if (deleteQuizTitle) deleteQuizTitle.innerText = title;
+    const deleteButton = deleteQuizModalEl.querySelector('#confirmDelete');
+    if (deleteButton) deleteButton.disabled = false;
+    deleteQuizModalEl.classList.add('show');
+}
+
+function updateQuizInTable(id, title, description, categoryName, tags) {
+    const row = document.getElementById(`quiz-${id}`);
+    if (row) {
+        console.log(`Updating table row for quiz ID: ${id}`);
+        const titleCell = row.querySelector('.quiz-title');
+        const descCell = row.querySelector('.quiz-description');
+        const catCell = row.querySelector('.quiz-category');
+        const tagsCell = row.querySelector('.quiz-tags');
+        const badgeCell = row.querySelector('.badge-updated');
+        const editBtn = row.querySelector('.btn-edit');
+
+        if(titleCell) titleCell.innerText = title;
+        if(descCell) descCell.innerText = description;
+        if(catCell) catCell.innerText = categoryName;
+        if(tagsCell) tagsCell.innerText = tags || '';
+        if(badgeCell) badgeCell.outerHTML = '<span class="badge-updated today">Just now</span>';
+
+        if (editBtn) {
+            editBtn.setAttribute('data-title', title);
+            editBtn.setAttribute('data-desc', description);
+            editBtn.setAttribute('data-category', categoryName);
+            editBtn.setAttribute('data-tags', tags || '');
+        }
+    }
+}
+
+function deleteQuizFromTable(id) {
+    const row = document.getElementById(`quiz-${id}`);
+    if (row) {
+        console.log(`Removing table row for quiz ID: ${id}`);
+        row.remove();
+    }
+}
+
+function getCurrentDate() {
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const yy = String(today.getFullYear()).slice(-2);
+    return `${dd}/${mm}/${yy}`;
+}
+
+function setupActionButtonsForRow(row) {
+    const editButton = row.querySelector('.btn-edit');
+    const deleteButton = row.querySelector('.btn-delete');
+    
+    if (!row.id) {
+        console.error('Row is missing ID attribute');
+        return;
+    }
+    
+    const quizId = row.id.replace('quiz-', '');
+    
+    if (editButton) {
+        editButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            openEditQuiz(quizId);
+        });
+    }
+    
+    if (deleteButton) {
+        deleteButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            openDeleteQuiz(quizId);
+        });
+    }
+}
+
+function setupActionButtons() {
+    if (quizTableBody) {
+        const rows = quizTableBody.querySelectorAll('tr[id^="quiz-"]');
+        rows.forEach(row => setupActionButtonsForRow(row));
+    }
+}
+
+// --- Initialization ---
+console.log("Attempting to initialize quiz management...");
+
+// Attach Modal Close/Cancel Listeners
+modalCloseButtons.forEach(button => button.addEventListener('click', closeModals));
+modalCancelButtons.forEach(button => button.addEventListener('click', closeModals));
+
+// Attach Image Preview Listeners
+editQuizImageInput.addEventListener('change', function() {
+    const currentImageElement = document.getElementById('currentQuizImage');
+    handleImagePreview(this, editImagePreview, currentImageElement);
+});
+
+// Edit Form Submit Listener
+editQuizForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const id = document.getElementById('editQuizId').value;
+    
+    try {
+        const formData = {
+            quizTitle: document.getElementById('editQuizTitle').value.trim(),
+            quizDescription: document.getElementById('editQuizDescription').value.trim(),
+            categoryId: document.getElementById('editQuizCategory').value,
+            tag: document.getElementById('editQuizTags').value.trim()
+        };
+
+        const response = await fetch(`/quiz/quizzes/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to update quiz');
+        }
+
+        const result = await response.json();
+        
+        // Update the table row with new data
+        const row = document.getElementById(`quiz-${id}`);
+        if (row) {
+            const categorySelect = document.getElementById('editQuizCategory');
+            const categoryName = categorySelect.options[categorySelect.selectedIndex].text;
+            
+            row.querySelector('.quiz-title').textContent = formData.quizTitle;
+            row.querySelector('.quiz-description').textContent = formData.quizDescription;
+            row.querySelector('.quiz-category').textContent = categoryName;
+            row.querySelector('.quiz-tags').textContent = formData.tag;
+            row.querySelector('.badge-updated').outerHTML = '<span class="badge-updated today">Just now</span>';
+            
+            // Update data attributes for future edits
+            const editButton = row.querySelector('.btn-edit');
+            if (editButton) {
+                editButton.dataset.title = formData.quizTitle;
+                editButton.dataset.desc = formData.quizDescription;
+                editButton.dataset.category = categoryName;
+                editButton.dataset.tags = formData.tag;
+            }
+        }
+
+        showToast('Quiz updated successfully');
+        closeModals();
+    } catch (error) {
+        console.error('Error updating quiz:', error);
+        showToast(error.message || 'Failed to update quiz', true);
+    }
+});  
+
+// Delete Quiz Listener 
+confirmDeleteBtn.addEventListener('click', async function() {
+    if (!currentQuizIdToDelete) return;
+    const deleteButton = this;
+    deleteButton.disabled = true;
+    showToast('Deleting quiz...');
+    try {
+        const response = await fetch(`/quiz/quizzes/${currentQuizIdToDelete}`, { method: 'DELETE' });
+        if (response.ok) {
+            const result = await response.json();
+            deleteQuizFromTable(currentQuizIdToDelete); // Remove row from table
+            closeModals();
+            showToast(result.message || 'Quiz deleted successfully!');
+            currentQuizIdToDelete = null; // Reset ID
+        } else {
+            const errorData = await response.json().catch(() => ({ error: 'Deletion failed.' }));
+            showToast(`Error: ${errorData.error || response.statusText}`, true);
+        }
+    } catch (error) { 
+        showToast('An error occurred.', true); 
+    } finally { 
+        deleteButton.disabled = false; 
+    }
+});
+console.log("Confirm delete button listener attached.");
+
+// Setup table action buttons
+setupActionButtons();
+
+console.log("Quiz Management Initialized.");
+</script>
+{{/section}}

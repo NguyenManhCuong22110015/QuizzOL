@@ -23,8 +23,112 @@ export default {
     },
 
     // Delete a quiz by ID
-    deleteQuiz(quizId) {
-        return db('quiz').where('id', quizId).del();
+    async deleteQuiz(quizId) {
+        return await db.transaction(async (trx) => {
+            try {
+                // Get all question IDs associated with this quiz
+                const questionIds = await trx('quiz_question')
+                    .where('quiz_id', quizId)
+                    .pluck('question_id');
+
+                // Get all result IDs for this quiz
+                const resultIds = await trx('result')
+                    .where('quiz', quizId)
+                    .pluck('id');
+
+                // Get all room IDs using this quiz
+                const roomIds = await trx('room')
+                    .where('quiz', quizId)
+                    .pluck('id');
+
+                // 1. First delete rank entries that reference results
+                if (resultIds.length > 0) {
+                    await trx('rank')
+                        .whereIn('result', resultIds)
+                        .del();
+                }
+
+                // 2. Delete user answers for these questions
+                if (questionIds.length > 0) {
+                    await trx('useranswer')
+                        .whereIn('question_id', questionIds)
+                        .del();
+                }
+
+                // 3. Delete quiz-question mappings
+                await trx('quiz_question')
+                    .where('quiz_id', quizId)
+                    .del();
+
+                // 4. Delete questions that are only used by this quiz
+                for (const questionId of questionIds) {
+                    const usageCount = await trx('quiz_question')
+                        .where('question_id', questionId)
+                        .count('* as count')
+                        .first();
+                    
+                    if (usageCount.count === 0) {
+                        // Delete options for this question
+                        await trx('option')
+                            .where('question_id', questionId)
+                            .del();
+                        
+                        // Delete the question itself
+                        await trx('question')
+                            .where('id', questionId)
+                            .del();
+                    }
+                }
+
+                // 5. Delete quiz tags
+                await trx('quiz_tag')
+                    .where('quiz_id', quizId)
+                    .del();
+
+                // 6. Delete results (now safe since ranks are deleted)
+                await trx('result')
+                    .where('quiz', quizId)
+                    .del();
+
+                // 7. Delete ratings
+                await trx('rate')
+                    .where('quiz', quizId)
+                    .del();
+
+                // 8. Delete reports
+                await trx('report')
+                    .where('quiz', quizId)
+                    .del();
+
+                // 9. Delete room_user entries first
+                if (roomIds.length > 0) {
+                    await trx('room_user')
+                        .whereIn('room_id', roomIds)
+                        .del();
+                }
+
+                // 10. Now safe to delete rooms
+                await trx('room')
+                    .where('quiz', quizId)
+                    .del();
+
+                // 11. Delete comments
+                await trx('comment')
+                    .where('quiz', quizId)
+                    .del();
+
+                // Finally, delete the quiz itself
+                await trx('quiz')
+                    .where('id', quizId)
+                    .del();
+
+                return { success: true, message: 'Quiz and all related data deleted successfully' };
+
+            } catch (error) {
+                console.error('Error in deleteQuiz transaction:', error);
+                throw error;
+            }
+        });
     },
 
     async getQuizzesByCategoryId(categoryId) {
@@ -146,6 +250,61 @@ export default {
         } catch (error) {
             console.error('Error in addQuestionToQuiz:', error);
             throw error;
+        }
+    },
+    async updateQuiz(quizId, quizData) {
+        try {
+            // Make sure all fields are properly sanitized
+            return await db('quiz').where('id', quizId).update(quizData);
+        } catch (error) {
+            console.error('Error in updateQuiz:', error);
+            throw error;
+        }
+    },
+    async searchQuizzes(searchTerm) {
+        try {
+            const quizzes = await db('quiz')
+                .select('quiz.*')
+                .where('quiz.title', 'like', `%${searchTerm}%`)
+                .orWhere('quiz.description', 'like', `%${searchTerm}%`);
+                
+            if (!quizzes || quizzes.length === 0) {
+                return [];
+            }
+            
+            // Lấy thêm thông tin về media và số lượng câu hỏi
+            const quizIds = quizzes.map(quiz => quiz.id);
+            
+            const mediaResults = await db('media')
+                .select('id', 'url')
+                .whereIn('id', quizzes.map(quiz => quiz.media).filter(Boolean));
+                
+            const mediaMap = mediaResults.reduce((map, item) => {
+                map[item.id] = item.url;
+                return map;
+            }, {});
+            
+            const questionCounts = await db('quiz_question')
+                .select('quiz_id')
+                .count('question_id as count')
+                .whereIn('quiz_id', quizIds)
+                .groupBy('quiz_id');
+                
+            const questionCountMap = questionCounts.reduce((map, item) => {
+                map[item.quiz_id] = item.count;
+                return map;
+            }, {});
+            
+            return quizzes.map(quiz => ({
+                ...quiz,
+                imageUrl: quiz.media && mediaMap[quiz.media] 
+                    ? mediaMap[quiz.media] 
+                    : 'https://placehold.co/600x400?text=Quiz&bg=f0f4f8',
+                numberOfQuestions: questionCountMap[quiz.id] || 0
+            }));
+        } catch (error) {
+            console.error('Error in searchQuizzes:', error);
+            return [];
         }
     },
 
@@ -293,5 +452,56 @@ export default {
         // or return a specific error object or null.
         throw error;
     }
-}
+    },
+
+    async getQuizzesWithDetails() {
+        try {
+            // Get quizzes with related data
+            const quizzes = await db('quiz')
+                .select(
+                    'quiz.id',
+                    'quiz.title',
+                    'quiz.description',
+                    'quiz.time as created_at',
+                    'quiz.media',
+                    'category.name as categoryName',
+                    db.raw('GROUP_CONCAT(DISTINCT tag.name) as tagsString')
+                )
+                .leftJoin('category', 'quiz.category', 'category.id')
+                .leftJoin('quiz_tag', 'quiz.id', 'quiz_tag.quiz_id')
+                .leftJoin('tag', 'quiz_tag.tag_id', 'tag.id')
+                .groupBy('quiz.id');
+
+            // Format each quiz
+            const formattedQuizzes = quizzes.map((quiz, index) => {
+                const createdDate = new Date(quiz.created_at);
+                const now = new Date();
+                const diffTime = Math.abs(now - createdDate);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                return {
+                    id: quiz.id,
+                    rowNumber: index + 1,
+                    title: quiz.title,
+                    description: quiz.description,
+                    categoryName: quiz.categoryName || 'Uncategorized',
+                    tagsString: quiz.tagsString || '',
+                    imageUrl: quiz.media ? `/media/${quiz.media}` : 'https://placehold.co/40x40/e1e1e1/909090?text=Q',
+                    formattedCreatedAt: createdDate.toLocaleDateString('en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: '2-digit'
+                    }),
+                    relativeUpdatedAt: diffDays === 0 ? 'today' : 
+                                     diffDays === 1 ? 'yesterday' :
+                                     `${diffDays} days ago`
+                };
+            });
+
+            return formattedQuizzes;
+        } catch (error) {
+            console.error('Error in getQuizzesWithDetails:', error);
+            throw error;
+        }
+    }
 };

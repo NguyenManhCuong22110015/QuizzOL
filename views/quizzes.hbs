@@ -46,6 +46,10 @@
                             Edit
                         </button>
                         <button class="btn-delete" data-id="1" data-title="Táo Quan">Delete</button>
+                        <button class="btn-publish" data-id="1" onclick="togglePublishStatus(1)">
+                            <i class="fas fa-eye"></i>
+                            <span class="publish-text">Publish</span>
+                        </button>
                     </td>
                     <td>
                         <a href="/admin/quizzes/1/addquestion" class="btn-go">
@@ -69,6 +73,10 @@
                             Edit
                         </button>
                         <button class="btn-delete" data-id="2" data-title="33">Delete</button>
+                        <button class="btn-publish" data-id="2" onclick="togglePublishStatus(2)">
+                            <i class="fas fa-eye"></i>
+                            <span class="publish-text">Publish</span>
+                        </button>
                     </td>
                     <td>
                         <a href="/admin/quizzes/2/addquestion" class="btn-go">
@@ -92,6 +100,10 @@
                             Edit
                         </button>
                         <button class="btn-delete" data-id="3" data-title="te">Delete</button>
+                        <button class="btn-publish" data-id="3" onclick="togglePublishStatus(3)">
+                            <i class="fas fa-eye"></i>
+                            <span class="publish-text">Publish</span>
+                        </button>
                     </td>
                     <td>
                         <a href="/admin/quizzes/3/addquestion" class="btn-go">
@@ -115,6 +127,10 @@
                             Edit
                         </button>
                         <button class="btn-delete" data-id="4" data-title="1">Delete</button>
+                        <button class="btn-publish" data-id="4" onclick="togglePublishStatus(4)">
+                            <i class="fas fa-eye"></i>
+                            <span class="publish-text">Publish</span>
+                        </button>
                     </td>
                     <td>
                         <a href="/admin/quizzes/4/addquestion" class="btn-go">
@@ -138,6 +154,10 @@
                             Edit
                         </button>
                         <button class="btn-delete" data-id="5" data-title="Vòng quanh thế giới">Delete</button>
+                        <button class="btn-publish" data-id="5" onclick="togglePublishStatus(5)">
+                            <i class="fas fa-eye"></i>
+                            <span class="publish-text">Publish</span>
+                        </button>
                     </td>
                     <td>
                         <a href="/admin/quizzes/5/addquestion" class="btn-go">
@@ -161,6 +181,10 @@
                             Edit
                         </button>
                         <button class="btn-delete" data-id="6" data-title="Thế giới nayyy">Delete</button>
+                        <button class="btn-publish" data-id="6" onclick="togglePublishStatus(6)">
+                            <i class="fas fa-eye"></i>
+                            <span class="publish-text">Publish</span>
+                        </button>
                     </td>
                     <td>
                         <a href="/admin/quizzes/6/addquestion" class="btn-go">
@@ -277,6 +301,25 @@
                     <button type="submit" class="btn-submit">Save Changes</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Publish/Unpublish Modal -->
+<div id="publishModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="publishModalTitle">Publish Quiz</h2>
+            <span class="close" onclick="closePublishModal()">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p id="publishConfirmMessage">Are you sure you want to publish this quiz? It will be visible to all users.</p>
+            <p id="unpublishConfirmMessage" style="display:none">Are you sure you want to unpublish this quiz? It will no longer be visible to users.</p>
+            
+            <div class="form-actions">
+                <button class="btn-cancel" onclick="closePublishModal()">Cancel</button>
+                <button id="confirmPublishBtn" class="btn-submit">Confirm</button>
+            </div>
         </div>
     </div>
 </div>
@@ -478,6 +521,10 @@
                     <i class="fas fa-edit"></i>Edit
                 </button>
                 <button class="btn-delete" data-id="${quizCounter}" data-title="${title}">Delete</button>
+                <button class="btn-publish" data-id="${quizCounter}" onclick="togglePublishStatus(${quizCounter})">
+                    <i class="fas fa-eye"></i>
+                     <span class="publish-text">Publish</span>
+                </button>
             </td>
             <td>
                 <a href="/admin/quizzes/${quizCounter}/addquestion" class="btn-go">
@@ -534,5 +581,110 @@
                 openDeleteQuiz(id);
             });
         });
+    }
+    // Global variable to store the current quiz ID for publishing/unpublishing
+    let currentPublishQuizId = null;
+    let isPublished = false;
+    
+    // Open publish/unpublish modal
+    function togglePublishStatus(quizId) {
+        const button = document.querySelector(`.btn-publish[data-id="${quizId}"]`);
+        isPublished = button.classList.contains('published');
+        
+        // Update modal content based on current status
+        document.getElementById('publishModalTitle').textContent = isPublished ? 'Unpublish Quiz' : 'Publish Quiz';
+        document.getElementById('publishConfirmMessage').style.display = isPublished ? 'none' : 'block';
+        document.getElementById('unpublishConfirmMessage').style.display = isPublished ? 'block' : 'none';
+        
+        // Store the quiz ID
+        currentPublishQuizId = quizId;
+        
+        // Show modal
+        document.getElementById('publishModal').classList.add('show');
+        
+        // Set up confirm button
+        document.getElementById('confirmPublishBtn').onclick = confirmPublishChange;
+    }
+    
+    // Close publish modal
+    function closePublishModal() {
+        document.getElementById('publishModal').classList.remove('show');
+        currentPublishQuizId = null;
+    }
+    
+    // Handle confirmation
+    function confirmPublishChange() {
+        if (currentPublishQuizId) {
+            // Send AJAX request to update publish status
+            fetch(`/quiz/toggle-publish/${currentPublishQuizId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ published: !isPublished })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update button appearance
+                    const button = document.querySelector(`.btn-publish[data-id="${currentPublishQuizId}"]`);
+                    const iconElement = button.querySelector('i');
+                    const textElement = button.querySelector('.publish-text');
+                    
+                    if (isPublished) {
+                        // Change to publish state
+                        button.classList.remove('published');
+                        iconElement.classList.remove('fa-eye-slash');
+                        iconElement.classList.add('fa-eye');
+                        textElement.textContent = 'Publish';
+                    } else {
+                        // Change to unpublish state
+                        button.classList.add('published');
+                        iconElement.classList.remove('fa-eye');
+                        iconElement.classList.add('fa-eye-slash');
+                        textElement.textContent = 'Unpublish';
+                    }
+                    
+                    // Show success message
+                    showToast(isPublished ? "Quiz unpublished successfully" : "Quiz published successfully");
+                } else {
+                    showToast("Error: " + (data.message || "Failed to update quiz status"));
+                }
+                
+                // Close the modal
+                closePublishModal();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast("Error: Failed to update quiz status");
+                closePublishModal();
+            });
+        }
+    }
+    
+    // Toast notification function (assuming you already have this)
+    function showToast(message) {
+        // If you don't already have a toast function, implement one:
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `
+            <div class="toast-content">
+                <i class="fas fa-check-circle"></i>
+                <span class="toast-message">${message}</span>
+            </div>
+            <div class="toast-progress"></div>
+        `;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 100);
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 500);
+        }, 3000);
     }
 </script>
