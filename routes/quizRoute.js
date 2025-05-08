@@ -7,10 +7,44 @@ import quizController from '../controllers/quizController.js'
 import pkg from 'passport';
 import check from '../middlewares/auth.mdw.js'
 import resultService from '../services/resultService.js'
+import logActivity from '../services/logActivity.js';  // Import decorator
 
 const { session } = pkg;
 const router = new Router()
 
+router.get('/quizzes', logActivity(async (req, res) => {
+    const data = await quizService.getAllQuizzes() || 0;
+    res.json(data);
+}));
+
+router.post('/quizzes', logActivity(async (req, res) => {
+    try {
+        const data = req.body;
+        const quiz = {
+            title: data.quizTitle,
+            description: data.quizDescription,
+            createdBy: req.session.userID || 1,
+            category: data.categoryId,
+            tag: data.tag,
+            time: new Date().toISOString().slice(0, 19).replace('T', ' '),
+            media: data.quizMedia
+        };
+
+        const quizId = await quizService.addQuiz(quiz) || 0;
+        const questions = data.questionList || [];
+        const insertedQuestions = await questionService.addQuestions(quizId, questions) || 0;
+        await answerService.addOptionsForAllQuestions(questions, insertedQuestions) || 0;
+
+        res.json({
+            message: "Quiz created successfully",
+            quizId,
+            insertedQuestions
+        });
+    } catch (error) {
+        console.error('Error creating quiz:', error);
+        res.status(500).json({ error: 'Failed to create quiz' });
+    }
+}));
 
 router.get('/quizzes', async (req, res) => {
     const data = await quizService.getAllQuizzes() || 0;

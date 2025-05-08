@@ -1,7 +1,28 @@
 import {Router} from 'express'
 import userAnswerService from '../services/userAnswerService.js'
+import logActivity from '../services/logActivity.js';  // Import decorator
 const router = new Router()
 
+router.post('/add', logActivity(async (req, res) => {
+    try {
+        const { resultId, questionId, answerId } = req.body;
+
+        if (!resultId || !questionId || !answerId) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        const response = await userAnswerService.addUserAnswer(questionId, resultId, answerId);
+        if (response) {
+            return res.status(200).json({ message: 'User answer added successfully' });
+        } else {
+            return res.status(500).json({ error: 'Failed to add user answer' });
+        }
+
+    } catch (error) {
+        console.error('Error adding user answer:', error);
+        res.status(500).json({ error: 'Failed to add user answer' });
+    }
+}));
 
 router.post('/add', async (req, res) => {
     try {
