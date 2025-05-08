@@ -539,7 +539,7 @@ export default {
       return avatar.url;
     } catch (error) {
       console.error('Error in getAvatarByAccountId:', error);
-      throw error;
+      return null;
     }
   },
 

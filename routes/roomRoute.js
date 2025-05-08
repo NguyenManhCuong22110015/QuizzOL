@@ -39,6 +39,7 @@ router.get('/chat-page/:roomId',async (req, res) => {
             avatar: avatar,
         }
     }
+    
     console.log('Username:', username);
     res.render('room/chatPageRoom', { 
         roomId: roomId,
