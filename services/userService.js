@@ -1,12 +1,12 @@
-import db from '../configs/db.js';
+import userRepository from '../repositories/userRepository.js';
 
 export default {
   async createAccountForUser(profile, providerName) {
     try {
-      // Xử lý thông tin từ profile theo provider
+      // Process profile information based on provider
       const providerUpperCase = providerName.toUpperCase();
       
-      // Lấy thông tin email, name và avatar từ profile dựa vào provider
+      // Extract email, username, and avatar from profile based on provider
       let email, username, avatarUrl;
       
       if (profile.emails && profile.emails.length > 0) {
@@ -14,11 +14,11 @@ export default {
       } else if (profile.email) {
         email = profile.email;
       } else {
-        // Nếu không có email, tạo email từ ID và provider
+        // If no email, create one from ID and provider
         email = `${profile.id}@${providerUpperCase.toLowerCase()}.auth`;
       }
       
-      // Lấy username từ profile
+      // Get username from profile
       if (profile.displayName) {
         username = profile.displayName;
       } else if (profile.name) {
@@ -26,10 +26,10 @@ export default {
           `${profile.name.givenName} ${profile.name.familyName || ''}` : 
           profile.name;
       } else {
-        username = email.split('@')[0]; // Mặc định lấy phần trước @ của email
+        username = email.split('@')[0]; // Default to part before @ in email
       }
       
-      // Lấy avatar từ profile
+      // Get avatar from profile
       if (profile.photos && profile.photos.length > 0) {
         avatarUrl = profile.photos[0].value;
       } else if (profile.picture) {
@@ -38,9 +38,10 @@ export default {
         avatarUrl = profile._json.avatar_url;
       }
       
-      // Bắt đầu transaction để đảm bảo tính nhất quán
-      return await db.transaction(async (trx) => {
-        // Tìm account với email và provider tương ứng
+      // Start transaction to ensure consistency
+      const trx = await userRepository.beginTransaction();
+      try {
+        // Check if account with email and provider exists
         const account = await trx('account')
           .where({ 
             email: email, 
@@ -49,21 +50,22 @@ export default {
           .first();
           
         if (account) {
-
+          // Account exists, get user
           let user = await trx('user')
             .where({ id: account.user })
             .first();
           
-          // Cập nhật avatar nếu user chưa có
+          // Update avatar if user doesn't have one
           if (!user.avatar && avatarUrl) {
-            // First, insert the avatar URL into the media table
-            const [mediaId] = await trx('media')
+            // Insert avatar URL into media table
+            const mediaId = await trx('media')
               .insert({
                 url: avatarUrl,
                 resource_type: 'IMAGE',
-              });
+              })
+              .then(ids => ids[0]);
               
-            // Then update the user table with the media ID
+            // Update user with media ID
             await trx('user')
               .where({ id: user.id })
               .update({ avatar: mediaId });
@@ -79,22 +81,24 @@ export default {
             .where({ id: account.id })
             .first();
           
-            const avatar = await trx('media')
-            .where('id', user.avatar).first().select('url');
+          // Get avatar URL
+          const avatar = await trx('media')
+            .where('id', user.avatar)
+            .first();
 
-            return {
+          await trx.commit();
+          return {
             id: updatedAccount.id,
             email: updatedAccount.email,
             username: user.username,
-            avatar: avatar.url,
+            avatar: avatar ? avatar.url : null,
             role: updatedAccount.role,
             provider: updatedAccount.provider,
-            // last_login: updatedAccount.last_login,
             created_at: updatedAccount.created_at,
             user: user.id,
           };
         } else {
-          // Tìm xem email này đã tồn tại trong bảng account chưa để lấy user
+          // Check if email exists in another account
           const existingAccount = await trx('account')
             .where({ email })
             .first();
@@ -102,64 +106,63 @@ export default {
           let userId;
           
           if (existingAccount) {
-            // Nếu email đã tồn tại trong account khác, sử dụng user đó
+            // Email exists in another account, use that user
             userId = existingAccount.user;
             
-            // Cập nhật thông tin user nếu cần
+            // Update user info if needed
             const existingUser = await trx('user')
               .where({ id: userId })
               .first();
               
             if (!existingUser.avatar && avatarUrl) {
-              // First, insert the avatar URL into the media table
-              const [mediaId] = await trx('media')
+              // Insert avatar URL into media table
+              const mediaId = await trx('media')
                 .insert({
                   url: avatarUrl,
                   resource_type: 'IMAGE',
-                });
+                })
+                .then(ids => ids[0]);
                 
-              // Then update the user table with the media ID
+              // Update user with media ID
               await trx('user')
                 .where({ id: userId })
                 .update({ avatar: mediaId });
             }
           } else {
-            // Nếu email chưa tồn tại, tạo user mới
+            // Email doesn't exist, create new user
             let avatarId = null;
             
-            // If there's an avatar URL, store it in media table first
+            // Store avatar in media table if exists
             if (avatarUrl) {
-              const [mediaId] = await trx('media')
+              avatarId = await trx('media')
                 .insert({
                   url: avatarUrl,
                   resource_type: 'IMAGE',
-                });
-              avatarId = mediaId;
+                })
+                .then(ids => ids[0]);
             }
             
-            // Now create user with the media ID (not the URL)
-            const [newUserId] = await trx('user')
+            // Create user with media ID
+            userId = await trx('user')
               .insert({
                 username: username,
-                avatar: avatarId // Store ID, not URL
-              });
-              
-            userId = newUserId;
+                avatar: avatarId
+              })
+              .then(ids => ids[0]);
           }
           
-          // Tạo account mới với email và user
-          const [accountId] = await trx('account')
+          // Create new account with email and user
+          const accountId = await trx('account')
             .insert({
               email: email,
               user: userId,
-              role: 'USER', // Mặc định là USER
+              role: 'USER', // Default role
               provider: providerUpperCase,
-              // last_login: trx.fn.now(),
               created_at: trx.fn.now()
-              // password để null vì đây là OAuth
-            });
+            })
+            .then(ids => ids[0]);
           
-          // Lấy thông tin mới tạo
+          // Get newly created data
           const newUser = await trx('user')
             .where({ id: userId })
             .first();
@@ -168,45 +171,56 @@ export default {
             .where({ id: accountId })
             .first();
           
-          // Trả về đối tượng kết hợp
+          // Get avatar URL if exists
+          let avatarUrl = null;
+          if (newUser.avatar) {
+            const avatar = await trx('media')
+              .where('id', newUser.avatar)
+              .first();
+            avatarUrl = avatar ? avatar.url : null;
+          }
+          
+          await trx.commit();
+          // Return combined object
           return {
             id: newAccount.id,
             email: newAccount.email,
             username: newUser.username,
-            avatar: newUser.avatar,
+            avatar: avatarUrl,
             role: newAccount.role,
             provider: newAccount.provider,
-            // last_login: newAccount.last_login,
             created_at: newAccount.created_at,
             user: newUser.id,
           };
         }
-      });
+      } catch (error) {
+        await trx.rollback();
+        throw error;
+      }
     } catch (error) {
       console.error('Error in createAccountForUser:', error);
       throw error;
     }
   },
+
   async updateBirthday(accountId, birthday) {
     try {
-        const account = await db('account')
-            .where('id', accountId)
-            .select('user')
-            .first();
-        
-        if (!account) {
-            console.log("Account not found!");
-            return null; 
-        }
-        const userId = account.user;
-        const result = await db('user')
-            .where('id', userId)
-            .update({ dob: birthday });
-        return result;
+      // Get user ID from account
+      const account = await userRepository.findAccountById(accountId);
+      
+      if (!account) {
+        console.log("Account not found!");
+        return null; 
+      }
+      
+      // Update birthday in user table
+      const userId = account.user;
+      return await userRepository.updateUser(userId, { dob: birthday });
     } catch (error) {
-        console.error("Database update error:", error);
+      console.error("Error updating birthday:", error);
+      throw error;
     }
-},
+  },
 
   async updateFields(accountId, field, value) {
     try {
@@ -214,65 +228,62 @@ export default {
       if (!allowedFields.includes(field)) {
         throw new Error(`Field not allowed: ${field}`);
       }
-      const { user: userId } = await db('account')
-        .where('id', accountId)
-        .select('user')
-        .first();
+      
+      // Get user ID from account
+      const account = await userRepository.findAccountById(accountId);
+      if (!account) return null;
+      
+      const userId = account.user;
 
       // Special handling for avatar field
       if (field === 'avatar') {
-        return await db.transaction(async (trx) => {
-          // First, insert the avatar URL into the media table
-          const [mediaId] = await trx('media')
+        const trx = await userRepository.beginTransaction();
+        try {
+          // Insert avatar URL into media table
+          const mediaId = await trx('media')
             .insert({
               url: value,
-              type: 'IMAGE',
-              user: userId,
-              upload_date: trx.fn.now()
-            });
+              resource_type: 'IMAGE',
+            })
+            .then(ids => ids[0]);
             
-          // Then update the user with the media ID
+          // Update user with media ID
           await trx('user')
-            .where({ id: accountId })
+            .where({ id: userId })
             .update({ avatar: mediaId });
             
+          // Get updated user and account
           const user = await trx('user')
-            .where({ id: accountId })
+            .leftJoin('media', 'user.avatar', 'media.id')
+            .select('user.*', 'media.url as avatar_url')
+            .where('user.id', userId)
             .first();
-            
-          const account = await trx('account')
-            .where({ user: accountId })
-            .first();
-    
+          
+          await trx.commit();
           return {
-            ...user
+            ...user,
+            avatar: user.avatar_url
           };
-        });
+        } catch (error) {
+          await trx.rollback();
+          throw error;
+        }
       } 
       // Password handling
       else if (field === 'password') {
-        await db('account')
-          .where({ user: accountId })
-          .update({ [field]: value });
+        await userRepository.updateAccount(accountId, { [field]: value });
       } 
       // Other fields
       else {
-        
-        await db('user')
-          .where({ id: userId })
-          .update({ [field]: value });
+        await userRepository.updateUser(userId, { [field]: value });
       }
 
-      const user = await db('user')
-        .where({ id: userId })
-        .first();
-        
-      const account = await db('account')
-        .where({ user: accountId })
-        .first();
-
+      // Get updated user with avatar
+      const user = await userRepository.findUserByIdWithAvatar(userId);
+      
       return {
         ...user,
+        avatar: user.avatar_url
       };
     } catch (error) {
       console.error(`Error updating ${field}:`, error);
@@ -282,30 +293,26 @@ export default {
   
   async findUserByEmail(email) {
     try {
-      // Tìm account với email
-      const account = await db('account')
-        .where({ email })
-        .first();
-        
+      // Find account with email
+      const account = await userRepository.findAccountByEmail(email);
+      
       if (!account) {
         return null;
       }
       
-      // Lấy thông tin user
-      const user = await db('user')
-        .where({ id: account.user })
-        .first();
-        
+      // Get user info
+      const user = await userRepository.findUserByIdWithAvatar(account.user);
+      
       if (!user) {
         return null;
       }
       
-      // Kết hợp thông tin
+      // Combine information
       return {
         id: account.id,
         email: account.email,
         username: user.username,
-        avatar: user.avatar,
+        avatar: user.avatar_url,
         role: account.role,
         provider: account.provider,
         user: user.id
@@ -319,23 +326,15 @@ export default {
   async findUserById(userId) {
     try {
       // Get user with avatar URL
-      const user = await db('user')
-        .leftJoin('media', 'user.avatar', 'media.id')
-        .select('user.*', 'media.url as avatar_url')
-        .where('user.id', userId)
-        .first();
-        
+      const user = await userRepository.findUserByIdWithAvatar(userId);
+      
       if (!user) {
         return null;
       }
       
-      // Use avatar_url instead of avatar ID
-      const avatarUrl = user.avatar_url || null;
-      
       // Get linked accounts
-      const accounts = await db('account')
-        .where({ user: userId });
-        
+      const accounts = await userRepository.getAccountsByUserId(userId);
+      
       // Get primary account
       const primaryAccount = accounts.find(acc => acc.provider === 'USER') || accounts[0];
       
@@ -343,7 +342,7 @@ export default {
         id: primaryAccount.id,
         email: primaryAccount.email,
         username: user.username,
-        avatar: avatarUrl, // Use the URL instead of the ID
+        avatar: user.avatar_url,
         role: primaryAccount.role,
         provider: primaryAccount.provider,
         user: user.id,
@@ -357,27 +356,18 @@ export default {
   
   async getUserStats(userId) {
     try {
-      // Đếm số lượng quiz của user
-      const quizCount = await db('quiz')
-        .where({ user: userId })
-        .count('id as count')
-        .first();
-        
-      // Đếm số lượng flashcard sets
-      const flashcardCount = await db('flashcard_set')
-        .where({ user: userId })
-        .count('id as count')
-        .first();
-        
-      // Lấy thông tin subscription
-      const subscription = await db('subscription')
-        .where({ user: userId })
-        .orderBy('expiry_date', 'desc')
-        .first();
-        
+      // Count user's quizzes
+      const quizCount = await userRepository.countQuizzesByUserId(userId);
+      
+      // Count flashcard sets
+      const flashcardCount = await userRepository.countFlashcardSetsByUserId(userId);
+      
+      // Get subscription info
+      const subscription = await userRepository.getActiveSubscriptionByUserId(userId);
+      
       return {
-        quizzes: quizCount.count || 0,
-        flashcards: flashcardCount.count || 0,
+        quizzes: quizCount || 0,
+        flashcards: flashcardCount || 0,
         subscription: subscription ? {
           plan: subscription.plan,
           startDate: subscription.start_date,
@@ -390,157 +380,142 @@ export default {
       throw error;
     }
   },
+
   async getUserById(userId) {
     try {
-      return await db('user')
-        .where({ id: userId })
-        .first();
-    }
-    catch {
+      return await userRepository.findUserById(userId);
+    } catch (error) {
       console.error('Error in getUserById:', error);
       throw error;
     }
   },
+
   async getUserByAccountId(accountId) {
     try {
-      const account = await db('account')
-        .where({ id: accountId })
-        .first();
-        
+      const account = await userRepository.findAccountById(accountId);
+      
       if (!account) {
         return null;
       }
       
-      const user = await db('user')
-        .where({ id: account.user })
-        .first();
-        
-      return user;
+      return await userRepository.findUserById(account.user);
     } catch (error) {
       console.error('Error in getUserByAccountId:', error);
       throw error;
     }
-  } ,
+  },
 
   async getUserIdByAccountId(accountId) {
     try {
-      const account = await db('account')
-        .where({ id: accountId })
-        .first();
-        
-      if (!account) {
-        return null;
-      }
-      
-      return account.user;
+      const account = await userRepository.findAccountById(accountId);
+      return account ? account.user : null;
     } catch (error) {
       console.error('Error in getUserIdByAccountId:', error);
       throw error;
     }
   },
+
   async getUsernameByAccountId(accountId) {
     try {
-      const account = await db('account')
-        .where({ id: accountId })
-        .first();
-        
+      const account = await userRepository.findAccountById(accountId);
+      
       if (!account) {
         return null;
       }
       
-      const user = await db('user')
-        .where({ id: account.user })
-        .first();
-        
-      return user.username;
+      const user = await userRepository.findUserById(account.user);
+      return user ? user.username : null;
     } catch (error) {
       console.error('Error in getUsernameByAccountId:', error);
       throw error;
     }
   },
+
   async updateAvatar(accountId, avatarUrl, public_id) {
     try {
-      const account = await db('account')
-        .where({ id: accountId })
-        .first();
+      const trx = await userRepository.beginTransaction();
+      try {
+        // Get account
+        const account = await trx('account')
+          .where({ id: accountId })
+          .first();
+          
+        if (!account) {
+          await trx.rollback();
+          return null;
+        }
         
-      if (!account) {
-        return null;
+        // Get user
+        const user = await trx('user')
+          .where({ id: account.user })
+          .first();
+          
+        if (!user) {
+          await trx.rollback();
+          return null;
+        }
+        
+        // Insert avatar URL into media table
+        const mediaId = await trx('media')
+          .insert({
+            url: avatarUrl,
+            resource_type: 'IMAGE',
+            public_id: public_id
+          })
+          .then(ids => ids[0]);
+          
+        // Update user with media ID
+        await trx('user')
+          .where({ id: user.id })
+          .update({ avatar: mediaId });
+          
+        await trx.commit();
+        return true;
+      } catch (error) {
+        await trx.rollback();
+        throw error;
       }
-      
-      const user = await db('user')
-        .where({ id: account.user })
-        .first();
-        
-      if (!user) {
-        return null;
-      }
-      
-      // Update avatar URL in media table
-      const [mediaId] = await db('media')
-        .insert({
-          url: avatarUrl,
-          resource_type: 'IMAGE',
-          public_id: public_id
-        });
-        
-      // Update user with new media ID
-      await db('user')
-        .where({ id: user.id })
-        .update({ avatar: mediaId });
-        
-      return true;
     } catch (error) {
       console.error('Error in updateAvatar:', error);
       throw error;
     }
   },
+
   async getAvatarByUserId(userId) {
     try {
-      const user = await db('user')
-        .where("id", userId).first();
+      const user = await userRepository.findUserById(userId);
 
-      if (!user) {
-          return null;
+      if (!user || !user.avatar) {
+        return null;
       }
-      const avatar = await db('media')
-        .where('id', user.avatar)
-        .first();
-      return avatar.url;
       
-    }
-    catch(error) {
+      const avatar = await userRepository.findMediaById(user.avatar);
+      return avatar ? avatar.url : null;
+    } catch(error) {
       console.error('Error in getAvatarByUserId:', error);
       return null;
     }
   },
+
   async getAvatarByAccountId(accountId) {
     try {
-      const account = await db('account')
-        .where({ id: accountId })
-        .first();
-        
+      const account = await userRepository.findAccountById(accountId);
+      
       if (!account) {
         return null;
       }
       
-      const user = await db('user')
-        .where({ id: account.user })
-        .first();
-        
-      if (!user) {
+      const user = await userRepository.findUserById(account.user);
+      
+      if (!user || !user.avatar) {
         return null;
       }
       
-      const avatar = await db('media')
-        .where('id', user.avatar)
-        .first();
-        
-      return avatar.url;
+      const avatar = await userRepository.findMediaById(user.avatar);
+      return avatar ? avatar.url : null;
     } catch (error) {
       console.error('Error in getAvatarByAccountId:', error);
       return null;
     }
-  },
-
+  }
 };

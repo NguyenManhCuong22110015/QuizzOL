@@ -1,16 +1,15 @@
-import db from '../configs/db.js';
+import resultRepository from '../repositories/resultRepository.js';
 
 export default {
-    getResultById(resultId) {
-        return db('result').select('*').where('id', resultId).first();
+    async getResultById(resultId) {
+        return resultRepository.getResultById(resultId);
     },
-    async checkExistResult(quizId, userId){
+
+    async checkExistResult(quizId, userId) {
         try {
-            const res = await db('result').select('*').where({ quiz: quizId, user: userId, status: "IN_PROGRESS" }).first();
-            if (res){
-                const userAnswers = await db('useranswer')
-                .select('*')
-                .where({ result_id: res.id });
+            const res = await resultRepository.findExistingResult(quizId, userId);
+            if (res) {
+                const userAnswers = await resultRepository.getUserAnswersByResultId(res.id);
                 
                 return {
                     result: res,
@@ -20,24 +19,24 @@ export default {
             else {
                 return null;
             }
-
         }
         catch (error) {
             console.error('Error checking answer or creating new:', error);
             return null;
         }
     },
+
     async createResult(quizId, userId) {
         try {
             // First verify the user exists to prevent foreign key constraint errors
-            const userExists = await db('user').where('id', userId).first();
+            const userExists = await resultRepository.checkUserExists(userId);
             if (!userExists) {
                 console.error(`Cannot create result: User with ID ${userId} does not exist`);
                 return null;
             }
             
             // Insert the result record
-            const [insertId] = await db('result').insert({
+            const insertId = await resultRepository.insertResult({
                 quiz: quizId,
                 user: userId,
                 status: "IN_PROGRESS",
@@ -46,7 +45,7 @@ export default {
             });
             
             // Fetch the inserted record to return
-            const result = await db('result').where('id', insertId).first();
+            const result = await resultRepository.getResultById(insertId);
             return result;
         } catch (error) {
             console.error('Error creating new result:', error);
@@ -57,52 +56,51 @@ export default {
     async updateResult(resultId, data) {
         try {
             // Update the record
-            await db('result').where('id', resultId).update(data);
+            await resultRepository.updateResult(resultId, data);
             
             // Fetch and return the updated record
-            const result = await db('result').where('id', resultId).first();
+            const result = await resultRepository.getResultById(resultId);
             return result;
         } catch (error) {
             console.error('Error updating result:', error);
             return null;
         }
     },
+
     async completeResult(resultId) {
         try {
             // Update the result status to COMPLETED
-            await db('result').where('id', resultId).update({
+            await resultRepository.updateResult(resultId, {
                 status: 'COMPLETED',
                 end_time: new Date(),
             });
             
             // Fetch and return the updated record
-            const result = await db('result').where('id', resultId).first();
+            const result = await resultRepository.getResultById(resultId);
             return result;
         } catch (error) {
             console.error('Error completing result:', error);
             return null;
         }
     },
+
     async calculateScore(resultId) {
         try {
-            const result = await db('result').where('id', resultId).first();
+            const result = await resultRepository.getResultById(resultId);
             if (!result) {
                 console.error(`Result with ID ${resultId} not found`);
                 return null;
             }
             
-            const userAnswers = await db('useranswer').where('result_id', resultId);
+            const userAnswers = await resultRepository.getUserAnswers(resultId);
             let score = 0;
             
             for (const answer of userAnswers) {
                 // Get the correct option for this question
-                const correctOption = await db('option').where({ 
-                    question_id: answer.question_id, 
-                    isCorrect: true 
-                }).first();
+                const correctOption = await resultRepository.getCorrectOptionForQuestion(answer.question_id);
                 
                 // Get the question to access its point value
-                const question = await db('question').where('id', answer.question_id).first();
+                const question = await resultRepository.getQuestionById(answer.question_id);
                 
                 // Default to 1 point if no point value is specified
                 const pointValue = question && question.points ? question.points : 1;
@@ -114,7 +112,7 @@ export default {
             }
             
             // Update the result with the calculated score
-            await db('result').where('id', resultId).update({ score });
+            await resultRepository.updateResult(resultId, { score });
             
             return score;
         } catch (error) {
@@ -122,53 +120,39 @@ export default {
             return null;
         }
     },
+
     async getUserAnswersByResultId(resultId) {
         try {
-            const answers = await db('useranswer').where('result_id', resultId);
-            return answers;
+            return await resultRepository.getUserAnswersByResultId(resultId);
         } catch (error) {
             console.error('Error fetching user answers:', error);
             return null;
         }
     },
+
     async getResultsByUserId(userId, page = 1, limit = 5) {
         try {
             const offset = (page - 1) * limit;
             
             // Get paginated results sorted by date (newest first)
-            const results = await db('result')
-                .where('user', userId)
-                .orderBy('end_time', 'desc')
-                .limit(limit)
-                .offset(offset);
+            const results = await resultRepository.getPaginatedResultsByUserId(userId, limit, offset);
             
             // Get total count for pagination
-            const [{ count }] = await db('result')
-                .where('user', userId)
-                .count('id as count');
+            const count = await resultRepository.countResultsByUserId(userId);
             
             // Enrich results with quiz details
             const enrichedResults = await Promise.all(results.map(async (result) => {
                 // Get quiz info
-                const quiz = await db('quiz').where('id', result.quiz).first();
+                const quiz = await resultRepository.getQuizById(result.quiz);
                 
                 // Get correct/total answers count
-                const userAnswers = await db('useranswer').where('result_id', result.id);
-                const totalQuestions = await db('quiz_question').where({
-                    quiz_id: result.quiz,
-                    
-                }).count('quiz_id as count');
-                const totalCount = totalQuestions[0].count;
+                const userAnswers = await resultRepository.getUserAnswersByResultId(result.id);
+                const totalCount = await resultRepository.getQuizQuestionCount(result.quiz);
                 
                 let correctCount = 0;
                 
                 for (const answer of userAnswers) {
-                    const correctOption = await db('option')
-                        .where({ 
-                            question_id: answer.question_id, 
-                            isCorrect: true 
-                        })
-                        .first();
+                    const correctOption = await resultRepository.getCorrectOptionForQuestion(answer.question_id);
                     
                     if (correctOption && answer.option_id === correctOption.id) {
                         correctCount++;
@@ -206,125 +190,94 @@ export default {
             };
         }
     },
+
     async getTopPlayersByCriteria(criteria, time, limit = 10) {
         try {
-            // Xác định khoảng thời gian dựa trên tham số time
+            // Determine time range based on time parameter
             const endDate = new Date();
             let startDate = new Date();
             
             switch(time) {
                 case 'week':
-                    startDate.setDate(endDate.getDate() - 7); // 7 ngày trước
+                    startDate.setDate(endDate.getDate() - 7); // 7 days ago
                     break;
                 case 'month':
-                    startDate.setMonth(endDate.getMonth() - 1); // 1 tháng trước
+                    startDate.setMonth(endDate.getMonth() - 1); // 1 month ago
                     break;
                 case 'year':
-                    startDate.setFullYear(endDate.getFullYear() - 1); // 1 năm trước
+                    startDate.setFullYear(endDate.getFullYear() - 1); // 1 year ago
                     break;
                 default:
-                    startDate.setDate(endDate.getDate() - 7); // Mặc định là tuần
+                    startDate.setDate(endDate.getDate() - 7); // Default is week
             }
-            
-            // Truy vấn cơ bản với join để lấy thông tin avatar
-            const baseQuery = db('result')
-                .where('status', 'COMPLETED')
-                .whereBetween('end_time', [startDate, endDate])
-                .join('user', 'result.user', '=', 'user.id')
-                .leftJoin('media', 'user.avatar', '=', 'media.id');
             
             let topPlayers;
             
             if (criteria === 'score') {
-                // Tiêu chí tổng điểm
-                topPlayers = await baseQuery
-                    .select('user.id as userId', 'user.username', 'user.email', 'user.avatar', 'media.url as avatarUrl')
-                    .sum('result.score as totalScore')
-                    .groupBy('user.id', 'user.username', 'user.email', 'user.avatar', 'media.url')
-                    .orderBy('totalScore', 'desc')
-                    .limit(limit);
+                // Total score criteria
+                topPlayers = await resultRepository.getTopPlayersByScore(startDate, endDate, limit);
                     
-                // Thêm thông tin xếp hạng
+                // Add ranking information
                 topPlayers = topPlayers.map((player, index) => ({
                     ...player,
-                    avatar: player.avatarUrl || `https://res.cloudinary.com/dj9r2qksh/image/upload/v1743576404/Quizz_Online/images/z3klhzrkoeikujya3fi9.jpg`, // URL mặc định nếu không có avatar
+                    avatar: player.avatarUrl || `https://res.cloudinary.com/dj9r2qksh/image/upload/v1743576404/Quizz_Online/images/z3klhzrkoeikujya3fi9.jpg`, // Default URL if no avatar
                     rank: index + 1,
                     criteriaValue: player.totalScore || 0
                 }));
             } 
             else if (criteria === 'attend') {
-                // Tiêu chí số lượng quiz hoàn thành
-                topPlayers = await baseQuery
-                    .select('user.id as userId', 'user.username', 'user.email', 'user.avatar', 'media.url as avatarUrl')
-                    .countDistinct('result.quiz as completedQuizzes')
-                    .groupBy('user.id', 'user.username', 'user.email', 'user.avatar', 'media.url')
-                    .orderBy('completedQuizzes', 'desc')
-                    .limit(limit);
+                // Number of completed quizzes criteria
+                topPlayers = await resultRepository.getTopPlayersByAttendance(startDate, endDate, limit);
                     
-                // Thêm thông tin xếp hạng
+                // Add ranking information
                 topPlayers = topPlayers.map((player, index) => ({
                     ...player,
-                    avatar: player.avatarUrl || `https://res.cloudinary.com/dj9r2qksh/image/upload/v1743576404/Quizz_Online/images/z3klhzrkoeikujya3fi9.jpg`, // URL mặc định
+                    avatar: player.avatarUrl || `https://res.cloudinary.com/dj9r2qksh/image/upload/v1743576404/Quizz_Online/images/z3klhzrkoeikujya3fi9.jpg`, // Default URL
                     rank: index + 1,
                     criteriaValue: parseInt(player.completedQuizzes) || 0
                 }));
             } 
             else if (criteria === 'mean') {
-                // Tiêu chí tỷ lệ điểm số trung bình
+                // Average score percentage criteria
                 
-                // Lấy tất cả người dùng có kết quả hoàn thành và tổng điểm
-                const userScores = await baseQuery
-                    .select(
-                        'user.id as userId', 
-                        'user.username', 
-                        'user.email', 
-                        'user.avatar',
-                        'media.url as avatarUrl',
-                        db.raw('SUM(result.score) as totalEarned'),
-                        db.raw('COUNT(DISTINCT result.id) as quizCount')
-                    )
-                    .groupBy('user.id', 'user.username', 'user.email', 'user.avatar', 'media.url');
+                // Get all users with completed results and total score
+                const userScores = await resultRepository.getUserScoresInTimeRange(startDate, endDate);
                 
-                // Tính toán điểm tối đa có thể và tỷ lệ phần trăm cho mỗi người dùng
+                // Calculate maximum possible score and percentage for each user
                 const usersWithPercentages = await Promise.all(
                     userScores.map(async (user) => {
-                        // Lấy tất cả kết quả hoàn thành của người dùng trong khoảng thời gian
-                        const results = await db('result')
-                            .where('user', user.userId)
-                            .where('status', 'COMPLETED')
-                            .whereBetween('end_time', [startDate, endDate]);
+                        // Get all completed results for the user in the time range
+                        const results = await resultRepository.getUserResultsInTimeRange(user.userId, startDate, endDate);
                         
                         let totalPossible = 0;
                         
-                        // Tính điểm tối đa có thể cho mỗi kết quả
+                        // Calculate maximum possible score for each result
                         for (const result of results) {
-                            // Lấy tất cả câu hỏi trong quiz
-                            const quizQuestions = await db('quiz_question')
-                                .select('question_id')
-                                .where('quiz_id', result.quiz);
+                            // Get all questions in the quiz
+                            const quizQuestionCount = await resultRepository.getQuizQuestionCount(result.quiz);
                             
-                            if (quizQuestions.length === 0) continue;
+                            if (quizQuestionCount === 0) continue;
                             
-                            // Lấy giá trị điểm cho tất cả câu hỏi trong một truy vấn
-                            const questionIds = quizQuestions.map(qq => qq.question_id);
-                            const questions = await db('question')
-                                .select('id', 'points')
-                                .whereIn('id', questionIds);
+                            // Get question IDs for the quiz
+                            const questions = await db('quiz_question')
+                                .join('question', 'quiz_question.question_id', '=', 'question.id')
+                                .select('question.id', 'question.points')
+                                .where('quiz_question.quiz_id', result.quiz);
                             
-                            // Tính tổng giá trị điểm
+                            // Calculate total possible points
                             questions.forEach(question => {
-                                totalPossible += question.points || 1; // Mặc định là 1 nếu không có điểm
+                                totalPossible += question.points || 1; // Default to 1 if not specified
                             });
                         }
                         
-                        // Tính tỷ lệ phần trăm (tránh chia cho 0)
+                        // Calculate percentage (avoid division by zero)
                         const percentage = totalPossible > 0 
                             ? (user.totalEarned / totalPossible) * 100 
                             : 0;
                         
                         return {
                             ...user,
-                            avatar: user.avatarUrl || `https://res.cloudinary.com/dj9r2qksh/image/upload/v1743576404/Quizz_Online/images/z3klhzrkoeikujya3fi9.jpg`, // Thêm URL avatar mặc định
+                            avatar: user.avatarUrl || `https://res.cloudinary.com/dj9r2qksh/image/upload/v1743576404/Quizz_Online/images/z3klhzrkoeikujya3fi9.jpg`, // Default avatar URL
                             percentage: parseFloat(percentage.toFixed(2)),
                             totalPossible,
                             criteriaValue: parseFloat(percentage.toFixed(2))
@@ -332,7 +285,7 @@ export default {
                     })
                 );
                 
-                // Sắp xếp theo tỷ lệ phần trăm và lấy người chơi hàng đầu
+                // Sort by percentage and get top players
                 topPlayers = usersWithPercentages
                     .sort((a, b) => b.percentage - a.percentage)
                     .slice(0, limit)
@@ -355,5 +308,5 @@ export default {
                 players: []
             };
         }
-    },
+    }
 };

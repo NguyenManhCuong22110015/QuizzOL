@@ -1,14 +1,10 @@
-import db from "../configs/db.js";
+import commentRepository from "../repositories/commentRepository.js";
 
 const commentService = {
   // Lấy tất cả bình luận cho một quiz
   async getAllComments(quizId) {
     try {
-      const comments = await db("comment as c")
-        .join("user as u", "c.user", "=", "u.id")
-        .select("c.*", "u.username as authorUsername")
-        .where("c.quiz", quizId)
-        .orderBy("c.id", "desc");
+      const comments = await commentRepository.findCommentsByQuizId(quizId);
 
       // Thêm chữ cái đầu tiên cho ảnh đại diện
       comments.forEach((comment) => {
@@ -28,23 +24,25 @@ const commentService = {
       console.log("Adding comment:", { quizId, userId, content });
 
       // 1. Kiểm tra xem quiz có tồn tại không
-      const quizExists = await db("quiz").where("id", quizId).first();
+      const quizExists = await commentRepository.checkQuizExists(quizId);
       if (!quizExists) {
         throw new Error(`Quiz with ID ${quizId} not found`);
       }
 
       // 2. Kiểm tra xem user có tồn tại không
-      const userExists = await db("user").where("id", userId).first();
+      const userExists = await commentRepository.checkUserExists(userId);
       if (!userExists) {
         throw new Error(`User with ID ${userId} not found`);
       }
 
       // 3. Thêm comment vào database
-      const [id] = await db("comment").insert({
+      const commentData = {
         quiz: quizId,
         user: userId,
         message: content,
-      });
+      };
+      
+      const id = await commentRepository.insertComment(commentData);
 
       return { id };
     } catch (error) {
@@ -56,8 +54,7 @@ const commentService = {
   // Xóa bình luận
   async deleteComment(commentId) {
     try {
-      await db("comment").where("id", commentId).del();
-
+      await commentRepository.deleteComment(commentId);
       return { success: true };
     } catch (error) {
       console.error("Error in deleteComment:", error);
@@ -68,8 +65,7 @@ const commentService = {
   // Lấy thông tin chi tiết của bình luận
   async getCommentById(commentId) {
     try {
-      const comment = await db("comment").where("id", commentId).first();
-
+      const comment = await commentRepository.findCommentById(commentId);
       return comment || null;
     } catch (error) {
       console.error("Error in getCommentById:", error);
@@ -80,12 +76,7 @@ const commentService = {
   // Đếm số lượng bình luận cho một quiz
   async countComments(quizId) {
     try {
-      const result = await db("comment")
-        .where("quiz", quizId)
-        .count("id as count")
-        .first();
-
-      return result ? result.count : 0;
+      return await commentRepository.countCommentsByQuizId(quizId);
     } catch (error) {
       console.error("Error in countComments:", error);
       throw error;

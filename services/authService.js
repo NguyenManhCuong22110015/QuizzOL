@@ -1,17 +1,16 @@
-import db from '../configs/db.js';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
 import dotenv from 'dotenv';
 import mailConfig from '../configs/mailConfig.js';
-
+import authRepository from '../repositories/authRepository.js';
 
 dotenv.config();
 
 export default {
     async login(email, password) {
-        const user = await db('account').where({ email: email }).first();
+        const user = await authRepository.findAccountByEmail(email);
         
-        if (!user) return null; 
+        if (!user) return null;
         
         // Check if account is verified
         if (!user.isVerified && user.provider === 'USER') {
@@ -20,76 +19,70 @@ export default {
 
         const validPassword = await bcrypt.compare(password, user.password);
         
-        if (!validPassword) return null; 
+        if (!validPassword) return null;
 
-        const otherData = await db('user')
-        .where({ 'user.id': user.user })
-        .leftJoin('media', 'user.avatar', '=', 'media.id')
-        .select('user.username', 'user.avatar', 'media.url as avatar_url')
-        .first();        if (!otherData) return null;
+        const otherData = await authRepository.findUserDetails(user.user);
+        if (!otherData) return null;
+        
         const userData = {
-           ...user,
+            ...user,
             username: otherData.username,
             avatar: otherData.avatar_url,
         };
 
-        return userData; 
+        return userData;
     },
     
     async createAccountWithVerification(email, password) {
         // Check if account already exists
-        const existingAccount = await db('account').where({ email }).first();
+        const existingAccount = await authRepository.findAccountByEmail(email);
         if (existingAccount) {
             return { existingUser: true };
         }
         
         // Generate verification token
         const verificationToken = crypto.randomBytes(32).toString('hex');
-        const tokenExpiry = new Date(Date.now() + 1 * 60 * 60 * 1000); // 1 hours
+        const tokenExpiry = new Date(Date.now() + 1 * 60 * 60 * 1000); // 1 hour
         
-        return await db.transaction(async (trx) => {
-            try {
-                const username = email.split('@')[0]; // Use part before @ as username
-                
-                const [userId] = await trx('user').insert({
-                    username: username,
-                });
-                
-                const hashedPassword = await bcrypt.hash(password, 10);
-                
-                const [accountId] = await trx('account').insert({
-                    email: email,
-                    password: hashedPassword,
-                    user: userId, 
-                    provider: "USER",
-                    role: 'USER',
-                    created_at: trx.fn.now(),
-                    isVerified: false,
-                    verification_token: verificationToken,
-                    token_expiry: tokenExpiry
-                });
-                
-                await mailConfig.sendVerificationEmail(email, verificationToken);
-                
-                return {
-                    success: true,
-                    userId: userId,
-                    email: email
-                };
-                
-            } catch (error) {
-                console.error('Error creating account with verification:', error);
-                throw error;
-            }
-        });
+        const trx = await authRepository.beginTransaction();
+        try {
+            const username = email.split('@')[0]; // Use part before @ as username
+            const userData = { username };
+            
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const accountData = {
+                email,
+                password: hashedPassword,
+                provider: "USER",
+                role: 'USER',
+                created_at: trx.fn.now(),
+                isVerified: false,
+                verification_token: verificationToken,
+                token_expiry: tokenExpiry
+            };
+            
+            const { userId } = await authRepository.createUserAndAccount(userData, accountData, trx);
+            
+            // Send verification email
+            await mailConfig.sendVerificationEmail(email, verificationToken);
+            
+            await trx.commit();
+            
+            return {
+                success: true,
+                userId,
+                email
+            };
+        } catch (error) {
+            await trx.rollback();
+            console.error('Error creating account with verification:', error);
+            throw error;
+        }
     },
-    // Add this new method to your authService object
 
     async resendVerificationEmail(email) {
         // Find user account by email
-        const account = await db('account')
-            .where({ email, provider: 'USER' })
-            .first();
+        const account = await authRepository.findAccountByEmailAndProvider(email, 'USER');
         
         if (!account) {
             return { success: false, message: 'Account not found.' };
@@ -105,95 +98,78 @@ export default {
         const tokenExpiry = new Date(Date.now() + 1 * 60 * 60 * 1000); // 1 hour
         
         // Update account with new token
-        await db('account')
-            .where({ id: account.id })
-            .update({
-                verification_token: verificationToken,
-                token_expiry: tokenExpiry
-            });
+        await authRepository.updateVerificationToken(account.id, verificationToken, tokenExpiry);
         
         // Send verification email
         await mailConfig.sendVerificationEmail(email, verificationToken);
         
         return { success: true };
     },
+
     async verifyUserEmail(token) {
-        const account = await db('account')
-            .where({ verification_token: token })
-            .where('token_expiry', '>', db.fn.now())
-            .first();
+        const account = await authRepository.findAccountByVerificationToken(token);
         
         if (!account) {
             return { success: false, message: 'Invalid or expired verification link' };
         }
         
         // Update account as verified
-        await db('account')
-            .where({ id: account.id })
-            .update({
-                isVerified: true,
-                verification_token: null,
-                token_expiry: null,
-            });
+        await authRepository.updateAccount(account.id, {
+            isVerified: true,
+            verification_token: null,
+            token_expiry: null,
+        });
         
         return { success: true };
     },
     
-    
     async checkAccountOrCreateAccount(email, password) {
-        const existingAccount = await db('account').where({ email, provider: "USER" }).first();
+        const existingAccount = await authRepository.findAccountByEmailAndProvider(email, 'USER');
         if (existingAccount) {
             return null;
         }
     
-        return await db.transaction(async (trx) => {
-            try {
-                const username = email.split('@')[0];
-                
-                const [userId] = await trx('user').insert({
-                    username: username,
-                });
-                
-                const hashedPassword = await bcrypt.hash(password, 10);
-                
-                const [accountId] = await trx('account').insert({
-                    email: email,
-                    password: hashedPassword,
-                    user: userId, 
-                    provider: 'USER',
-                    role: 'USER',
-                    created_at: trx.fn.now()
-                });
-                
-                const newAccount = await trx('account')
-                    .where({ id: accountId })
-                    .first();
-                    
-                const newUser = await trx('user')
-                    .where({ id: userId })
-                    .first();
-                
-                return {
-                    id: newAccount.id,
-                    email: newAccount.email,
-                    username: newUser.username,
-                    role: newAccount.role,
-                    provider: newAccount.provider,
-                    created_at: newAccount.created_at,
-                    user: userId
-                };
-                
-            } catch (error) {
-                console.error('Error creating account:', error);
-                throw error;
-            }
-        });
+        const trx = await authRepository.beginTransaction();
+        try {
+            const username = email.split('@')[0];
+            const userData = { username };
+            
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const accountData = {
+                email,
+                password: hashedPassword,
+                provider: 'USER',
+                role: 'USER',
+                created_at: trx.fn.now()
+            };
+            
+            const { userId, accountId } = await authRepository.createUserAndAccount(userData, accountData, trx);
+            
+            const newAccount = await authRepository.getNewAccount(accountId, trx);
+            const newUser = await authRepository.getNewUser(userId, trx);
+            
+            await trx.commit();
+            
+            return {
+                id: newAccount.id,
+                email: newAccount.email,
+                username: newUser.username,
+                role: newAccount.role,
+                provider: newAccount.provider,
+                created_at: newAccount.created_at,
+                user: userId
+            };
+        } catch (error) {
+            await trx.rollback();
+            console.error('Error creating account:', error);
+            throw error;
+        }
     },
     
     async updatePassword(userId, currentPassword, newPassword) {
         try {
             // Get user account by id
-            const user = await db('account').where({ id: userId }).first();
+            const user = await authRepository.findAccountById(userId);
             
             if (!user) {
                 return { 
@@ -215,12 +191,7 @@ export default {
             const hashedPassword = await bcrypt.hash(newPassword, 10);
             
             // Update password in database
-            await db('account')
-                .where({ id: userId })
-                .update({ 
-                    password: hashedPassword, 
-                    
-                });
+            await authRepository.updateAccount(userId, { password: hashedPassword });
             
             return { 
                 success: true, 

@@ -1,61 +1,43 @@
 import { Router } from 'express';
 import check from '../middlewares/auth.mdw.js';
-import { renderLoginPage,
-  loginToFacebook ,
-  handleLogin, 
-  handleSignup, 
-  loginToGoogle,
-  resendVerification, 
-  loginToGithub,
-  handleUpdatePassword
-
-}
-   from '../controllers/authController.js';
-
+import authController from '../controllers/authController.js';
 import facebookPassport from '../authentication/facebook.js';
 import googlePassport from '../authentication/google.js';
 import githubPassport from '../authentication/github.js';
-import {verifyEmail} from '../controllers/authController.js';
 
 const router = Router();
-router.get('/verify/:token', verifyEmail);
-router.post('/resend-verification', resendVerification);
-router.get('/login', renderLoginPage);
 
-router.get('/facebook', facebookPassport.authenticate('facebook',{auth_type: 'reauthenticate'} ));
+// Email verification
+router.get('/verify/:token', authController.verifyEmail);
+router.post('/resend-verification', authController.resendVerification);
 
+// Basic login/signup
+router.get('/login', authController.renderLoginPage);
+router.post('/login', authController.handleLogin);
+router.post('/signup', authController.handleSignup);
+
+// Facebook auth
+router.get('/facebook', facebookPassport.authenticate('facebook', { auth_type: 'reauthenticate' }));
 router.get('/facebook/callback',
-    facebookPassport.authenticate('facebook', 
-    { failureRedirect: '/login' }),
-    loginToFacebook);
+    facebookPassport.authenticate('facebook', { failureRedirect: '/login' }),
+    authController.loginToFacebook);
 
-router.post('/login', handleLogin );
-    
-router.post('/signup', handleSignup );
+// Google auth
+router.get('/google', googlePassport.authenticate('google', { scope: ['profile', 'email'], prompt: 'select_account' }));
+router.get('/google/callback',
+    googlePassport.authenticate('google', { failureRedirect: '/login' }),
+    authController.loginToGoogle);
 
-router.get('/google',googlePassport.authenticate('google', { scope: ['profile', 'email'] ,prompt: 'select_account' }));
+// GitHub auth (where needed)
+router.get('/github', githubPassport.authenticate('github'));
+router.get('/github/callback',
+    githubPassport.authenticate('github', { failureRedirect: '/login' }),
+    authController.loginToGithub);
 
-router.get('/google/callback',googlePassport.authenticate('google', { failureRedirect: '/login' }),
-    loginToGoogle);
+// Password management
+router.post('/update-password', check, authController.handleUpdatePassword);
 
-router.post('/update-password',check, handleUpdatePassword);
-
-router.get('/logout', (req, res, next) => {
-  
-    req.logout(function(err) {
-      if (err) { return next(err); }
-      
-      // Xóa toàn bộ session
-      req.session.destroy((err) => {
-        if (err) {
-          return next(err);
-        }
-        res.clearCookie('connect.sid');
-        
-        res.redirect(req.headers.referer || '/' );
-      });
-    });
-  });
-
+// Logout
+router.get('/logout', authController.handleLogout);
 
 export default router;

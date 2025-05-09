@@ -1,10 +1,7 @@
-import db from '../configs/db.js';
-
+import answerRepository from "../repositories/answerRepository.js";
 export default {
-
     getAnswersByQuestionId(questionId) {
-        // Changed from 'question_option' to 'option' to match your schema
-        return db('option').select('*').where('question_id', questionId);
+        return answerRepository.findByQuestionId(questionId);
     },
     
     // Insert options for a single question.
@@ -15,16 +12,10 @@ export default {
             isCorrect: opt.isCorrect
         }));
         
-        await db('option').insert(preparedOptions);
+        await answerRepository.insertOptions(preparedOptions);
     },
 
-    /* 
-       Insert options for all questions.
-       Parameters:
-         originalQuestions - the array from req.body (each question has an "option" property)
-         insertedQuestions - the array returned from inserting the questions (each contains a generated id)
-       This function robustly matches questions by comparing key fields.
-    */
+
     async addOptionsForAllQuestions(originalQuestions, insertedQuestions) {
         // Make a shallow copy of insertedQuestions for matching and removal
         const unmatchedInserted = [...insertedQuestions];
@@ -50,9 +41,9 @@ export default {
         }
     },
 
-
     // Delete all answers for a question
     deleteAnswersByQuestionId(questionId) {
-        return db('question_option').where('question_id', questionId).del();
+        // Updated to use repository instead of direct DB access
+        return answerRepository.deleteByQuestionId(questionId);
     }
 };

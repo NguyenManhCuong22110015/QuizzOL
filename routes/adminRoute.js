@@ -1,45 +1,21 @@
-import {Router} from 'express'
+import { Router } from 'express';
+import adminController from '../controllers/adminController.js';
 
+const router = new Router();
 
-const router = new Router()
+// Dashboard route
+router.get('/', adminController.getDashboard);
 
-router.get('/', (req, res) => {
-    res.render('layouts/admin', { 
-      title: 'Admin Dashboard',
-      layout: 'admin'  
-    });
-  });
-  router.get('/quizzes', (req, res) => {
-    res.render('quizzes', { 
-      title: 'Admin Dashboard',
-      layout: 'admin' ,
-      activePage: 'quizzes'
-    });
-  });
-  router.get('/setting', (req, res) => {
-    res.render('adminSetting', {
-      title: 'Admin Setting',
-      layout: 'admin',        
-      css: 'setting.css',
-      activePage: 'setting'     
-    });
-  }); 
-  router.get('/overview', (req, res) => {
-    res.render('overview', {
-      title: 'Admin Overview',
-      layout: 'admin',        
-      
-      activePage: 'overview'     
-    });
-  }); 
-  router.get('/quizzes/:id/addquestion', (req, res) => {
-    const quizId = req.params.id;
-    res.render('addQuestion', {
-      title: 'Thêm câu hỏi',
-      layout: 'admin',
-      css:'addquestion',
-      quizId
-    });
-  });
-  
-export default router
+// Quizzes management route
+router.get('/quizzes', adminController.getQuizzes);
+
+// Admin settings route
+router.get('/setting', adminController.getSettings);
+
+// Overview route
+router.get('/overview', adminController.getOverview);
+
+// Add question route
+router.get('/quizzes/:id/addquestion', adminController.getAddQuestionPage);
+
+export default router;

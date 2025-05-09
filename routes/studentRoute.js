@@ -1,27 +1,23 @@
-import {Router} from 'express'
+import {Router} from 'express';
+import studentController from '../controllers/studentController.js';
+import check from '../middlewares/auth.mdw.js';
 
+const router = new Router();
 
-const router = new Router()
+// Dashboard route
+router.get('/', check, studentController.getDashboard);
 
-router.get('/', (req, res) => {
-    res.render('student', { 
-      title: 'Student Dashboard',
-      layout: 'student'  
-    });
-  });
-router.get('/editquiz', (req, res) => {
-    res.render('quiz/editquiz', { 
-      title: 'Student Dashboard',
-      layout: 'student',
-      css:'editquiz.css'
-    });
-  });
-  router.get('/editquiz/:id/addquestion', (req, res) => {
-    const quizId = req.params.id;
-    res.render('addQuestionStudent', {
-      title: 'Thêm câu hỏi',
-      layout: 'student',
-      quizId
-    });
-  });
-export default router
+// Quiz edit routes
+router.get('/editquiz', check, studentController.getEditQuizPage);
+router.get('/editquiz/:id/addquestion', check, studentController.getAddQuestionPage);
+
+// Profile route
+router.get('/profile', check, studentController.getProfilePage);
+
+// Quiz history route
+router.get('/history', check, studentController.getQuizHistoryPage);
+
+// Create quiz route
+router.get('/create-quiz', check, studentController.getCreateQuizPage);
+
+export default router;

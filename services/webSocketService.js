@@ -1,5 +1,5 @@
 import { WebSocketServer } from 'ws';
-import db from '../configs/db.js';
+import roomRepository from '../repositories/roomRepository.js';
 
 // Store active connections and game states
 const activeRooms = new Map();
@@ -16,7 +16,8 @@ class GameState {
 
 async function createRoom(roomId) {
     try {
-        const roomDoc = await db('room').where('id', roomId).first();
+        // Use repository instead of direct DB access
+        const roomDoc = await roomRepository.getRoomById(roomId);
         if (!roomDoc) return false;
 
         activeRooms.set(roomId, {
@@ -25,7 +26,7 @@ async function createRoom(roomId) {
             gameState: new GameState()
         });
 
-        await db('room').where('id', roomId).update({ isActive: true });
+        await roomRepository.updateRoomActiveStatus(roomId, true);
         return true;
     } catch (error) {
         console.error("Error creating room:", error);
@@ -38,18 +39,19 @@ async function startGame(roomId) {
     if (!activeRoom) return false;
 
     try {
-        const roomDoc = await db('room').where('id', roomId).first();
+        // Get room details using repository
+        const roomDoc = await roomRepository.getRoomById(roomId);
         
-        // Lấy danh sách quiz IDs từ bảng room_quiz
-        const roomQuizzes = await db('room').where('id', roomId).select('quiz');
-        const quizIds = roomQuizzes.map(rq => rq.quiz);
+        // Get quiz IDs using repository
+        const quizIds = await roomRepository.getRoomQuizIds(roomId);
         if (!quizIds.length) {
-            quizIds.push(1);
+            quizIds.push(1); // Default quiz if none set
         }
         
-
         console.log("Quiz IDs:", quizIds);
-        const quizzes = await db('quiz').whereIn('id', quizIds);
+        
+        // Get quizzes using repository
+        const quizzes = await roomRepository.getQuizzesByIds(quizIds);
 
         if (!quizzes.length) {
             broadcastToRoom(roomId, {
@@ -59,26 +61,8 @@ async function startGame(roomId) {
             return false;
         }
         
-        // Lấy danh sách câu hỏi từ các quiz
-        const questions = await db('question')
-            .join('quiz_question', 'question.id', '=', 'quiz_question.question_id')
-            .whereIn('quiz_question.quiz_id', quizIds)
-            .whereIn('question.type', ['SINGLE_ANSWER', 'TRUE_FALSE'])
-            .select('question.*');
-        
-        // Lấy danh sách đáp án cho các câu hỏi
-        const questionIds = questions.map(q => q.id);
-        const options = await db('option').whereIn('question_id', questionIds);
-        
-        // Gán options vào questions
-        const questionsWithOptions = questions.map(question => {
-            const questionOptions = options.filter(opt => opt.question_id === question.id);
-            return {
-                ...question,
-                options: questionOptions
-            };
-        });
-
+        // Get questions with options using repository
+        const questionsWithOptions = await roomRepository.getQuestionsWithOptionsForQuizzes(quizIds);
         console.log("Questions with options:", questionsWithOptions);
 
         activeRoom.gameState.isActive = true;
@@ -98,8 +82,8 @@ async function startGame(roomId) {
 
 async function joinRoom(roomId, username, ws, avatar) {
     try {
-        // Get room from database
-        const roomDoc = await db('room').where('id', roomId).first();
+        // Get room from repository
+        const roomDoc = await roomRepository.getRoomById(roomId);
         if (!roomDoc) {
             return { success: false, message: "Room not found" };
         }
@@ -126,10 +110,8 @@ async function joinRoom(roomId, username, ws, avatar) {
             avatar: avatar  // Store avatar
         });
 
-        // Update player count in database
-        await db('room').where('id', roomId).update({
-            current_players: activeRooms.get(roomId).players.size
-        });
+        // Update player count using repository
+        await roomRepository.updateCurrentPlayers(roomId, activeRooms.get(roomId).players.size);
 
         return { success: true };
     } catch (error) {
@@ -371,18 +353,16 @@ function initWebSocket(server) {
                     }
 
                     try {
-                        // Update database
-                        await db('room').where('id', userRoom).update({
-                            current_players: activeRoom.players.size
-                        });
+                        // Update database using repository
+                        await roomRepository.updateCurrentPlayers(
+                            userRoom, 
+                            activeRoom.players.size
+                        );
 
                         // Clean up if room empty
                         if (activeRoom.players.size === 0) {
                             activeRooms.delete(userRoom);
-                            await db('room').where('id', userRoom).update({
-                                isActive: false, 
-                                current_players: 0
-                            });
+                            await roomRepository.resetRoom(userRoom);
                         } else {
                             // Notify remaining players
                             broadcastToRoom(userRoom, {

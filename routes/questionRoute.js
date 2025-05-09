@@ -1,69 +1,21 @@
-import {Router} from 'express'
-import quizService from '../services/quizService.js'
-import questionService from '../services/questionService.js'
-import db from '../configs/db.js' // Import the Knex instance directly
+import { Router } from 'express';
+import questionController from '../controllers/questionController.js';
 
-const router = new Router()
+const router = new Router();
 
-router.get('/:quizId/add-question', async (req, res) => { // Add auth check
-    const { quizId } = req.params;
-    // Optional: Add authorization check (e.g., is the user an admin or the quiz owner?)
-    try {
-        // You might want to fetch quiz details to display on the page
-        const quiz = await quizService.getQuizById(quizId);
-        if (!quiz) {
-             return res.status(404).render('error', { message: 'Quiz not found.' }); // Use admin layout
-        }
+// Route to render the add question page
+router.get('/:quizId/add-question', questionController.renderAddQuestionPage);
 
-        // Render the view for adding questions, passing the quizId and potentially quiz title
-        res.render('addQuestionStudent_dataFilled', { // Assuming this is your view name and location
-            layout: 'student', // Use your admin layout
-            quizId: quizId,
-            quizTitle: quiz.title // Pass title for context
-            // Add any other data needed for the view
-        });
+// Route to handle adding a new question
+router.post('/:quizId/add-question', questionController.addQuestion);
 
-    } catch (error) {
-        console.error(`Error rendering add question page for quiz ${quizId}:`, error);
-        res.status(500).render('error', { layout: 'adminLayout', message: 'Failed to load add question page.' });
-    }
-});
+// Route to get question details
+router.get('/:questionId', questionController.getQuestionById);
 
-router.post('/:quizId/add-question', async (req, res) => {
-    try {
-        const quizId = parseInt(req.params.quizId, 10);
-        
-        if (isNaN(quizId)) {
-            return res.status(400).json({ error: 'Invalid quiz ID format' });
-        }
+// Route to update a question
+router.put('/:questionId', questionController.updateQuestion);
 
-        const quiz = await quizService.getQuizById(quizId);
-        if (!quiz) {
-            return res.status(404).json({ error: 'Quiz not found' });
-        }
+// Route to delete a question
+router.delete('/:quizId/:questionId', questionController.deleteQuestion);
 
-        const questionData = req.body;
-        const [questionId] = await questionService.addQuestion(questionData);
-
-        if (!questionId) {
-            return res.status(500).json({ error: 'Failed to create question' });
-        }
-
-        await quizService.addQuestionToQuiz(quizId, questionId);
-
-        res.status(201).json({
-            success: true,
-            message: 'Question added successfully',
-            questionId: questionId
-        });
-
-    } catch (error) {
-        console.error('Error in addQuestion:', error);
-        res.status(500).json({
-            error: 'Failed to add question',
-            message: error.message
-        });
-    }
-});
-
-export default router
+export default router;
