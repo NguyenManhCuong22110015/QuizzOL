@@ -56,47 +56,47 @@ export default {
                     isCorrect = userAnswer && correctOption && userAnswer.option_id === correctOption.id;
                     break;
 
-                    case 'MULTIPLE_ANSWER':
-                        // Lấy tất cả đáp án đúng
-                        const correctOptions = await optionService.getCorrectOptionsByQuestionId(question.id) || [];
-                        const correctOptionIds = correctOptions.map(opt => opt.id);
-    
-                        // Lấy tất cả các đáp án
-                        allOptions = await optionService.getOptionsByQuestionId(question.id) || [];
-    
-                        // Lấy câu trả lời của người dùng
-                        let selectedOptions = [];
-                        if (userAnswer && userAnswer.selected_options) {
-                            try {
-                                // Chuyển đổi sang mảng số nguyên
-                                if (Array.isArray(userAnswer.selected_options)) {
-                                    selectedOptions = userAnswer.selected_options.map(id => parseInt(id, 10));
-                                } else {
-                                    // Nếu là chuỗi JSON, parse trước
-                                    const parsedOptions = JSON.parse(userAnswer.selected_options);
-                                    selectedOptions = Array.isArray(parsedOptions) ? 
-                                        parsedOptions.map(id => parseInt(id, 10)) : [];
-                                }
-                            } catch (e) {
-                                selectedOptions = [];
+                case 'MULTIPLE_ANSWER':
+                    // Lấy tất cả đáp án đúng
+                    const correctOptions = await optionService.getCorrectOptionsByQuestionId(question.id) || [];
+                    const correctOptionIds = correctOptions.map(opt => opt.id);
+
+                    // Lấy tất cả các đáp án
+                    allOptions = await optionService.getOptionsByQuestionId(question.id) || [];
+
+                    // Lấy câu trả lời của người dùng
+                    let selectedOptions = [];
+                    if (userAnswer && userAnswer.selected_options) {
+                        try {
+                            // Chuyển đổi sang mảng số nguyên
+                            if (Array.isArray(userAnswer.selected_options)) {
+                                selectedOptions = userAnswer.selected_options.map(id => parseInt(id, 10));
+                            } else {
+                                // Nếu là chuỗi JSON, parse trước
+                                const parsedOptions = JSON.parse(userAnswer.selected_options);
+                                selectedOptions = Array.isArray(parsedOptions) ?
+                                    parsedOptions.map(id => parseInt(id, 10)) : [];
                             }
+                        } catch (e) {
+                            selectedOptions = [];
                         }
-                        userSelectedOptions = selectedOptions;
-                        
-    
-                        // Đánh dấu các options đã được chọn và đúng/sai
-                        allOptions = allOptions.map(option => ({
-                            ...option,
-                            isSelected: selectedOptions.includes(option.id),
-                            isCorrect: correctOptionIds.includes(option.id)
-                        }));
-                       
-    
-                        // Đúng khi chọn đủ và đúng tất cả các đáp án cần chọn
-                        isCorrect = correctOptionIds.length > 0 &&
-                            selectedOptions.length === correctOptionIds.length &&
-                            correctOptionIds.every(id => selectedOptions.includes(id));
-                        break;
+                    }
+                    userSelectedOptions = selectedOptions;
+
+
+                    // Đánh dấu các options đã được chọn và đúng/sai
+                    allOptions = allOptions.map(option => ({
+                        ...option,
+                        isSelected: selectedOptions.includes(option.id),
+                        isCorrect: correctOptionIds.includes(option.id)
+                    }));
+
+
+                    // Đúng khi chọn đủ và đúng tất cả các đáp án cần chọn
+                    isCorrect = correctOptionIds.length > 0 &&
+                        selectedOptions.length === correctOptionIds.length &&
+                        correctOptionIds.every(id => selectedOptions.includes(id));
+                    break;
 
                 case 'FILL_IN_THE_BLANK':
                     // Lấy câu trả lời đúng
@@ -160,19 +160,19 @@ export default {
                 time: new Date().toISOString().slice(0, 19).replace('T', ' '),
                 media: data.quizMedia
             };
-    
+
             // Add the quiz to the database and get the inserted quiz ID
             const quizId = await quizService.addQuiz(quiz) || 0;
-    
+
             // Get question from request body and add them to the quiz
             const questions = data.questionList || [];
-    
+
             // Add quizId to each question object and add new question to the database
             const insertedQuestions = await questionService.addQuestions(quizId, questions) || 0;
-    
+
             // Now add options for each inserted question using their "option" property
             await answerService.addOptionsForAllQuestions(questions, insertedQuestions) || 0;
-    
+
             res.json({
                 message: "Quiz created successfully",
                 quizId,
@@ -183,13 +183,13 @@ export default {
             res.status(500).json({ error: 'Failed to create quiz' });
         }
     },
-    
+
     searchQuizzes: async (req, res) => {
         try {
             const searchTerm = req.query.q || '';
-            
+
             if (!searchTerm.trim()) {
-                return res.render('search-results', { 
+                return res.render('search-results', {
                     quizzes: [],
                     searchTerm: '',
                     noResults: true,
@@ -197,11 +197,11 @@ export default {
                     title: 'Kết quả tìm kiếm'
                 });
             }
-            
+
             const quizzes = await strategieService.searchQuizzes(searchTerm);
-            
-            res.render('search-results', { 
-                quizzes, 
+
+            res.render('search-results', {
+                quizzes,
                 searchTerm,
                 noResults: quizzes.length === 0,
                 isEmpty: false,
@@ -209,41 +209,41 @@ export default {
             });
         } catch (error) {
             console.error('Error searching quizzes:', error);
-            res.status(500).render('error', { 
+            res.status(500).render('error', {
                 message: 'Đã xảy ra lỗi khi tìm kiếm quiz',
                 title: 'Lỗi'
             });
         }
     },
-    
+
     // New methods extracted from routes
     togglePublishQuiz: async (req, res) => {
         try {
             const quizId = req.params.id;
             // Add fallback in case req.body is undefined
             const published = req.body && req.body.published !== undefined ? req.body.published : false;
-            
+
             // Update the quiz in the database
             await quizService.updateQuiz(quizId, { published });
-            
-            res.json({ 
-                success: true, 
-                message: published ? 'Quiz published successfully' : 'Quiz unpublished successfully' 
+
+            res.json({
+                success: true,
+                message: published ? 'Quiz published successfully' : 'Quiz unpublished successfully'
             });
         } catch (error) {
             console.error('Error toggling quiz publish status:', error);
-            res.status(500).json({ 
-                success: false, 
+            res.status(500).json({
+                success: false,
                 message: 'Failed to update quiz status'
             });
         }
     },
-    
+
     getDashboardQuizzes: async (req, res) => {
         try {
             const userId = req.session.authUser?.user || req.user?.id || 1;
             const quizzes = await quizService.getQuizzesWithDetails();
-            
+
             res.render('quizzes_dataFilled', {
                 layout: 'student',
                 quizzes: quizzes
@@ -253,12 +253,12 @@ export default {
             res.status(500).render('error', { message: 'Failed to load quizzes.' });
         }
     },
-    
+
     getQuestionsByQuizId: async (req, res) => {
         try {
             const quizId = req.params.id;
             const questions = await questionService.getQuestionsByQuizId(quizId) || [];
-        
+
             res.render('question_dataFilled', {
                 quizId: quizId,
                 layout: "student",
@@ -269,32 +269,34 @@ export default {
             res.status(500).render('error', { message: 'Failed to load quiz page' });
         }
     },
-    
+
     updateQuizMedia: async (req, res) => {
         try {
             const quizId = req.params.id;
             const { image, public_id } = req.body;
-           
+
             if (!image) {
                 return res.status(400).json({ error: 'No media ID provided' });
             }
-            
+
             await quizService.updateImageQuiz(quizId, image, public_id);
-            
-            res.json({ 
-                success: true, 
+
+            res.json({
+                success: true,
                 message: 'Quiz media updated successfully'
             });
-            
+
         } catch (error) {
             console.error('Error updating quiz media:', error);
             res.status(500).json({ error: 'Failed to update quiz media' });
         }
     },
-    
-    createQuiz: async (req, res) => {
+
+    // Fix in quizController.js - createQuiz function
+       createQuiz: async (req, res) => {
         try {
             const data = req.body;
+
             const userId = req.session.authUser?.user || req.user?.id || 1;
 
             if (!userId) {
@@ -319,13 +321,41 @@ export default {
                 category: parseInt(data.categoryId, 10),
                 tag: tagIds.length > 0 ? tagIds.join(',') : null,
                 time: new Date(),
-                media: data.quizMedia || null
+                media: null,
             };
-
-            const [newQuizId] = await quizService.addQuiz(quiz);
             
+
+            // Fix: Handle different possible return types from addQuiz
+            const result = await quizService.addQuiz(quiz);
+            let newQuizId;
+
+            if (Array.isArray(result)) {
+                // If result is an array, get the first element
+                newQuizId = result[0];
+            } else if (result && typeof result === 'object' && 'id' in result) {
+                // If result is an object with an id property
+                newQuizId = result.id;
+            } else if (typeof result === 'number') {
+                // If result is a direct ID number
+                newQuizId = result;
+            } else {
+                console.error('Unexpected response from addQuiz:', result);
+                return res.status(500).json({ error: 'Failed to create quiz: Invalid response' });
+            }
+
             if (!newQuizId) {
                 return res.status(500).json({ error: 'Failed to create quiz' });
+            }
+
+            // Update quiz image if imageUrl and public_id are provided
+            if (data.imageUrl && data.public_id) {
+                try {
+                    await quizService.updateImageQuiz(newQuizId, data.imageUrl, data.public_id);
+                    console.log(`Updated quiz ${newQuizId} with image: ${data.imageUrl}`);
+                } catch (imageError) {
+                    console.error('Error updating quiz image:', imageError);
+                    // Continue despite image update error
+                }
             }
 
             res.json({
@@ -342,7 +372,7 @@ export default {
             });
         }
     },
-    
+
     getQuizById: async (req, res) => {
         const quizId = req.params.id;
 
@@ -369,7 +399,7 @@ export default {
             res.status(500).render('error', { message: 'Failed to render quiz details' });
         }
     },
-    
+
     updateQuiz: async (req, res) => {
         try {
             const quizId = parseInt(req.params.id);
@@ -409,13 +439,13 @@ export default {
             });
         } catch (error) {
             console.error('Error updating quiz:', error);
-            res.status(500).json({ 
+            res.status(500).json({
                 error: 'Failed to update quiz',
-                message: error.message 
+                message: error.message
             });
         }
     },
-    
+
     deleteQuiz: async (req, res) => {
         try {
             const quizId = req.params.id;
@@ -433,14 +463,14 @@ export default {
             });
         }
     },
-    
+
     doTestQuiz: async (req, res) => {
         try {
             const quizId = req.params.id;
-            
+
             const test = await quizService.getFullQuizDetails(quizId);
             const userId = req.session.authUser.user || 1;
-             
+
             let startTime = new Date();
             let endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // Default 1 hour
             if (!test) {
@@ -454,7 +484,7 @@ export default {
             test.questions.forEach((question, index) => {
                 question.question_number = index + 1;
             });
-            let answer = [] ;
+            let answer = [];
             let resultId = null;
             let newResultId = 0;
             const checkExistResult = await resultService.checkExistResult(test.id, userId) || 0
@@ -462,43 +492,43 @@ export default {
             if (checkExistResult) {
                 resultId = checkExistResult.result.id;
                 answer = checkExistResult.userAnswers || [];
-                
+
                 // Use the existing timestamps
                 if (checkExistResult.result.start_time) {
                     startTime = new Date(checkExistResult.result.start_time);
                 }
-                
+
                 if (checkExistResult.result.end_time) {
                     endTime = new Date(checkExistResult.result.end_time);
                 }
             }
             else {
                 const newResult = await resultService.createResult(test.id, userId) || []
-                
+
                 if (newResult) {
                     resultId = newResult.id;
-                    
+
                     // Use the new timestamps
                     if (newResult.start_time) {
                         startTime = new Date(newResult.start_time);
                     }
-                    
+
                     if (newResult.end_time) {
                         endTime = new Date(newResult.end_time);
                     }
-                    
+
                     console.log('Created new result:', resultId);
                 } else {
                     console.error('Failed to create a new result');
                     return res.status(500).json({ error: 'Failed to create quiz result' });
                 }
             }
-            
+
             res.render('quiz/doTest', {
                 layout: false,
                 quiz: test,
                 resultId: resultId,
-                startTime: startTime.toISOString(), 
+                startTime: startTime.toISOString(),
                 endTime: endTime.toISOString(),
                 numberOfQuestions: test.questions.length,
                 existingAnswers: answer.length > 0 ? answer : []
@@ -509,7 +539,7 @@ export default {
             res.status(500).json({ error: 'Failed to fetch quiz details' });
         }
     },
-    
+
     getQuizzesByCategory: async (req, res) => {
         try {
             const categories = await categoryService.getAllCategories() || []
@@ -531,13 +561,13 @@ export default {
                         }))
                     }
                 }
-                catch(error) {
+                catch (error) {
                     console.error('Error fetching quizzes for category:', error);
                     return null;
                 }
-            
-            })).then(results => results.filter(result => result !== null && result.quizzes.length > 0)); 
-            
+
+            })).then(results => results.filter(result => result !== null && result.quizzes.length > 0));
+
             res.render('home/categoryPage', {
                 layout: 'main',
                 quizzesOfCategory
@@ -548,7 +578,7 @@ export default {
             res.status(500).json({ error: 'Failed to fetch quizzes by category' });
         }
     },
-    
+
     getTestPage: async (req, res) => {
         try {
             res.render('quizzes', {
@@ -559,7 +589,7 @@ export default {
             res.status(500).json({ error: 'Failed to fetch quizzes' });
         }
     },
-    
+
     getQuestionPage: async (req, res) => {
         try {
             res.render('questionOfQuiz', {
@@ -570,12 +600,12 @@ export default {
             res.status(500).json({ error: 'Failed to fetch quizzes' });
         }
     },
-    
+
     getAddQuestionPage: async (req, res) => {
         try {
             const quizId = parseInt(req.params.id);
             const quiz = await quizService.getQuizById(quizId);
-            
+
             if (!quiz) {
                 return res.status(404).render('error', { message: 'Quiz not found' });
             }

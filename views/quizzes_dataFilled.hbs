@@ -573,20 +573,76 @@
         const submitButton = addQuizForm.querySelector('.btn-submit');
         if (submitButton) submitButton.disabled = true;
 
-        const formData = {
-            quizTitle: document.getElementById('quizTitle').value.trim(),
-            quizDescription: document.getElementById('quizDescription').value.trim(),
-            categoryId: document.getElementById('quizCategory').value,
-            tags: document.getElementById('quizTags').value.trim()
-        };
-
         try {
+            // Get the image file if one was selected
+            const imageInput = document.getElementById('quizImage');
+            const imageFile = imageInput.files && imageInput.files[0];
+            let imageData = {};
+
+            // If an image was selected, upload it first
+            if (imageFile) {
+                // Show loading indicator
+                if (imagePreview) {
+                    imagePreview.innerHTML = `
+                    <div class="loading-indicator">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Uploading image...</p>
+                    </div>`;
+                }
+
+                // Step 1: Create FormData for the image upload
+                const formData = new FormData();
+                formData.append('image', imageFile);
+
+                // Show loading state
+                Swal.fire({
+                    title: 'Uploading...',
+                    text: 'Please wait while we upload your image',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                // Upload the image
+                const uploadResponse = await fetch('/media/upload-image', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!uploadResponse.ok) {
+                    throw new Error('Failed to upload image');
+                }
+
+                const uploadResult = await uploadResponse.json();
+                console.log('Upload result:', uploadResult);
+                
+                // Store the image data for quiz creation
+                imageData = {
+                    imageUrl: uploadResult.imageUrl,
+                    public_id: uploadResult.publicId
+                };
+
+                Swal.close();
+            }
+
+            // Gather the quiz form data
+            const quizFormData = {
+                quizTitle: document.getElementById('quizTitle').value.trim(),
+                quizDescription: document.getElementById('quizDescription').value.trim(),
+                categoryId: document.getElementById('quizCategory').value,
+                tags: document.getElementById('quizTags').value.trim(),
+                // Include image data if available
+                ...(Object.keys(imageData).length > 0 && imageData)
+            };
+
+            // Create the quiz with the image (if provided)
             const response = await fetch('/quiz/quizzes', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(quizFormData)
             });
 
             const result = await response.json();
