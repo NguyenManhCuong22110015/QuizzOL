@@ -15,29 +15,41 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) => {
-    if (file.mimetype.startsWith("audio/")) {
+    const mimetype = file.mimetype;
+
+    // Handle audio uploads
+    if (mimetype.startsWith("audio/")) {
       return {
         folder: "Quizz_Online/audio",
-        resource_type: "video", 
-        format: "mp3"
+        resource_type: "video", // Cloudinary treats audio under 'video'
+        format: "mp3" // optional, only use if you want to enforce format
       };
     }
-     else if (file.mimetype.startsWith("video/")) {
+
+    // Handle video uploads
+    else if (mimetype.startsWith("video/")) {
       return {
         folder: "Quizz_Online/videos",
-        allowed_formats: ["jpg", "jpeg", "png", "gif"],
-        transformation: [{ width: 800, height: 600, crop: "limit" }]
+        resource_type: "video",
+        transformation: [
+          { width: 1280, height: 720, crop: "limit" }
+        ]
       };
     }
-    else  {
+
+    // Handle image uploads (default)
+    else {
       return {
         folder: "Quizz_Online/images",
-        allowed_formats: ["jpg", "jpeg", "png", "gif"],
-        transformation: [{ width: 800, height: 600, crop: "limit" }]
+        resource_type: "image",
+        transformation: [
+          { width: 800, height: 600, crop: "limit" }
+        ]
       };
     }
   }
 });
+
 
 // Create multer upload instance
 const upload = multer({ 

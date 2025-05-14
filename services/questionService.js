@@ -21,7 +21,7 @@ export default {
       const questions = await questionRepository.findQuestionsByIds(questionIds);
 
       // Get media URLs for questions that have them
-      const mediaIds = questions.map((q) => q.img_url).filter(Boolean);
+      const mediaIds = questions.map((q) => q.media).filter(Boolean);
 
       if (mediaIds.length > 0) {
         const media = await questionRepository.findMediaByIds(mediaIds);
@@ -33,8 +33,8 @@ export default {
 
         // Attach media URLs to questions
         questions.forEach((question) => {
-          if (question.img_url && mediaMap[question.img_url]) {
-            question.imageUrl = mediaMap[question.img_url];
+          if (question.media && mediaMap[question.media]) {
+            question.imageUrl = mediaMap[question.media];
           }
         });
       }
@@ -56,7 +56,7 @@ export default {
         const id = await trx("question").insert({
           content: question.content,
           type: question.type,
-          img_url: question.img_url || null,
+          media: question.media || null,
           points: question.points || 0,
           explanation: question.explanation || null,
         });
@@ -82,7 +82,7 @@ export default {
   },
 
   async addQuestion(questionData) {
-    const { content, type, points, explanation, img_url, option } = questionData;
+    const { content, type, points, explanation, media, option } = questionData;
     
     try {
         // Insert the question first
@@ -91,7 +91,7 @@ export default {
             type,
             points: points || 1,
             explanation,
-            img_url
+            media
         });
 
         // If we have options, insert them
@@ -188,8 +188,8 @@ export default {
       const options = await questionRepository.findOptionsByQuestionId(questionId);
       
       // Get media URL if it exists
-      if (question.img_url) {
-        const media = await questionRepository.findMediaUrlById(question.img_url);
+      if (question.media) {
+        const media = await questionRepository.findMediaUrlById(question.media);
         
         if (media) {
           question.imageUrl = media.url;

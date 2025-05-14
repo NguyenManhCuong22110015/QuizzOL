@@ -242,7 +242,7 @@ export default {
     getDashboardQuizzes: async (req, res) => {
         try {
             const userId = req.session.authUser?.user || req.user?.id || 1;
-            const quizzes = await quizService.getQuizzesWithDetails();
+            const quizzes = await quizService.getQuizzesWithDetails(userId);
 
             res.render('quizzes_dataFilled', {
                 layout: 'student',
@@ -296,6 +296,7 @@ export default {
        createQuiz: async (req, res) => {
         try {
             const data = req.body;
+            console.log('Received quiz data:', data);
 
             const userId = req.session.authUser?.user || req.user?.id || 1;
 
@@ -324,6 +325,7 @@ export default {
                 media: null,
             };
             
+            console.log('Quiz data:', quiz);
 
             // Fix: Handle different possible return types from addQuiz
             const result = await quizService.addQuiz(quiz);
@@ -507,8 +509,6 @@ export default {
 
                 if (newResult) {
                     resultId = newResult.id;
-
-                    // Use the new timestamps
                     if (newResult.start_time) {
                         startTime = new Date(newResult.start_time);
                     }

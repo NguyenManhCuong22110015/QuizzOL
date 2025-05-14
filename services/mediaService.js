@@ -1,5 +1,6 @@
 import { cloudinary } from '../configs/cloudinaryConfig.js';
 import db from '../configs/db.js';
+import mediaRepository from '../repositories/mediaRepository.js';
 /**
  * Upload image to Cloudinary
  * @param {Object} file - The uploaded file
@@ -15,6 +16,20 @@ export const uploadImage = async (file) => {
     publicId: file.filename 
   };
 };
+
+export const  createMedia = async (media) => {
+  if (!media) {
+    throw new Error('Error creating media');
+  }
+  const mediaId = await mediaRepository.createMedia(media);
+  if (!mediaId) {
+    throw new Error('Error creating media');
+  }
+
+  return mediaId;
+};
+
+
 
 /**
  * Upload audio to Cloudinary

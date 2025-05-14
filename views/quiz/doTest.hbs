@@ -456,7 +456,7 @@
                     });
 
                     // Mark the result as completed
-                    const response = await fetch(`/result/complete/${currentResultId}`, {
+                    const response = await fetch(`/quiz/all-quiz-by-category`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json'

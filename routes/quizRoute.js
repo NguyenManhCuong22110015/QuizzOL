@@ -20,7 +20,7 @@ router.get('/question/:id', quizController.getQuestionsByQuizId);
 router.put('/quizzes/:id/update-media', quizController.updateQuizMedia);
 
 // Quiz CRUD routes
-router.post('/quizzes', quizController.createQuiz);
+router.post('/quizzes',check, quizController.createQuiz);
 router.get('/quizzes/:id', quizController.getQuizById);
 router.put('/quizzes/:id', quizController.updateQuiz);
 router.delete('/quizzes/:id', quizController.deleteQuiz);
@@ -29,7 +29,7 @@ router.delete('/quizzes/:id', quizController.deleteQuiz);
 router.get('/do-test/:id', check, quizController.doTestQuiz);
 
 // Quiz result check route
-router.get('/check-result/:id', quizController.checkResult);
+router.get('/check-result/:id',check, quizController.checkResult);
 
 // Quiz categories route
 router.get('/all-quiz-by-category', quizController.getQuizzesByCategory);

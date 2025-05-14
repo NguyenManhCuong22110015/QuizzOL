@@ -22,10 +22,10 @@
                     <th>Title</th>
                     <th>Description</th>
                     <th>Category</th>
-                    <th>Tags</th>
+                    {{!-- <th>Tags</th> --}}
                     {{!-- Removed Image Header --}}
                     <th>Created at</th>
-                    <th>Updated</th>
+                   
                     <th>Actions</th>
                     <th>Questions</th>
                 </tr>
@@ -38,9 +38,9 @@
                     <td class="quiz-title">{{this.title}}</td>
                     <td class="quiz-description">{{this.description}}</td>
                     <td class="quiz-category">{{this.categoryName}}</td>
-                    <td class="quiz-tags">{{this.tagsString}}</td>
+                    {{!-- <td class="quiz-tags">{{this.tagsString}}</td> --}}
                     {{!-- Removed Image Data Cell --}}
-                    <td>{{this.formattedCreatedAt}}</td>
+                    
                     <td>
                         <span
                             class="badge-updated {{#if (or (eq this.relativeUpdatedAt 'a few seconds ago') (eq this.relativeUpdatedAt 'in a few seconds'))}}today{{/if}}">
@@ -739,7 +739,7 @@
         deleteButton.disabled = true;
         showToast('Deleting quiz...');
         try {
-            // *** IMPORTANT: Verify this URL matches your backend route ***
+            // api
             const response = await fetch(`/quiz/quizzes/${currentQuizIdToDelete}`, { method: 'DELETE' });
             if (response.ok) {
                 const result = await response.json();

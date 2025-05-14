@@ -1,13 +1,13 @@
 import quizService from '../services/quizService.js';
 import questionService from '../services/questionService.js';
-
+import { createMedia } from '../services/mediaService.js';
 export default {
   /**
    * Render the add question page
    */
   renderAddQuestionPage: async (req, res) => {
     const { quizId } = req.params;
-    
+
     try {
       // Fetch quiz details to display on the page
       const quiz = await quizService.getQuizById(quizId);
@@ -23,20 +23,20 @@ export default {
       });
     } catch (error) {
       console.error(`Error rendering add question page for quiz ${quizId}:`, error);
-      res.status(500).render('error', { 
-        layout: 'adminLayout', 
-        message: 'Failed to load add question page.' 
+      res.status(500).render('error', {
+        layout: 'adminLayout',
+        message: 'Failed to load add question page.'
       });
     }
   },
-  
+
   /**
    * Handle adding a new question
    */
   addQuestion: async (req, res) => {
     try {
       const quizId = parseInt(req.params.quizId, 10);
-      
+
       if (isNaN(quizId)) {
         return res.status(400).json({ error: 'Invalid quiz ID format' });
       }
@@ -46,7 +46,36 @@ export default {
         return res.status(404).json({ error: 'Quiz not found' });
       }
 
-      const questionData = req.body;
+      const { type, points, explanation, content, options, media_url, public_id, mediaType } = req.body;
+
+      console.log('Request body:', req.body);
+
+      let mediaId = null;
+      if (mediaType && public_id && media_url) {
+        const media = {
+          media_url: media_url || null,
+          public_id: public_id || null,
+          mediaType: mediaType || null
+        }
+        mediaId = await createMedia(media);
+      }
+
+      console.log('mediaId:', mediaId);
+
+      const questionData = {
+        type: type,
+        points: points || 1,
+        explanation: explanation || null,
+        content: content,
+        media: mediaId || null,
+        options: options.map((option) => ({
+          content: option.content,
+          isCorrect: option.isCorrect || false
+        }))
+      };
+
+      console.log('Question data:', questionData);
+
       const [questionId] = await questionService.addQuestion(questionData);
 
       if (!questionId) {
@@ -68,24 +97,24 @@ export default {
       });
     }
   },
-  
+
   /**
    * Get question details by ID
    */
   getQuestionById: async (req, res) => {
     try {
       const questionId = parseInt(req.params.questionId, 10);
-      
+
       if (isNaN(questionId)) {
         return res.status(400).json({ error: 'Invalid question ID format' });
       }
-      
+
       const question = await questionService.getQuestionWithOptions(questionId);
-      
+
       if (!question) {
         return res.status(404).json({ error: 'Question not found' });
       }
-      
+
       res.status(200).json(question);
     } catch (error) {
       console.error('Error fetching question:', error);
@@ -95,25 +124,25 @@ export default {
       });
     }
   },
-  
+
   /**
    * Update an existing question
    */
   updateQuestion: async (req, res) => {
     try {
       const questionId = parseInt(req.params.questionId, 10);
-      
+
       if (isNaN(questionId)) {
         return res.status(400).json({ error: 'Invalid question ID format' });
       }
-      
+
       const questionData = req.body;
       const updated = await questionService.updateQuestion(questionId, questionData);
-      
+
       if (!updated) {
         return res.status(404).json({ error: 'Question not found or not updated' });
       }
-      
+
       res.status(200).json({
         success: true,
         message: 'Question updated successfully'
@@ -126,7 +155,7 @@ export default {
       });
     }
   },
-  
+
   /**
    * Delete a question
    */
@@ -134,21 +163,21 @@ export default {
     try {
       const questionId = parseInt(req.params.questionId, 10);
       const quizId = parseInt(req.params.quizId, 10);
-      
+
       if (isNaN(questionId) || isNaN(quizId)) {
         return res.status(400).json({ error: 'Invalid ID format' });
       }
-      
+
       // Remove from quiz first
       await quizService.removeQuestionFromQuiz(quizId, questionId);
-      
+
       // Then delete the question
       const deleted = await questionService.deleteQuestion(questionId);
-      
+
       if (!deleted) {
         return res.status(404).json({ error: 'Question not found or not deleted' });
       }
-      
+
       res.status(200).json({
         success: true,
         message: 'Question deleted successfully'

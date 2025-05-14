@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Question - Quiz Online</title>
     <link rel="stylesheet" href="/css/addquestionUser.css">
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
 <body>
     <div class="container">
+        <input type="hidden" id="quizId" value="{{quizId}}">
         <header class="header">
             <h1>Add Questions for "{{quizTitle}}"</h1>
             <p class="subtitle">Choose question type and fill in the required information</p>
@@ -19,45 +22,78 @@
             <div class="question-type-selector">
                 <h2>Chọn loại câu hỏi</h2>
                 <div class="type-cards">
-                    <div class="type-card active" data-type="multiple-choice">
+                    <div class="type-card active" data-type="SINGLE_ANSWER">
                         <i class="fas fa-list-ul"></i>
-                        <span>Trắc nghiệm</span>
+                        <span>Trắc nghiệm đơn</span>
                     </div>
-                    <div class="type-card" data-type="true-false">
+                    <div class="type-card" data-type="MULTIPLE_ANSWER">
+                        <i class="fas fa-check-square"></i>
+                        <span>Trắc nghiệm nhiều đáp án</span>
+                    </div>
+                    <div class="type-card" data-type="TRUE_FALSE">
                         <i class="fas fa-toggle-on"></i>
                         <span>Đúng/Sai</span>
                     </div>
-                    <div class="type-card" data-type="fill-blank">
+                    <div class="type-card" data-type="FILL_IN_THE_BLANK">
                         <i class="fas fa-pencil-alt"></i>
                         <span>Điền vào chỗ trống</span>
-                    </div>
-                    <div class="type-card" data-type="matching">
-                        <i class="fas fa-arrows-alt-h"></i>
-                        <span>Nối câu</span>
-                    </div>
-                    <div class="type-card" data-type="essay">
-                        <i class="fas fa-paragraph"></i>
-                        <span>Tự luận</span>
                     </div>
                 </div>
             </div>
 
             <div class="question-form-container">
                 <!-- Trắc nghiệm form -->
-                <form id="multiple-choice-form" class="question-form active">
+                <!-- Move this outside the forms but ensure it's properly visible -->
+                <div class="form-group media-section">
+                    <label>Media (Optional)</label>
+                    <div class="media-selection-tabs">
+                        <div class="media-tab active" data-type="none">None</div>
+                        <div class="media-tab" data-type="image">Image</div>
+                        <div class="media-tab" data-type="video">Video</div>
+                        <div class="media-tab" data-type="audio">Audio</div>
+                    </div>
+
+                    <div class="media-upload-container">
+                        <div class="media-upload-section" id="image-upload">
+                            <input type="file" id="question-image" class="media-input" accept="image/*"
+                                style="display:none;">
+                            <button type="button" class="select-media-btn" data-input="question-image">Select
+                                Image</button>
+                            <div class="media-preview" id="image-preview"></div>
+                        </div>
+
+                        <div class="media-upload-section" id="video-upload" style="display:none;">
+                            <input type="file" id="question-video" class="media-input" accept="video/*"
+                                style="display:none;">
+                            <button type="button" class="select-media-btn" data-input="question-video">Select
+                                Video</button>
+                            <div class="media-preview" id="video-preview"></div>
+                        </div>
+
+                        <div class="media-upload-section" id="audio-upload" style="display:none;">
+                            <input type="file" id="question-audio" class="media-input" accept="audio/*"
+                                style="display:none;">
+                            <button type="button" class="select-media-btn" data-input="question-audio">Select
+                                Audio</button>
+                            <div class="media-preview" id="audio-preview"></div>
+                        </div>
+                    </div>
+                </div>
+                <form id="SINGLE_ANSWER-form" class="question-form active">
                     <div class="form-group">
                         <label for="mc-question">Câu hỏi:</label>
                         <textarea id="mc-question" placeholder="Nhập câu hỏi trắc nghiệm" required></textarea>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Điểm số:</label>
                         <input type="number" min="1" max="100" value="1" class="points-input">
                     </div>
 
                     <div class="options-container">
-                        <h3>Các lựa chọn <button type="button" class="add-option-btn"><i class="fas fa-plus"></i> Thêm lựa chọn</button></h3>
-                        
+                        <h3>Các lựa chọn <button type="button" class="add-option-btn"><i class="fas fa-plus"></i> Thêm
+                                lựa chọn</button></h3>
+
                         <div class="option-item">
                             <div class="option-input">
                                 <input type="radio" name="correct-answer" id="option1" checked>
@@ -66,7 +102,7 @@
                             </div>
                             <button type="button" class="remove-option-btn"><i class="fas fa-trash"></i></button>
                         </div>
-                        
+
                         <div class="option-item">
                             <div class="option-input">
                                 <input type="radio" name="correct-answer" id="option2">
@@ -75,7 +111,7 @@
                             </div>
                             <button type="button" class="remove-option-btn"><i class="fas fa-trash"></i></button>
                         </div>
-                        
+
                         <div class="option-item">
                             <div class="option-input">
                                 <input type="radio" name="correct-answer" id="option3">
@@ -84,7 +120,7 @@
                             </div>
                             <button type="button" class="remove-option-btn"><i class="fas fa-trash"></i></button>
                         </div>
-                        
+
                         <div class="option-item">
                             <div class="option-input">
                                 <input type="radio" name="correct-answer" id="option4">
@@ -101,13 +137,73 @@
                     </div>
                 </form>
 
+                <!-- Trắc nghiệm nhiều đáp án form -->
+                <form id="MULTIPLE_ANSWER-form" class="question-form">
+                    <div class="form-group">
+                        <label for="ma-question">Câu hỏi:</label>
+                        <textarea id="ma-question" placeholder="Nhập câu hỏi trắc nghiệm nhiều đáp án"
+                            required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Điểm số:</label>
+                        <input type="number" min="1" max="100" value="1" class="points-input">
+                    </div>
+
+                    <div class="options-container">
+                        <h3>Các lựa chọn <button type="button" class="add-option-btn-ma"><i class="fas fa-plus"></i>
+                                Thêm lựa chọn</button></h3>
+
+                        <div class="option-item">
+                            <div class="option-input">
+                                <input type="checkbox" name="correct-answers" id="ma-option1">
+                                <label for="ma-option1">Đáp án đúng</label>
+                                <input type="text" placeholder="Nhập lựa chọn A" required>
+                            </div>
+                            <button type="button" class="remove-option-btn"><i class="fas fa-trash"></i></button>
+                        </div>
+
+                        <div class="option-item">
+                            <div class="option-input">
+                                <input type="checkbox" name="correct-answers" id="ma-option2">
+                                <label for="ma-option2">Đáp án đúng</label>
+                                <input type="text" placeholder="Nhập lựa chọn B" required>
+                            </div>
+                            <button type="button" class="remove-option-btn"><i class="fas fa-trash"></i></button>
+                        </div>
+
+                        <div class="option-item">
+                            <div class="option-input">
+                                <input type="checkbox" name="correct-answers" id="ma-option3">
+                                <label for="ma-option3">Đáp án đúng</label>
+                                <input type="text" placeholder="Nhập lựa chọn C" required>
+                            </div>
+                            <button type="button" class="remove-option-btn"><i class="fas fa-trash"></i></button>
+                        </div>
+
+                        <div class="option-item">
+                            <div class="option-input">
+                                <input type="checkbox" name="correct-answers" id="ma-option4">
+                                <label for="ma-option4">Đáp án đúng</label>
+                                <input type="text" placeholder="Nhập lựa chọn D" required>
+                            </div>
+                            <button type="button" class="remove-option-btn"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ma-explanation">Giải thích (tùy chọn):</label>
+                        <textarea id="ma-explanation" placeholder="Nhập giải thích cho câu hỏi này"></textarea>
+                    </div>
+                </form>
+
                 <!-- Đúng/sai form -->
-                <form id="true-false-form" class="question-form">
+                <form id="TRUE_FALSE-form" class="question-form">
                     <div class="form-group">
                         <label for="tf-question">Câu hỏi:</label>
                         <textarea id="tf-question" placeholder="Nhập câu hỏi đúng/sai" required></textarea>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Điểm số:</label>
                         <input type="number" min="1" max="100" value="1" class="points-input">
@@ -134,21 +230,23 @@
                 </form>
 
                 <!-- Điền vào chỗ trống form -->
-                <form id="fill-blank-form" class="question-form">
+                <form id="FILL_IN_THE_BLANK-form" class="question-form">
                     <div class="form-group">
                         <label for="fb-question">Câu hỏi:</label>
-                        <textarea id="fb-question" placeholder="Nhập câu hỏi với [blank] cho chỗ trống cần điền" required></textarea>
+                        <textarea id="fb-question" placeholder="Nhập câu hỏi với [blank] cho chỗ trống cần điền"
+                            required></textarea>
                         <p class="form-hint">Ví dụ: Thủ đô của Việt Nam là [blank].</p>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Điểm số:</label>
                         <input type="number" min="1" max="100" value="1" class="points-input">
                     </div>
 
                     <div class="options-container">
-                        <h3>Đáp án có thể chấp nhận <button type="button" class="add-answer-btn"><i class="fas fa-plus"></i> Thêm đáp án</button></h3>
-                        
+                        <h3>Đáp án có thể chấp nhận <button type="button" class="add-answer-btn"><i
+                                    class="fas fa-plus"></i> Thêm đáp án</button></h3>
+
                         <div class="option-item">
                             <div class="option-input">
                                 <input type="text" placeholder="Nhập đáp án 1" required>
@@ -167,17 +265,19 @@
                 <form id="matching-form" class="question-form">
                     <div class="form-group">
                         <label for="matching-instructions">Hướng dẫn:</label>
-                        <textarea id="matching-instructions" placeholder="Nhập hướng dẫn cho câu hỏi nối" required></textarea>
+                        <textarea id="matching-instructions" placeholder="Nhập hướng dẫn cho câu hỏi nối"
+                            required></textarea>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Điểm số:</label>
                         <input type="number" min="1" max="100" value="1" class="points-input">
                     </div>
 
                     <div class="matching-container">
-                        <h3>Các cặp nối <button type="button" class="add-pair-btn"><i class="fas fa-plus"></i> Thêm cặp</button></h3>
-                        
+                        <h3>Các cặp nối <button type="button" class="add-pair-btn"><i class="fas fa-plus"></i> Thêm
+                                cặp</button></h3>
+
                         <div class="matching-pair">
                             <div class="matching-item">
                                 <input type="text" placeholder="Cột A" required>
@@ -188,7 +288,7 @@
                             </div>
                             <button type="button" class="remove-pair-btn"><i class="fas fa-trash"></i></button>
                         </div>
-                        
+
                         <div class="matching-pair">
                             <div class="matching-item">
                                 <input type="text" placeholder="Cột A" required>
@@ -199,7 +299,7 @@
                             </div>
                             <button type="button" class="remove-pair-btn"><i class="fas fa-trash"></i></button>
                         </div>
-                        
+
                         <div class="matching-pair">
                             <div class="matching-item">
                                 <input type="text" placeholder="Cột A" required>
@@ -224,7 +324,7 @@
                         <label for="essay-question">Câu hỏi:</label>
                         <textarea id="essay-question" placeholder="Nhập câu hỏi tự luận" required></textarea>
                     </div>
-                    
+
                     <div class="form-group">
                         <label>Điểm số:</label>
                         <input type="number" min="1" max="100" value="5" class="points-input">
@@ -237,7 +337,8 @@
 
                     <div class="form-group">
                         <label for="essay-answer-guide">Hướng dẫn chấm điểm (tùy chọn):</label>
-                        <textarea id="essay-answer-guide" placeholder="Nhập hướng dẫn chấm điểm hoặc gợi ý đáp án cho người chấm"></textarea>
+                        <textarea id="essay-answer-guide"
+                            placeholder="Nhập hướng dẫn chấm điểm hoặc gợi ý đáp án cho người chấm"></textarea>
                     </div>
                 </form>
             </div>
@@ -249,354 +350,794 @@
             </div>
         </div>
     </div>
-<script>
-    
-    // Get quiz ID from the span and parse it as integer
-    const quizIdElement = document.getElementById('quizId');
-    const quizId = quizIdElement ? parseInt(quizIdElement.textContent, 10) : null;
+    <script>
+        // Get quiz ID from the span and parse it as integer
+        const quizIdElement = document.getElementById('quizId');
+        const quizId = parseInt(quizIdElement.value, 10);
 
-    // Chuyển đổi giữa các loại câu hỏi
-    const typeCards = document.querySelectorAll('.type-card');
-    const questionForms = document.querySelectorAll('.question-form');
+        // Chuyển đổi giữa các loại câu hỏi
+        const typeCards = document.querySelectorAll('.type-card');
+        const questionForms = document.querySelectorAll('.question-form');
 
-    typeCards.forEach(card => {
-        card.addEventListener('click', () => {
-            typeCards.forEach(c => c.classList.remove('active'));
-            card.classList.add('active');
-            questionForms.forEach(form => form.classList.remove('active'));
-            const formType = card.getAttribute('data-type');
-            const targetForm = document.getElementById(`${formType}-form`);
-            if (targetForm) {
-                targetForm.classList.add('active');
-            } else {
-                console.error("Target form not found for type:", formType);
-            }
+        typeCards.forEach(card => {
+            card.addEventListener('click', () => {
+                typeCards.forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                questionForms.forEach(form => form.classList.remove('active'));
+
+                const formType = card.getAttribute('data-type');
+
+                // Map the data-type to the correct form ID
+                let formId;
+                switch (formType) {
+                    case 'SINGLE_ANSWER':
+                        formId = 'SINGLE_ANSWER-form';
+                        break;
+                    case 'MULTIPLE_ANSWER':
+                        formId = 'MULTIPLE_ANSWER-form';
+                        break;
+                    case 'TRUE_FALSE':
+                        formId = 'TRUE_FALSE-form';
+                        break;
+                    case 'FILL_IN_THE_BLANK':
+                        formId = 'FILL_IN_THE_BLANK-form';
+                        break;
+                    default:
+                        formId = null;
+                }
+
+                const targetForm = document.getElementById(formId);
+                if (targetForm) {
+                    targetForm.classList.add('active');
+                } else {
+                    console.error("Target form not found for type:", formType, "with mapped ID:", formId);
+                }
+            });
         });
-    });
 
-    // --- Dynamic Element Handling ---
-    // (Add/Remove functions remain the same)
-    const mcOptionsContainer = document.getElementById('multiple-choice-form').querySelector('.options-container');
-    const addOptionBtn = mcOptionsContainer.querySelector('.add-option-btn');
-    if (addOptionBtn) {
-        addOptionBtn.addEventListener('click', () => {
-            const currentOptions = mcOptionsContainer.querySelectorAll('.option-item');
-            const newOptionIdSuffix = currentOptions.length + 1;
-            const newOptionId = `option${newOptionIdSuffix}`;
-            const newOption = document.createElement('div');
-            newOption.className = 'option-item';
-            newOption.innerHTML = `
-                <div class="option-input">
-                    <input type="radio" name="correct-answer" id="${newOptionId}">
-                    <label for="${newOptionId}">Đáp án đúng</label>
-                    <input type="text" placeholder="Nhập lựa chọn mới" required>
-                </div>
-                <button type="button" class="remove-option-btn"><i class="fas fa-trash"></i></button>
-            `;
-             const buttonContainer = mcOptionsContainer.querySelector('h3');
-             if (buttonContainer && buttonContainer.nextSibling) {
-                mcOptionsContainer.insertBefore(newOption, buttonContainer.nextSibling);
-             } else {
-                mcOptionsContainer.appendChild(newOption);
-             }
-            addMcRemoveListener(newOption.querySelector('.remove-option-btn'));
-            updateMcOptionIndices();
+        // --- Dynamic Element Handling ---
+        // Xử lý SINGLE_ANSWER form (Trắc nghiệm đơn)
+        const singleOptionsContainer = document.getElementById('SINGLE_ANSWER-form').querySelector('.options-container');
+        const addOptionBtn = singleOptionsContainer.querySelector('.add-option-btn');
+        if (addOptionBtn) {
+            addOptionBtn.addEventListener('click', () => {
+                const currentOptions = singleOptionsContainer.querySelectorAll('.option-item');
+                const newOptionIdSuffix = currentOptions.length + 1;
+                const newOptionId = `option${newOptionIdSuffix}`;
+                const newOption = document.createElement('div');
+                newOption.className = 'option-item';
+                newOption.innerHTML = `
+        <div class="option-input">
+            <input type="radio" name="correct-answer" id="${newOptionId}">
+            <label for="${newOptionId}">Đáp án đúng</label>
+            <input type="text" placeholder="Nhập lựa chọn mới" required>
+        </div>
+        <button type="button" class="remove-option-btn"><i class="fas fa-trash"></i></button>
+    `;
+                const buttonContainer = singleOptionsContainer.querySelector('h3');
+                if (buttonContainer && buttonContainer.nextSibling) {
+                    singleOptionsContainer.insertBefore(newOption, buttonContainer.nextSibling);
+                } else {
+                    singleOptionsContainer.appendChild(newOption);
+                }
+                addRemoveListener(newOption.querySelector('.remove-option-btn'), singleOptionsContainer, 2);
+                updateOptionIndices(singleOptionsContainer);
+            });
+        }
+        singleOptionsContainer.querySelectorAll('.remove-option-btn').forEach(btn => {
+            addRemoveListener(btn, singleOptionsContainer, 2);
         });
-    }
-    mcOptionsContainer.querySelectorAll('.remove-option-btn').forEach(addMcRemoveListener);
-    updateMcOptionIndices();
+        updateOptionIndices(singleOptionsContainer);
 
-    const fbOptionsContainer = document.getElementById('fill-blank-form').querySelector('.options-container');
-    const addAnswerBtn = fbOptionsContainer.querySelector('.add-answer-btn');
-    if (addAnswerBtn) {
-        addAnswerBtn.addEventListener('click', () => {
-            const newAnswer = document.createElement('div');
-            newAnswer.className = 'option-item';
-            newAnswer.innerHTML = `
-                <div class="option-input">
-                    <input type="text" placeholder="Nhập đáp án mới" required>
-                </div>
-                <button type="button" class="remove-option-btn"><i class="fas fa-trash"></i></button>
-            `;
-            const buttonContainer = fbOptionsContainer.querySelector('h3');
-             if (buttonContainer && buttonContainer.nextSibling) {
-                 fbOptionsContainer.insertBefore(newAnswer, buttonContainer.nextSibling);
-             } else {
-                 fbOptionsContainer.appendChild(newAnswer);
-             }
-            addFbRemoveListener(newAnswer.querySelector('.remove-option-btn'));
+        // Xử lý MULTIPLE_ANSWER form (Trắc nghiệm nhiều đáp án)
+        const maOptionsContainer = document.getElementById('MULTIPLE_ANSWER-form').querySelector('.options-container');
+        const addOptionBtnMa = maOptionsContainer.querySelector('.add-option-btn-ma');
+        if (addOptionBtnMa) {
+            addOptionBtnMa.addEventListener('click', () => {
+                const currentOptions = maOptionsContainer.querySelectorAll('.option-item');
+                const newOptionIdSuffix = currentOptions.length + 1;
+                const newOptionId = `ma-option${newOptionIdSuffix}`;
+                const newOption = document.createElement('div');
+                newOption.className = 'option-item';
+                newOption.innerHTML = `
+        <div class="option-input">
+            <input type="checkbox" name="correct-answers" id="${newOptionId}">
+            <label for="${newOptionId}">Đáp án đúng</label>
+            <input type="text" placeholder="Nhập lựa chọn mới" required>
+        </div>
+        <button type="button" class="remove-option-btn"><i class="fas fa-trash"></i></button>
+    `;
+                const buttonContainer = maOptionsContainer.querySelector('h3');
+                if (buttonContainer && buttonContainer.nextSibling) {
+                    maOptionsContainer.insertBefore(newOption, buttonContainer.nextSibling);
+                } else {
+                    maOptionsContainer.appendChild(newOption);
+                }
+                addRemoveListener(newOption.querySelector('.remove-option-btn'), maOptionsContainer, 2);
+                updateMaOptionIndices(maOptionsContainer);
+            });
+        }
+        maOptionsContainer.querySelectorAll('.remove-option-btn').forEach(btn => {
+            addRemoveListener(btn, maOptionsContainer, 2);
         });
-    }
-    fbOptionsContainer.querySelectorAll('.remove-option-btn').forEach(addFbRemoveListener);
+        updateMaOptionIndices(maOptionsContainer);
 
-    const matchingContainer = document.getElementById('matching-form').querySelector('.matching-container');
-    const addPairBtn = matchingContainer.querySelector('.add-pair-btn');
-     if (addPairBtn) {
-        addPairBtn.addEventListener('click', () => {
-            const newPair = document.createElement('div');
-            newPair.className = 'matching-pair';
-            newPair.innerHTML = `
-                <div class="matching-item">
-                    <input type="text" placeholder="Cột A" required>
-                </div>
-                <i class="fas fa-arrow-right"></i>
-                <div class="matching-item">
-                    <input type="text" placeholder="Cột B" required>
-                </div>
-                <button type="button" class="remove-pair-btn"><i class="fas fa-trash"></i></button>
-            `;
-             const buttonContainer = matchingContainer.querySelector('h3');
-             if (buttonContainer && buttonContainer.nextSibling) {
-                 matchingContainer.insertBefore(newPair, buttonContainer.nextSibling);
-             } else {
-                 matchingContainer.appendChild(newPair);
-             }
-             addMatchingRemoveListener(newPair.querySelector('.remove-pair-btn'));
+        // Xử lý FILL_IN_THE_BLANK form (Điền vào chỗ trống)
+        const fbOptionsContainer = document.getElementById('FILL_IN_THE_BLANK-form').querySelector('.options-container');
+        const addAnswerBtn = fbOptionsContainer.querySelector('.add-answer-btn');
+        if (addAnswerBtn) {
+            addAnswerBtn.addEventListener('click', () => {
+                const newAnswer = document.createElement('div');
+                newAnswer.className = 'option-item';
+                newAnswer.innerHTML = `
+        <div class="option-input">
+            <input type="text" placeholder="Nhập đáp án mới" required>
+        </div>
+        <button type="button" class="remove-option-btn"><i class="fas fa-trash"></i></button>
+    `;
+                const buttonContainer = fbOptionsContainer.querySelector('h3');
+                if (buttonContainer && buttonContainer.nextSibling) {
+                    fbOptionsContainer.insertBefore(newAnswer, buttonContainer.nextSibling);
+                } else {
+                    fbOptionsContainer.appendChild(newAnswer);
+                }
+                addRemoveListener(newAnswer.querySelector('.remove-option-btn'), fbOptionsContainer, 1);
+            });
+        }
+        fbOptionsContainer.querySelectorAll('.remove-option-btn').forEach(btn => {
+            addRemoveListener(btn, fbOptionsContainer, 1);
         });
-    }
-    matchingContainer.querySelectorAll('.remove-pair-btn').forEach(addMatchingRemoveListener);
 
-
-    // --- Form Submission ---
-    // (Save/Cancel button listeners remain the same)
-     document.querySelector('.save-btn').addEventListener('click', () => {
-        saveQuestion(false);
-    });
-    document.querySelector('.save-add-more-btn').addEventListener('click', () => {
-        saveQuestion(true);
-    });
-    document.querySelector('.cancel-btn').addEventListener('click', () => {
-        if (confirm('Bạn có chắc muốn hủy? Mọi thay đổi sẽ bị mất.')) {
-            window.location.href = `/`;
-        }
-    });
-
-    async function saveQuestion(addMore) {
-        const activeForm = document.querySelector('.question-form.active');
-        if (!activeForm) {
-            alert('Lỗi: Không tìm thấy form câu hỏi đang hoạt động.');
-            return;
-        }
-
-        // Validate quiz ID
-        if (!quizId || isNaN(quizId)) {
-            alert('Lỗi: ID quiz không hợp lệ');
-            console.error('Invalid quiz ID:', quizId);
-            return;
+        // Các hàm tiện ích (Helper functions)
+        function addRemoveListener(button, container, minItems) {
+            button.addEventListener('click', function () {
+                const currentItems = container.querySelectorAll('.option-item');
+                if (currentItems.length > minItems) {
+                    this.closest('.option-item').remove();
+                    // Cập nhật lại chỉ số nếu cần
+                    if (container === singleOptionsContainer) {
+                        updateOptionIndices(container);
+                    } else if (container === maOptionsContainer) {
+                        updateMaOptionIndices(container);
+                    }
+                }
+                else {
+                    Swal.fire({
+                        title: 'Không thể xóa',
+                        text: `Phải có ít nhất ${minItems} mục!`,
+                        icon: 'info'
+                    });
+                }
+            });
         }
 
-        const questionType = activeForm.id.replace('-form', '');
-        if (!validateForm(activeForm)) { return; }
-
-        const formData = collectFormData(activeForm, questionType);
-        if (!formData) {
-            alert('Lỗi khi thu thập dữ liệu form.');
-            return;
+        function updateOptionIndices(container) {
+            container.querySelectorAll('.option-item').forEach((item, index) => {
+                const newId = `option${index + 1}`;
+                item.querySelector('input[type="radio"]').id = newId;
+                item.querySelector('label').setAttribute('for', newId);
+                item.querySelector('input[type="text"]').placeholder = `Nhập lựa chọn ${String.fromCharCode(65 + index)}`;
+            });
         }
 
-        try {
-            const response = await fetch(`/question/${quizId}/add-question`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
+        function updateMaOptionIndices(container) {
+            container.querySelectorAll('.option-item').forEach((item, index) => {
+                const newId = `ma-option${index + 1}`;
+                item.querySelector('input[type="checkbox"]').id = newId;
+                item.querySelector('label').setAttribute('for', newId);
+                item.querySelector('input[type="text"]').placeholder = `Nhập lựa chọn ${String.fromCharCode(65 + index)}`;
+            });
+        }
+
+        // Xử lý phần Media
+        let selectedMediaType = 'none';
+        let mediaFiles = {
+            'image': null,
+            'video': null,
+            'audio': null
+        };
+
+        // Attach event listeners to media tabs
+        document.querySelectorAll('.media-tab').forEach(tab => {
+            tab.addEventListener('click', function () {
+                const newMediaType = this.getAttribute('data-type');
+
+                // Check if user is switching from one media type to another (not from/to 'none')
+                if (selectedMediaType !== 'none' && newMediaType !== 'none' && selectedMediaType !== newMediaType) {
+                    // If they already have a file selected, confirm before switching
+                    if (mediaFiles[selectedMediaType]) {
+                        Swal.fire({
+                            title: 'Thay đổi loại media?',
+                            text: `Bạn đã chọn một ${selectedMediaType}. Chuyển sang loại khác sẽ xóa lựa chọn hiện tại. Tiếp tục?`,
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonText: 'Có, thay đổi',
+                            cancelButtonText: 'Không, giữ nguyên'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Clear the previously selected file
+                                mediaFiles[selectedMediaType] = null;
+                                const prevPreviewContainer = document.getElementById(`${selectedMediaType}-preview`);
+                                if (prevPreviewContainer) prevPreviewContainer.innerHTML = '';
+
+                                // Then proceed with the change
+                                updateMediaSelection(newMediaType);
+                            }
+                        });
+                        return; // Don't proceed yet - wait for confirmation
+                    }
+                }
+
+                // If no confirmation needed, proceed directly
+                updateMediaSelection(newMediaType);
+            });
+        });
+
+        // Function to handle the media tab selection changes
+        function updateMediaSelection(newMediaType) {
+            // Remove active class from all tabs
+            document.querySelectorAll('.media-tab').forEach(t => t.classList.remove('active'));
+
+            // Add active class to clicked tab
+            document.querySelector(`.media-tab[data-type="${newMediaType}"]`).classList.add('active');
+
+            // Update selected media type
+            selectedMediaType = newMediaType;
+
+            // Show/hide appropriate media section
+            document.querySelectorAll('.media-upload-section').forEach(section => {
+                if (newMediaType === 'none') {
+                    section.style.display = 'none';
+                } else if (section.id === `${newMediaType}-upload`) {
+                    section.style.display = 'block';
+                } else {
+                    section.style.display = 'none';
+                }
+            });
+        }
+
+        // Attach event listeners to media selection buttons
+        document.querySelectorAll('.select-media-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const inputId = this.getAttribute('data-input');
+                const fileInput = document.getElementById(inputId);
+                if (fileInput) {
+                    fileInput.click();
+                } else {
+                    console.error(`File input with id ${inputId} not found`);
+                }
+            });
+        });
+
+        // Attach event listeners to file inputs with improved error handling
+        document.querySelectorAll('.media-input').forEach(input => {
+            input.addEventListener('change', function () {
+                console.log("File selected:", this.files[0]?.name);
+
+                const mediaType = this.id.split('-')[1]; // Get 'image', 'video', or 'audio'
+                const previewContainer = document.getElementById(`${mediaType}-preview`);
+
+                if (!previewContainer) {
+                    console.error(`Preview container for ${mediaType} not found`);
+                    return;
+                }
+
+                // Clear preview container
+                previewContainer.innerHTML = '';
+
+                // Store the file
+                mediaFiles[mediaType] = this.files[0];
+
+                // Show preview
+                if (this.files && this.files[0]) {
+                    const file = this.files[0];
+                    console.log(`Processing ${mediaType} file:`, file.name, file.type, file.size);
+
+                    // Create appropriate preview based on file type
+                    try {
+                        const reader = new FileReader();
+
+                        reader.onload = function (e) {
+                            console.log(`File loaded successfully for ${mediaType}`);
+
+                            if (mediaType === 'image') {
+                                const img = document.createElement('img');
+                                img.src = e.target.result;
+                                img.alt = "Image preview";
+                                img.className = "media-preview-item";
+                                previewContainer.appendChild(img);
+                            } else if (mediaType === 'video') {
+                                const video = document.createElement('video');
+                                video.src = e.target.result;
+                                video.controls = true;
+                                video.autoplay = false;
+                                video.muted = true;
+                                video.className = "media-preview-item";
+                                video.style.maxWidth = "100%";
+                                video.style.maxHeight = "200px";
+                                previewContainer.appendChild(video);
+
+                                // Add file info
+                                const fileInfo = document.createElement('p');
+                                fileInfo.textContent = `File: ${file.name} (${(file.size / (1024 * 1024)).toFixed(2)} MB)`;
+                                previewContainer.appendChild(fileInfo);
+                            } else if (mediaType === 'audio') {
+                                const audio = document.createElement('audio');
+                                audio.src = e.target.result;
+                                audio.controls = true;
+                                audio.className = "media-preview-item";
+                                previewContainer.appendChild(audio);
+
+                                // Add file name for audio
+                                const fileInfo = document.createElement('p');
+                                fileInfo.textContent = file.name;
+                                previewContainer.appendChild(fileInfo);
+                            }
+                        };
+
+                        reader.onerror = function (error) {
+                            console.error(`Error reading file for ${mediaType}:`, error);
+                            previewContainer.innerHTML = `<p style="color:red">Error loading preview</p>`;
+                        };
+
+                        reader.readAsDataURL(file);
+                    } catch (error) {
+                        console.error(`Error creating preview for ${mediaType}:`, error);
+                        previewContainer.innerHTML = `<p style="color:red">Error creating preview</p>`;
+                    }
+                }
+            });
+        });
+
+        // Form submission and validation
+        // Xử lý nút Cancel và Save
+        document.querySelector('.save-btn').addEventListener('click', () => {
+            saveQuestion(false);
+        });
+        document.querySelector('.save-add-more-btn').addEventListener('click', () => {
+            saveQuestion(true);
+        });
+        document.querySelector('.cancel-btn').addEventListener('click', () => {
+            Swal.fire({
+                title: 'Xác nhận hủy',
+                text: 'Bạn có chắc muốn hủy? Mọi thay đổi sẽ bị mất.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Có, hủy bỏ',
+                cancelButtonText: 'Không, quay lại',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/`;
+                }
+            });
+        });
+
+        // Hàm để kiểm tra dữ liệu form
+        function validateForm(form) {
+            const requiredInputs = form.querySelectorAll('[required]');
+            let valid = true;
+            let firstErrorInput = null;
+            form.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+            form.querySelectorAll('.error-message').forEach(el => el.remove());
+
+            requiredInputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.classList.add('error');
+                    const errorSpan = document.createElement('span');
+                    errorSpan.className = 'error-message';
+                    errorSpan.textContent = 'Trường này là bắt buộc.';
+                    errorSpan.style.color = 'red';
+                    errorSpan.style.fontSize = '0.8em';
+                    input.parentNode.insertBefore(errorSpan, input.nextSibling);
+                    if (!firstErrorInput) firstErrorInput = input;
+                    valid = false;
+                }
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || errorData.message || response.statusText);
-            }
-
-            const result = await response.json();
-            console.log('Phản hồi từ server:', result);
-            alert(result.message || 'Đã lưu câu hỏi thành công!');
-
-            if (addMore) {
-                resetForm(activeForm, questionType);
-            } else {
-                window.location.href = `/admin/quizzes`;
-            }
-        } catch (error) {
-            console.error('Lỗi khi lưu câu hỏi:', error);
-            alert(`Đã xảy ra lỗi khi lưu câu hỏi: ${error.message}`);
-        }
-    }
-
-    function validateForm(form) {
-          const requiredInputs = form.querySelectorAll('[required]');
-          let valid = true;
-          let firstErrorInput = null;
-          form.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
-          form.querySelectorAll('.error-message').forEach(el => el.remove());
-          requiredInputs.forEach(input => {
-              if (!input.value.trim()) {
-                  input.classList.add('error');
-                  const errorSpan = document.createElement('span');
-                  errorSpan.className = 'error-message'; errorSpan.textContent = 'Trường này là bắt buộc.';
-                  errorSpan.style.color = 'red'; errorSpan.style.fontSize = '0.8em';
-                  input.parentNode.insertBefore(errorSpan, input.nextSibling);
-                  if (!firstErrorInput) firstErrorInput = input; valid = false;
-              }
-          });
-           if (form.id === 'multiple-choice-form') {
-              const radios = form.querySelectorAll('input[type="radio"][name="correct-answer"]');
-              if (radios.length > 0) {
-                const isCorrectSelected = Array.from(radios).some(radio => radio.checked);
-                if (!isCorrectSelected) {
-                    const optionsContainer = form.querySelector('.options-container');
-                    let errorMsg = optionsContainer.querySelector('.error-message.correct-answer-error');
-                    if (!errorMsg) {
-                         errorMsg = document.createElement('span'); errorMsg.className = 'error-message correct-answer-error';
-                         errorMsg.textContent = 'Vui lòng chọn một đáp án đúng.'; errorMsg.style.color = 'red';
-                         errorMsg.style.display = 'block'; errorMsg.style.marginTop = '5px';
-                         const h3 = optionsContainer.querySelector('h3');
-                         if(h3) h3.parentNode.insertBefore(errorMsg, h3.nextSibling); else optionsContainer.appendChild(errorMsg);
+            if (!valid) {
+                Swal.fire({
+                    title: 'Form không hợp lệ',
+                    text: 'Vui lòng điền đầy đủ thông tin bắt buộc và sửa các lỗi được đánh dấu.',
+                    icon: 'warning',
+                    confirmButtonText: 'Đã hiểu'
+                }).then(() => {
+                    if (firstErrorInput) {
+                        firstErrorInput.focus();
                     }
-                     if (!firstErrorInput) firstErrorInput = radios[0]; valid = false;
-                } else {
-                     const errorMsg = form.querySelector('.error-message.correct-answer-error'); if (errorMsg) errorMsg.remove();
-                }
-              }
-           }
-             if (form.id === 'fill-blank-form') {
-                 const textarea = form.querySelector('#fb-question');
-                 if (textarea.value.trim() && !textarea.value.includes('[blank]')) {
-                     textarea.classList.add('error');
-                     const errorSpan = document.createElement('span'); errorSpan.className = 'error-message';
-                     errorSpan.textContent = 'Câu hỏi phải chứa "[blank]" để chỉ chỗ trống.'; errorSpan.style.color = 'red';
-                     errorSpan.style.fontSize = '0.8em'; textarea.parentNode.insertBefore(errorSpan, textarea.nextSibling);
-                     if (!firstErrorInput) firstErrorInput = textarea; valid = false;
-                 }
-             }
-          if (!valid) { alert('Vui lòng điền đầy đủ thông tin bắt buộc và sửa các lỗi được đánh dấu.'); if (firstErrorInput) { firstErrorInput.focus(); } }
-          return valid;
-      }
+                });
+            }
+            return valid;
+        }
 
+        // Function to reset a form
+        function resetForm(form, questionType) {
+            // Clear all text inputs and textareas
+            form.querySelectorAll('input[type="text"], textarea').forEach(input => {
+                input.value = '';
+            });
 
-    // *** UPDATED collectFormData Function (Correct Explanation Selector) ***
-    function collectFormData(form, type) { // type is 'multiple-choice', 'true-false', etc.
-        try {
-            const backendQuestionTypeMap = {
-                  'multiple-choice': 'SINGLE_ANSWER', 'true-false': 'TRUE_FALSE',
-                  'fill-blank': 'FILL_IN_THE_BLANK', 'matching': 'MATCHING', 'essay': 'ESSAY'
-            };
-
-            const finalData = {
-                content: '', type: backendQuestionTypeMap[type] || type.toUpperCase(),
-                points: parseInt(form.querySelector('.points-input').value, 10) || 1,
-                img_url: null, explanation: null, option: []
-            };
-
-            // *** CORRECTED SELECTOR LOGIC FOR EXPLANATION ***
-            let explanationTextarea;
-            if (type === 'essay') {
-                // Essay uses a different ID for its explanation/guide
-                explanationTextarea = form.querySelector('#essay-answer-guide');
-            } else {
-                 // Other types use a pattern like #mc-explanation, #tf-explanation, #fb-explanation etc.
-                 const typePrefix = type.split('-')[0]; // mc, tf, fb, matching
-                 explanationTextarea = form.querySelector(`#${typePrefix}-explanation`);
+            // Reset points to default value
+            const pointsInput = form.querySelector('.points-input');
+            if (pointsInput) {
+                pointsInput.value = '1';
             }
 
-            if (explanationTextarea) {
-                finalData.explanation = explanationTextarea.value.trim() || null;
-            }
-            // *** END CORRECTION ***
+            // Reset radio buttons and checkboxes based on question type
+            switch (questionType) {
+                case 'SINGLE_ANSWER':
+                    // Select the first radio button as default
+                    const firstRadio = form.querySelector('input[type="radio"]');
+                    if (firstRadio) {
+                        firstRadio.checked = true;
+                    }
+                    break;
 
-
-            switch (type) {
-                case 'multiple-choice':
-                    finalData.content = form.querySelector('#mc-question').value.trim();
-                    form.querySelectorAll('.option-item').forEach((item) => {
-                        const text = item.querySelector('input[type="text"]').value.trim();
-                        const isCorrect = item.querySelector('input[type="radio"]').checked;
-                         if (text) { finalData.option.push({ content: text, isCorrect: isCorrect ? 1 : 0 }); }
+                case 'MULTIPLE_ANSWER':
+                    // Uncheck all checkboxes
+                    form.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                        checkbox.checked = false;
                     });
-                    const correctCount = finalData.option.filter(opt => opt.isCorrect === 1).length;
-                    if (correctCount > 1) { finalData.type = 'MULTIPLE_ANSWER'; }
                     break;
-                case 'true-false':
-                    finalData.content = form.querySelector('#tf-question').value.trim();
-                    finalData.option = [
-                        { content: 'True', isCorrect: form.querySelector('#true-option').checked ? 1 : 0 },
-                        { content: 'False', isCorrect: form.querySelector('#false-option').checked ? 1 : 0 }
-                    ];
+
+                case 'TRUE_FALSE':
+                    // Select 'true' as default
+                    const trueOption = form.querySelector('#true-option');
+                    if (trueOption) {
+                        trueOption.checked = true;
+                    }
                     break;
-                case 'fill-blank':
-                    finalData.content = form.querySelector('#fb-question').value.trim();
+            }
+
+            // Remove error messages if any
+            form.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+            form.querySelectorAll('.error-message').forEach(el => el.remove());
+        }
+
+        // Function to collect form data
+        function collectFormData(form, questionType) {
+            // Base question data structure
+            const questionData = {
+                quizId: quizId,
+                type: questionType,
+                points: parseInt(form.querySelector('.points-input')?.value || '5', 10)
+            };
+
+            // Different handling based on question type
+            switch (questionType) {
+                case 'SINGLE_ANSWER':
+                    questionData.content = form.querySelector('#mc-question')?.value;
+                    questionData.explanation = form.querySelector('#mc-explanation')?.value || '';
+
+                    // Collect options and mark correct one
+                    const options = [];
+                    let hasCorrectOption = false;
+
+                    form.querySelectorAll('.option-item').forEach(item => {
+                        const textInput = item.querySelector('input[type="text"]');
+                        const radioInput = item.querySelector('input[type="radio"]');
+
+                        // Skip if either input is missing
+                        if (!textInput || !radioInput) return;
+
+                        const optionText = textInput.value;
+                        const isCorrect = radioInput.checked;
+
+                        if (isCorrect) hasCorrectOption = true;
+
+                        if (optionText && optionText.trim()) {
+                            options.push({
+                                content: optionText,
+                                isCorrect: isCorrect
+                            });
+                        }
+                    });
+
+                    // Validate that one option is selected as correct
+                    if (!hasCorrectOption) {
+                        Swal.fire({
+                            title: 'Lỗi',
+                            text: 'Vui lòng chọn một đáp án đúng.',
+                            icon: 'error'
+                        });
+                        return null;
+                    }
+
+                    questionData.options = options;
+                    break;
+
+                case 'MULTIPLE_ANSWER':
+                    questionData.content = form.querySelector('#ma-question')?.value;
+                    questionData.explanation = form.querySelector('#ma-explanation')?.value || '';
+
+                    // Collect options and mark correct ones
+                    const multipleOptions = [];
+                    let hasAnyCorrectOption = false;
+
+                    form.querySelectorAll('.option-item').forEach(item => {
+                        const textInput = item.querySelector('input[type="text"]');
+                        const checkboxInput = item.querySelector('input[type="checkbox"]');
+
+                        // Skip if either input is missing
+                        if (!textInput || !checkboxInput) return;
+
+                        const optionText = textInput.value;
+                        const isCorrect = checkboxInput.checked;
+
+                        if (isCorrect) hasAnyCorrectOption = true;
+
+                        if (optionText && optionText.trim()) {
+                            multipleOptions.push({
+                                content: optionText,
+                                isCorrect: isCorrect
+                            });
+                        }
+                    });
+
+                    // Validate that at least one option is selected as correct
+                    if (!hasAnyCorrectOption) {
+                        Swal.fire({
+                            title: 'Lỗi',
+                            text: 'Vui lòng chọn ít nhất một đáp án đúng.',
+                            icon: 'error'
+                        });
+                        return null;
+                    }
+
+                    questionData.options = multipleOptions;
+                    break;
+
+                case 'TRUE_FALSE':
+                    questionData.content = form.querySelector('#tf-question')?.value;
+                    questionData.explanation = form.querySelector('#tf-explanation')?.value || '';
+
+                    // Get the correct answer (true or false)
+                    const trueOption = form.querySelector('#true-option');
+                    if (trueOption) {
+                        // Create options array like other question types
+                        questionData.options = [
+                            { content: "True", isCorrect: trueOption.checked },
+                            { content: "False", isCorrect: !trueOption.checked }
+                        ];
+                    } else {
+                        Swal.fire({
+                            title: 'Lỗi',
+                            text: 'Không tìm thấy tùy chọn đúng/sai.',
+                            icon: 'error'
+                        });
+                        return null;
+                    }
+                    break;
+
+                case 'FILL_IN_THE_BLANK':
+                    questionData.content = form.querySelector('#fb-question')?.value;
+                    questionData.explanation = form.querySelector('#fb-explanation')?.value || '';
+
+                    // Collect acceptable answers
+                    const option = [];
                     form.querySelectorAll('.option-item input[type="text"]').forEach(input => {
-                         if (input.value.trim()) { finalData.option.push({ content: input.value.trim(), isCorrect: 1 }); }
+                        if (!input) return;
+
+                        const answerText = input.value;
+                        if (answerText && answerText.trim()) {
+                            // Format as options with isCorrect: true for all answers
+                            option.push({
+                                content: answerText,
+                                isCorrect: true
+                            });
+                        }
                     });
+
+                    // Validate that at least one answer is provided
+                    if (option.length === 0) {
+                        Swal.fire({
+                            title: 'Lỗi',
+                            text: 'Vui lòng nhập ít nhất một đáp án.',
+                            icon: 'error'
+                        });
+                        return null;
+                    }
+
+                    questionData.options = option; // Use options instead of answers
                     break;
-                case 'matching':
-                    finalData.content = form.querySelector('#matching-instructions').value.trim();
-                    finalData.type = 'MATCHING'; finalData.option = [];
-                    break;
-                case 'essay':
-                    finalData.content = form.querySelector('#essay-question').value.trim();
-                    finalData.type = 'ESSAY'; finalData.option = [];
-                    // Explanation is handled by the corrected logic above
-                    break;
-                default: console.error("Loại câu hỏi không xác định:", type); return null;
+
+                default:
+                    console.error("Unsupported question type:", questionType);
+                    return null;
             }
-            return finalData;
-        } catch (error) { console.error("Lỗi khi thu thập dữ liệu form:", error); return null; }
-    }
 
-    function resetForm(form, questionType) {
-          form.reset();
-          if (questionType === 'multiple-choice') {
-              const optionsContainer = form.querySelector('.options-container');
-              const optionItems = optionsContainer.querySelectorAll('.option-item');
-               for (let i = optionItems.length - 1; i >= 2; i--) { optionItems[i].remove(); }
-               const radios = form.querySelectorAll('input[type="radio"][name="correct-answer"]');
-               if (radios.length > 0) radios[0].checked = true; updateMcOptionIndices();
-          } else if (questionType === 'fill-blank') {
-               const answersContainer = form.querySelector('.options-container');
-               const answerItems = answersContainer.querySelectorAll('.option-item');
-               for (let i = answerItems.length - 1; i >= 1; i--) { answerItems[i].remove(); }
-          } else if (questionType === 'matching') {
-               const pairsContainer = form.querySelector('.matching-container');
-               const pairItems = pairsContainer.querySelectorAll('.matching-pair');
-               for (let i = pairItems.length - 1; i >= 2; i--) { pairItems[i].remove(); }
-          }
-           form.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
-           form.querySelectorAll('.error-message').forEach(el => el.remove());
-           window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
+            return questionData;
+        }
 
-    // Helper functions
-    function addMcRemoveListener(button) {
-        button.addEventListener('click', function() {
-            const currentOptions = mcOptionsContainer.querySelectorAll('.option-item');
-            if (currentOptions.length > 2) { this.closest('.option-item').remove(); updateMcOptionIndices(); }
-            else { alert('Phải có ít nhất 2 lựa chọn!'); }
-        });
-    }
-    function updateMcOptionIndices() {
-          mcOptionsContainer.querySelectorAll('.option-item').forEach((item, index) => {
-              const newId = `option${index + 1}`;
-              item.querySelector('input[type="radio"]').id = newId;
-              item.querySelector('label').setAttribute('for', newId);
-              item.querySelector('input[type="text"]').placeholder = `Nhập lựa chọn ${String.fromCharCode(65 + index)}`;
-          });
-    }
-    function addFbRemoveListener(button) {
-        button.addEventListener('click', function() {
-            const currentAnswers = fbOptionsContainer.querySelectorAll('.option-item');
-            if (currentAnswers.length > 1) { this.closest('.option-item').remove(); }
-            else { alert('Phải có ít nhất 1 đáp án!'); }
-        });
-    }
-     function addMatchingRemoveListener(button) {
-         button.addEventListener('click', function() {
-             const currentPairs = matchingContainer.querySelectorAll('.matching-pair');
-             if (currentPairs.length > 2) { this.closest('.matching-pair').remove(); }
-             else { alert('Phải có ít nhất 2 cặp nối!'); }
-         });
-     }
-</script>
+        // Hàm lưu câu hỏi
+        async function saveQuestion(addMore) {
+            const activeForm = document.querySelector('.question-form.active');
+            if (!activeForm) {
+                Swal.fire({
+                    title: 'Lỗi',
+                    text: 'Không tìm thấy form câu hỏi đang hoạt động.',
+                    icon: 'error'
+                });
+                return;
+            }
+
+            // Validate quiz ID
+            if (!quizId || isNaN(quizId)) {
+                Swal.fire({
+                    title: 'Lỗi',
+                    text: 'ID quiz không hợp lệ',
+                    icon: 'error'
+                });
+                console.error('Invalid quiz ID:', quizId);
+                return;
+            }
+
+            const questionType = activeForm.id.replace('-form', '');
+            if (!validateForm(activeForm)) { return; }
+
+            try {
+                // First, upload media if selected
+                let mediaData = {};
+                if (selectedMediaType !== 'none') {
+                    const file = mediaFiles[selectedMediaType];
+
+                    if (file) {
+                        // Show loading indicator with SweetAlert
+                        Swal.fire({
+                            title: 'Đang tải lên...',
+                            text: `Vui lòng đợi trong khi chúng tôi tải lên ${selectedMediaType}`,
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        if (selectedMediaType === 'video') {
+                            // Create FormData with specific video handling
+                            const formData = new FormData();
+                            formData.append('video', file);
+                            
+                            try {
+                                // Upload with explicit timeout and error handling
+                                const uploadResponse = await fetch('/media/upload-video', {
+                                    method: 'POST',
+                                    body: formData,
+                                    // Add a longer timeout for video uploads
+                                    timeout: 60000 // 60 seconds
+                                });
+
+                                if (!uploadResponse.ok) {
+                                    const errorText = await uploadResponse.text();
+                                    throw new Error(`Video upload failed: ${errorText}`);
+                                }
+
+                                const uploadResult = await uploadResponse.json();
+                                console.log('Video upload result:', uploadResult);
+                                
+                                // Make sure we're accessing the correct properties
+                                mediaData = {
+                                    mediaUrl: uploadResult.url || uploadResult.videoUrl,
+                                    public_id: uploadResult.publicId || uploadResult.public_id,
+                                    mediaType: 'video'
+                                };
+                            } catch (error) {
+                                console.error('Video upload error:', error);
+                                Swal.fire({
+                                    title: 'Lỗi tải lên video',
+                                    text: error.message || 'Không thể tải lên video. Hãy thử lại hoặc chọn một file khác.',
+                                    icon: 'error'
+                                });
+                                return;
+                            }
+                        } else {
+                            // Existing code for other media types
+                            const formData = new FormData();
+                            formData.append(selectedMediaType, file);
+                            
+                            // Upload the media to the appropriate endpoint
+                            const uploadResponse = await fetch(`/media/upload-${selectedMediaType}`, {
+                                method: 'POST',
+                                body: formData
+                            });
+
+                            if (!uploadResponse.ok) {
+                                throw new Error(`Không thể tải lên ${selectedMediaType}`);
+                            }
+
+                            const uploadResult = await uploadResponse.json();
+                            console.log('Upload result:', uploadResult);
+                            
+                            // Store the media data with more flexible property access
+                            mediaData = {
+                                mediaUrl: uploadResult.url || uploadResult.imageUrl || uploadResult.videoUrl || uploadResult.audioUrl,
+                                public_id: uploadResult.publicId || uploadResult.public_id,
+                                mediaType: selectedMediaType
+                            };
+                        }
+
+                        Swal.close();
+                    }
+                }
+
+                // Collect form data
+                const formData = collectFormData(activeForm, questionType);
+                if (!formData) {
+                    Swal.fire({
+                        title: 'Lỗi',
+                        text: 'Lỗi khi thu thập dữ liệu form.',
+                        icon: 'error'
+                    });
+                    return;
+                }
+
+                // Add media data to the form data if available
+                if (Object.keys(mediaData).length > 0) {
+                    formData.media_url = mediaData.mediaUrl;
+                    formData.public_id = mediaData.public_id;
+                    formData.mediaType = mediaData.mediaType;
+                }
+
+                // Send the question data to the server
+                const response = await fetch(`/question/${quizId}/add-question`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || errorData.message || response.statusText);
+                }
+
+                const result = await response.json();
+                console.log('Phản hồi từ server:', result);
+
+                // Success message with SweetAlert
+                Swal.fire({
+                    title: 'Thành công!',
+                    text: result.message || 'Đã lưu câu hỏi thành công!',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+
+                if (addMore) {
+                    resetForm(activeForm, questionType);
+                    // Reset media selection
+                    selectedMediaType = 'none';
+                    mediaFiles = {
+                        'image': null,
+                        'video': null,
+                        'audio': null
+                    };
+                    document.querySelectorAll('.media-tab').forEach(tab => {
+                        tab.classList.remove('active');
+                        if (tab.getAttribute('data-type') === 'none') {
+                            tab.classList.add('active');
+                        }
+                    });
+                    document.querySelectorAll('.media-upload-section').forEach(section => {
+                        section.style.display = 'none';
+                    });
+                    document.querySelectorAll('.media-preview').forEach(preview => {
+                        preview.innerHTML = '';
+                    });
+                } else {
+
+                }
+            } catch (error) {
+                console.error('Lỗi khi lưu câu hỏi:', error);
+                Swal.fire({
+                    title: 'Lỗi',
+                    text: `Đã xảy ra lỗi khi lưu câu hỏi: ${error.message}`,
+                    icon: 'error'
+                });
+            }
+        }
+    </script>
 
 </body>
+
 </html>

@@ -506,3 +506,51 @@
     visibility: visible;
     opacity: 1;
   }
+  /* Add to your CSS file or in a style tag in the head */
+.media-selection-tabs {
+    display: flex;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.media-tab {
+    padding: 8px 15px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 4px 4px 0 0;
+    margin-right: 5px;
+}
+
+.media-tab.active {
+    background-color: #f0f0f0;
+    border-color: #ddd;
+    border-bottom-color: transparent;
+}
+
+.media-upload-container {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-top: none;
+    margin-bottom: 20px;
+}
+
+.select-media-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.media-preview {
+    max-width: 100%;
+    margin-top: 10px;
+}
+
+.media-preview-item {
+    max-width: 100%;
+    max-height: 200px;
+    display: block;
+}
