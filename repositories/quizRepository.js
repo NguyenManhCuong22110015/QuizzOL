@@ -189,7 +189,7 @@ export default {
     async getMediaByIds(mediaIds) {
         if (!mediaIds.length) return [];
         return db('media')
-            .select('id', 'url')
+            .select('id', 'url', 'resource_type')
             .whereIn('id', mediaIds);
     },
     

@@ -198,7 +198,7 @@ export default {
                 });
             }
 
-            const quizzes = await strategieService.searchQuizzes(searchTerm);
+            const quizzes = await quizService.searchQuizzes(searchTerm);
 
             res.render('search-results', {
                 quizzes,
@@ -474,7 +474,7 @@ export default {
             const userId = req.session.authUser.user || 1;
 
             let startTime = new Date();
-            let endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // Default 1 hour
+            let endTime = new Date(startTime.getTime() + 60 * 60 * 1000); 
             if (!test) {
                 return res.status(404).json({ error: 'Quiz not found' });
             }
@@ -523,11 +523,14 @@ export default {
                     return res.status(500).json({ error: 'Failed to create quiz result' });
                 }
             }
+            console.log('q: ', test.questions);
 
             res.render('quiz/doTest', {
                 layout: false,
                 quiz: test,
                 resultId: resultId,
+                startTimeMs: startTime.getTime(),  
+                endTimeMs: endTime.getTime(), 
                 startTime: startTime.toISOString(),
                 endTime: endTime.toISOString(),
                 numberOfQuestions: test.questions.length,

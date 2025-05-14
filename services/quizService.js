@@ -173,26 +173,36 @@ export default {
             const questions = await quizRepository.getQuestionsForQuiz(questionIds);
 
             const questionMediaIds = questions
-                .map(q => q.img_url)
+                .map(q => q.media)
                 .filter(Boolean);
 
             const mediaResults = await quizRepository.getMediaByIds(questionMediaIds);
 
+
+            // Build mediaMap có cả url và type
             const mediaMap = mediaResults.reduce((map, item) => {
-                map[item.id] = item.url;
+                map[item.id] = {
+                    url: item.url,
+                    type: item.resource_type  
+                };
                 return map;
             }, {});
 
+            // Xử lý mỗi câu hỏi
             for (const question of questions) {
-                if (question.img_url && mediaMap[question.img_url]) {
-                    question.imageUrl = mediaMap[question.img_url];
+                const media = mediaMap[question.media];
+                if (media) {
+                    question.imageUrl = media.url;
+                    question.mediaType = media.type;
                 } else {
                     question.imageUrl = null;
+                    question.mediaType = null;
                 }
 
                 const options = await quizRepository.getOptionsForQuestion(question.id);
                 question.options = options;
             }
+
 
             quiz.questions = questions;
             quiz.questionCount = questions.length;
@@ -244,6 +254,7 @@ export default {
                 imageUrl: quiz.media && mediaMap[quiz.media]
                     ? mediaMap[quiz.media]
                     : 'https://placehold.co/600x400?text=Quiz&bg=f0f4f8',
+
                 numberOfQuestions: questionCountMap[quiz.id] || 0
             }));
         } catch (error) {
@@ -265,7 +276,7 @@ export default {
             // --- Questions ---
             const questions = await quizRepository.getQuizQuestions(quizId);
             const questionCount = questions.length;
-            
+
             // Estimate time based on question count
             const estimatedMinutes = Math.ceil((questionCount * 20) / 60);
 
@@ -277,7 +288,7 @@ export default {
             const playerCount = resultsStats ? Number(resultsStats.playerCount) : 0;
 
             const ratingStats = await quizRepository.getQuizRatingStats(quizId);
-            
+
             // Ensure rating is a number, default to 0, and round it to one decimal place
             const rating = Math.round((Math.max(0, Math.min(5, parseFloat(ratingStats?.averageRating || 0))) + Number.EPSILON) * 10) / 10;
             const ratingCount = parseInt(ratingStats?.ratingCount || 0, 10);

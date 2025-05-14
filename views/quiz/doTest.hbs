@@ -26,10 +26,27 @@
                 <span class="question-number">{{question_number}}</span>
                 <div class="question-text">{{content}}</div>
                 {{#if imageUrl}}
-                <div class="image-placeholder">
-                    <img src="{{imageUrl}}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                {{/if}}
+  {{#if (eq mediaType "IMAGE")}}
+    <div class="image-placeholder">
+      <img src="{{imageUrl}}" alt="Image content" />
+    </div>
+  {{else if (eq mediaType "VIDEO")}}
+    <div class="video-placeholder">
+      <video controls>
+        <source src="{{imageUrl}}" type="video/mp4" />
+        Trình duyệt của bạn không hỗ trợ video.
+      </video>
+    </div>
+  {{else if (eq mediaType "AUDIO")}}
+    <div class="audio-placeholder">
+      <audio controls>
+        <source src="{{imageUrl}}" type="audio/mpeg" />
+        Trình duyệt của bạn không hỗ trợ audio.
+      </audio>
+    </div>
+  {{/if}}
+{{/if}}
+
                 <div class="options">
                     {{#each options}}
                     <div>
@@ -46,11 +63,28 @@
                 data-question-number="{{question_number}}">
                 <span class="question-number">{{question_number}}</span>
                 <div class="question-text">{{content}}</div>
-                {{#if imageUrl}}
-                <div class="image-placeholder">
-                    <img src="{{imageUrl}}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                {{/if}}
+               {{#if imageUrl}}
+  {{#if (eq mediaType "IMAGE")}}
+    <div class="image-placeholder">
+      <img src="{{imageUrl}}" alt="Image content" />
+    </div>
+  {{else if (eq mediaType "VIDEO")}}
+    <div class="video-placeholder">
+      <video controls>
+        <source src="{{imageUrl}}" type="video/mp4" />
+        Trình duyệt của bạn không hỗ trợ video.
+      </video>
+    </div>
+  {{else if (eq mediaType "AUDIO")}}
+    <div class="audio-placeholder">
+      <audio controls>
+        <source src="{{imageUrl}}" type="audio/mpeg" />
+        Trình duyệt của bạn không hỗ trợ audio.
+      </audio>
+    </div>
+  {{/if}}
+{{/if}}
+
                 <div class="fill-blank-container">
                     <div class="input-wrapper">
                         <input type="text" id="q{{question_number}}_input" class="fill-blank-input"
@@ -64,11 +98,28 @@
                 data-question-number="{{question_number}}">
                 <span class="question-number">{{question_number}}</span>
                 <div class="question-text">{{content}}</div>
-                {{#if imageUrl}}
-                <div class="image-placeholder">
-                    <img src="{{imageUrl}}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                {{/if}}
+               {{#if imageUrl}}
+  {{#if (eq mediaType "IMAGE")}}
+    <div class="image-placeholder">
+      <img src="{{imageUrl}}" alt="Image content" />
+    </div>
+  {{else if (eq mediaType "VIDEO")}}
+    <div class="video-placeholder">
+      <video controls>
+        <source src="{{imageUrl}}" type="video/mp4" />
+        Trình duyệt của bạn không hỗ trợ video.
+      </video>
+    </div>
+  {{else if (eq mediaType "AUDIO")}}
+    <div class="audio-placeholder">
+      <audio controls>
+        <source src="{{imageUrl}}" type="audio/mpeg" />
+        Trình duyệt của bạn không hỗ trợ audio.
+      </audio>
+    </div>
+  {{/if}}
+{{/if}}
+
                 <div class="options">
                     {{#each options}}
                     <div>
@@ -84,11 +135,28 @@
                 data-question-number="{{question_number}}">
                 <span class="question-number">{{question_number}}</span>
                 <div class="question-text">{{content}}</div>
-                {{#if imageUrl}}
-                <div class="image-placeholder">
-                    <img src="{{imageUrl}}" alt="" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                {{/if}}
+               {{#if imageUrl}}
+  {{#if (eq mediaType "IMAGE")}}
+    <div class="image-placeholder">
+      <img src="{{imageUrl}}" alt="Image content" />
+    </div>
+  {{else if (eq mediaType "VIDEO")}}
+    <div class="video-placeholder">
+      <video controls>
+        <source src="{{imageUrl}}" type="video/mp4" />
+        Trình duyệt của bạn không hỗ trợ video.
+      </video>
+    </div>
+  {{else if (eq mediaType "AUDIO")}}
+    <div class="audio-placeholder">
+      <audio controls>
+        <source src="{{imageUrl}}" type="audio/mpeg" />
+        Trình duyệt của bạn không hỗ trợ audio.
+      </audio>
+    </div>
+  {{/if}}
+{{/if}}
+
                 <div class="options">
                     {{#each options}}
                     <div>
@@ -134,10 +202,11 @@
         </div>
     </div>
     <script>
-        // Get result data from server
+        // Replace the existing media container code
+        
         const resultId = '{{resultId}}';
-        const startTime = new Date('{{startTime}}');
-        const endTime = new Date('{{endTime}}');
+        const startTime = new Date({{ startTimeMs }} || '{{startTime}}');
+        const endTime = new Date({{ endTimeMs }} || '{{endTime}}');
         let currentResultId = resultId;
 
         // Timer variables
@@ -301,6 +370,7 @@
                 });
             }
         }
+       
 
         // Function to handle saving text input answers
         async function saveTextAnswer(event) {
@@ -456,12 +526,26 @@
                     });
 
                     // Mark the result as completed
-                    const response = await fetch(`/quiz/all-quiz-by-category`, {
+                    const response = await fetch(`/result/complete/${currentResultId}`, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json'
                         }
                     });
+
+                    if (!response.ok) {
+                        throw new Error('Failed to complete quiz');
+                    }
+
+                    // Wait for 2 seconds to show the notification before redirecting
+                    setTimeout(() => {
+                        // Redirect to results page
+                        window.location.href = `/quiz/check-result/${currentResultId}`;
+                    }, 2000);
+
+                    if (!response.ok) {
+                        throw new Error('Failed to complete quiz');
+                    }
 
                     return;
                 }

@@ -82,7 +82,7 @@ export default {
   },
 
   async addQuestion(questionData) {
-    const { content, type, points, explanation, media, option } = questionData;
+    const { content, type, points, explanation, media, options } = questionData;
     
     try {
         // Insert the question first
@@ -94,9 +94,9 @@ export default {
             media
         });
 
-        // If we have options, insert them
-        if (option && option.length > 0) {
-            const optionsToInsert = option.map(opt => ({
+        // If we have optionss, insert them
+        if (options && options.length > 0) {
+            const optionsToInsert = options.map(opt => ({
                 content: opt.content,
                 isCorrect: opt.isCorrect,
                 question_id: questionId
